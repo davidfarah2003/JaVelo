@@ -1,7 +1,6 @@
 package projection;
-import static java.lang.Math.pow;
-import static java.lang.Math.toDegrees;
-import static java.lang.Math.toRadians;
+
+import static java.lang.Math.*;
 
 public final class Ch1903 {
     private Ch1903() {}
@@ -55,7 +54,7 @@ public final class Ch1903 {
      *
      * @param e
      * @param n
-     * @return longitude in the WGS84 system
+     * @return longitude in the WGS84 system (RAD)
      */
 
     public static double lon(double e, double n){
@@ -75,7 +74,7 @@ public final class Ch1903 {
      *
      * @param e
      * @param n
-     * @return latitude in the WGS84 system
+     * @return latitude in the WGS84 system (RAD)
      */
     public static double lat(double e, double n){
         double x = pow(10, -6) * (e - 2_600_000);
