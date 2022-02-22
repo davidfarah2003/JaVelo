@@ -15,21 +15,29 @@ public final class Math2 {
         return Math.fma(slope, x, y0);
     }
 
-    static int clamp(int min, int v, int max){
+    static int clamp(int min, int v, int max) {
         Preconditions.checkArgument(min <= max);
-        if (min > max){
-            throw new IllegalArgumentException();
-        }
-        else if (v <= min){
+        if (v <= min) {
             return min;
-        }
-        else if (v >= max){
+        } else if (v >= max) {
             return max;
-        }
-        else {
+        } else {
             return v;
         }
     }
+
+    static double clamp(double min, double v, double max){
+        Preconditions.checkArgument(min <= max);
+        if (v <= min) {
+            return min;
+        }
+        else if (v >= max) {
+            return max;
+            }
+        else {
+            return v;
+            }
+        }
 
     static double asinh(double x){
         return Math.log(x + Math.sqrt(1 + x*x));
