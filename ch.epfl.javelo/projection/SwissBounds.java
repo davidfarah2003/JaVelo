@@ -1,6 +1,9 @@
 package projection;
 
 public class SwissBounds {
+
+        private SwissBounds(){};
+
         private static double MIN_E = 2_485_000;
         private static double MAX_E = 2_834_000;
         private static double MIN_N = 1_075_000;

@@ -1,6 +1,8 @@
 
-
 public final class Math2 {
+
+    private Math2(){};
+
     static int ceilDiv(int x, int y) {
         if (x < 0 || y <= 0) {
             throw new IllegalArgumentException();
