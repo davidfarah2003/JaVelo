@@ -6,6 +6,11 @@ import static java.lang.Math.*;
 
 
 public record PointCh(double e, double n) {
+    /**
+     * Constructor
+     * @param e coordinates east (meters)
+     * @param n coordinates north (meters)
+     */
     public PointCh{
         Preconditions.checkArgument(SwissBounds.containsEN(e,n));
     }
@@ -29,12 +34,17 @@ public record PointCh(double e, double n) {
         return Math.hypot(distanceE, distanceN);
     }
 
-    //resultat en radians
+
+    /**
+     * @return longitude in rad W... system (RAD)
+     */
     double lon(){
         return Ch1903.lon(e, n);
     }
 
-    //resultat en radians
+    /**
+     * @return latitude in rad W... system (RAD)
+     */
     double lat(){
         return Ch1903.lat(e, n);
     }

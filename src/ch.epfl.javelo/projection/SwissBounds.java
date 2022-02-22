@@ -10,6 +10,12 @@ public final class SwissBounds {
     public static double WIDTH = MAX_E - MIN_E;
     public static double HEIGHT = MAX_N - MIN_N;
 
+    /**
+     * checks the if the point is within Switzerland
+     * @param e east coordinate
+     * @param n north coordinate
+     * @return true if it is within, false otherwise
+     */
     public static boolean containsEN(double e, double n){
         return (e > MIN_E && e < MAX_E  && n > MIN_N && n < MAX_N);
     }

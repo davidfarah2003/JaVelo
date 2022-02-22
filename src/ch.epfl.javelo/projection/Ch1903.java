@@ -6,9 +6,9 @@ public final class Ch1903 {
     private Ch1903() {}
 
     /**
-     * @param lon
-     * @param lat
-     * @return the east coordinate of a point in the Swiss system
+     * @param lon input longitude to convert (RAD)
+     * @param lat input latitude to convert (RAD)
+     * @return the east coordinate of a point in the Swiss system (RAD)
      */
     public static double e(double lon, double lat) {
         // Conversion in degrees
@@ -28,10 +28,9 @@ public final class Ch1903 {
     }
 
     /**
-     *
-     * @param lon
-     * @param lat
-     * @return north coordinate of a point in the Swiss system
+     * @param lon input longitude to convert (RAD)
+     * @param lat input latitude to convert (RAD)
+     * @return north coordinate of a point in the Swiss system (RAD)
      */
     public static double n(double lon, double lat) {
         // Conversion in degrees
@@ -51,7 +50,6 @@ public final class Ch1903 {
     }
 
     /**
-     *
      * @param e
      * @param n
      * @return longitude in the WGS84 system (RAD)
