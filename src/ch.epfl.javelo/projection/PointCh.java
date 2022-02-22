@@ -4,10 +4,10 @@ import ch.epfl.javelo.Preconditions;
 import java.util.Objects;
 import static java.lang.Math.*;
 
+
 public record PointCh(double e, double n) {
     public PointCh{
-        Preconditions.checkArgument(e < SwissBounds.MIN_E ||
-                e > SwissBounds.MAX_E || n > SwissBounds.MAX_N || n < SwissBounds.MIN_N);
+        Preconditions.checkArgument(SwissBounds.containsEN(e,n));
     }
 
 
@@ -26,7 +26,7 @@ public record PointCh(double e, double n) {
     double distanceTo(PointCh that){
         double distanceE = abs(this.e - that.e);
         double distanceN = abs(this.n - that.n);
-        return sqrt(pow(distanceE, 2) + pow(distanceN, 2));
+        return Math.hypot(distanceE, distanceN);
     }
 
     //resultat en radians
