@@ -1,12 +1,13 @@
-package projection;
+package ch.epfl.javelo.projection;
+import ch.epfl.javelo.Preconditions;
 
 import java.util.Objects;
-
 import static java.lang.Math.*;
+
 public record PointCh(double e, double n) {
     public PointCh{
-        if (e < SwissBounds.MIN_E || e > SwissBounds.MAX_E || n > SwissBounds.MAX_N || n < SwissBounds.MIN_N)
-            throw new IllegalArgumentException();
+        Preconditions.checkArgument(e < SwissBounds.MIN_E ||
+                e > SwissBounds.MAX_E || n > SwissBounds.MAX_N || n < SwissBounds.MIN_N);
     }
 
 

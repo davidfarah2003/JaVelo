@@ -1,4 +1,4 @@
-package projection;
+package ch.epfl.javelo.projection;
 
 public final class SwissBounds {
     private SwissBounds(){};

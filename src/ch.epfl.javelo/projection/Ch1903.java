@@ -1,4 +1,4 @@
-package projection;
+package ch.epfl.javelo.projection;
 
 import static java.lang.Math.*;
 

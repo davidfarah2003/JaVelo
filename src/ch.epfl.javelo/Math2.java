@@ -1,3 +1,4 @@
+package ch.epfl.javelo;
 
 public final class Math2 {
 
