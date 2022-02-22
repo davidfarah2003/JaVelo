@@ -50,8 +50,8 @@ public final class Ch1903 {
     }
 
     /**
-     * @param e
-     * @param n
+     * @param e east coordinates
+     * @param n north coordinates
      * @return longitude in the WGS84 system (RAD)
      */
 
@@ -70,8 +70,8 @@ public final class Ch1903 {
 
     /**
      *
-     * @param e
-     * @param n
+     * @param e east coordinates
+     * @param n north coordinates
      * @return latitude in the WGS84 system (RAD)
      */
     public static double lat(double e, double n){
