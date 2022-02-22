@@ -4,12 +4,10 @@ public final class Math2 {
     private Math2(){};
 
     static int ceilDiv(int x, int y) {
-        if (x < 0 || y <= 0) {
-            throw new IllegalArgumentException();
-        } else {
-            return ((x + y - 1) / y);
-        }
+        Preconditions.checkArgument(x < 0 || y <= 0);
+        return ((x + y - 1) / y);
     }
+
     static double interpolate(double y0, double y1, double x){
         // (0,y0) , (1,y1)
         double slope = y1 - y0;
