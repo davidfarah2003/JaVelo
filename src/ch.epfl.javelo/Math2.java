@@ -55,7 +55,7 @@ public final class Math2 {
         return Math.sqrt(squaredNorm(uX,uY));
     }
 
-    double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY){
+    static double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY){
         double apX = pX - aX;
         double apY = pY - aY;
         double abX = bX - aX;
