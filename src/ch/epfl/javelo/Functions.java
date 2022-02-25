@@ -1,5 +1,6 @@
 package ch.epfl.javelo;
 
+import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 
@@ -40,15 +41,17 @@ public final class Functions {
         }
         @Override
         public double applyAsDouble(double operand) {
-            if (operand > xMax){
-                return samples[samples.length-1];
-            }
-            else if (operand < 0){
+            if (operand > xMax) {
+                return samples[samples.length - 1];
+            } else if (operand < 0) {
                 return samples[0];
+            } else {
+                double interval = (samples.length - 1) / xMax; //* nb intervalles
+
+                double roundedValue = Math.round(operand);
+                return 0;
             }
-            else{
-                Math2.interpolate(, , operand)
-            }
+
         }
     }
 
