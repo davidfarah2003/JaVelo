@@ -10,11 +10,11 @@ public record PointWebMercator(double x, double y) {
      * @param y-coordinate (Web Mercator system
      */
     public PointWebMercator {
-        Preconditions.checkArgument(WebMercator.isContained(x, y));
+        Preconditions.checkArgument(x >= 0 && x <= 1 && y >= 0 && y <= 1);
     }
 
     public static PointWebMercator of(int zoomLevel, double x, double y) {
-
+        return new PointWebMercator(Math.scalb(x, -(8 + zoomLevel)), Math.scalb(y, -(8 + zoomLevel)));
     }
 
     public static PointWebMercator ofPointCh(PointCh pointCh) {
