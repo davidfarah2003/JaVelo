@@ -9,7 +9,7 @@ public final class Math2 {
      * @param y
      * @return
      */
-    static int ceilDiv(int x, int y) {
+    public static int ceilDiv(int x, int y) {
         Preconditions.checkArgument(x >= 0 && y > 0);
         return ((x + y - 1) / y);
     }
@@ -22,7 +22,7 @@ public final class Math2 {
      * @return the y-coordinate of the point of interest that belongs to the line
      * passing by the points (0,y0) and (1,y1)
      */
-    static double interpolate(double y0, double y1, double x){
+    public static double interpolate(double y0, double y1, double x){
         // (0,y0) , (1,y1)
         double slope = y1 - y0;
         return Math.fma(slope, x, y0);
@@ -35,7 +35,7 @@ public final class Math2 {
      * @param max
      * @return
      */
-    static int clamp(int min, int v, int max) {
+    public static int clamp(int min, int v, int max) {
         Preconditions.checkArgument(min <= max);
         if (v <= min) {
             return min;
@@ -68,10 +68,10 @@ public final class Math2 {
 
     /**
      * @param x
-     * @return the value of the function sinh evaluated at the point of coordinate x
+     * @return the value of the function asinh evaluated at the point of coordinate x
      */
-    static double asinh(double x){
-        return Math.sinh(x);
+     public static double asinh(double x){
+         return Math.log(x + Math.sqrt(1 + Math.pow(x,2)));
     }
 
     /**
@@ -81,7 +81,7 @@ public final class Math2 {
      * @param vY
      * @return the dot product between two vectors
      */
-    static double dotProduct(double uX, double uY, double vX, double vY){
+    public static double dotProduct(double uX, double uY, double vX, double vY){
         return uX * vX + uY * vY;
     }
 
@@ -90,7 +90,7 @@ public final class Math2 {
      * @param uY
      * @return the norm to the square of the vector of interest
      */
-    static double squaredNorm(double uX, double uY){
+    public static double squaredNorm(double uX, double uY){
         return dotProduct(uX,uY,uX,uY);
     }
 
@@ -99,7 +99,7 @@ public final class Math2 {
      * @param uY
      * @return the norm of a vector
      */
-    static double norm(double uX, double uY){
+    public static double norm(double uX, double uY){
         return Math.sqrt(squaredNorm(uX,uY));
     }
 
@@ -112,7 +112,7 @@ public final class Math2 {
      * @param pY
      * @return the length of the orthogonal projection of a point on a line.
      */
-    static double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY){
+    public static double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY){
         double apX = pX - aX;
         double apY = pY - aY;
         double abX = bX - aX;
