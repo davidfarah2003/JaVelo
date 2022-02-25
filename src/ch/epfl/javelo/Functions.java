@@ -38,6 +38,7 @@ public final class Functions {
             this.samples = samples;
             this.xMax = xMax;
         }
+        
         @Override
         public double applyAsDouble(double operand) {
             if (operand > xMax){
