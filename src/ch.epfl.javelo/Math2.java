@@ -5,9 +5,9 @@ public final class Math2 {
     private Math2(){};
 
     /**
-     * @param x
-     * @param y
-     * @return
+     * @param x : integer to be divided
+     * @param y : integer to be divided by
+     * @return the integer part by excess of the division of x by y
      */
     public static int ceilDiv(int x, int y) {
         Preconditions.checkArgument(x >= 0 && y > 0);
@@ -16,11 +16,11 @@ public final class Math2 {
 
     /**
      *
-     * @param y0
-     * @param y1
-     * @param x
+     * @param y0 : y-coordinate of the first point belonging to the line
+     * @param y1 : y-coordinate of the second point belonging to the line
+     * @param x : x-coordinate of the point of interest
      * @return the y-coordinate of the point of interest that belongs to the line
-     * passing by the points (0,y0) and (1,y1)
+     * passing through the points (0,y0) and (1,y1)
      */
     public static double interpolate(double y0, double y1, double x){
         // (0,y0) , (1,y1)
@@ -30,10 +30,10 @@ public final class Math2 {
 
     /**
      *
-     * @param min
-     * @param v
-     * @param max
-     * @return
+     * @param min : lower bound
+     * @param v : value of interest
+     * @param max : upper bound
+     * @return the value of v restricted to the interval [min, max]
      */
     public static int clamp(int min, int v, int max) {
         Preconditions.checkArgument(min <= max);
@@ -48,10 +48,10 @@ public final class Math2 {
 
     /**
      *
-     * @param min
-     * @param v
-     * @param max
-     * @return
+     * @param min :lower bound
+     * @param v : value of interest
+     * @param max : upper bound
+     * @return the value of v restricted to the interval [min, max]
      */
     static double clamp(double min, double v, double max){
         Preconditions.checkArgument(min <= max);
@@ -67,7 +67,7 @@ public final class Math2 {
         }
 
     /**
-     * @param x
+     * @param x : double value (input)
      * @return the value of the function asinh evaluated at the point of coordinate x
      */
      public static double asinh(double x){
@@ -75,10 +75,10 @@ public final class Math2 {
     }
 
     /**
-     * @param uX
-     * @param uY
-     * @param vX
-     * @param vY
+     * @param uX : x-coordinate of the first vector
+     * @param uY : y-coordinate of the first vector
+     * @param vX : x-coordinate of the second vector
+     * @param vY : y-coordinate of the second vector
      * @return the dot product between two vectors
      */
     public static double dotProduct(double uX, double uY, double vX, double vY){
@@ -86,8 +86,8 @@ public final class Math2 {
     }
 
     /**
-     * @param uX
-     * @param uY
+     * @param uX : x-coordinate of the vector
+     * @param uY : y-coordinate of the vector
      * @return the norm to the square of the vector of interest
      */
     public static double squaredNorm(double uX, double uY){
@@ -95,8 +95,8 @@ public final class Math2 {
     }
 
     /**
-     * @param uX
-     * @param uY
+     * @param uX : x-coordinate of the vector
+     * @param uY : y-coordinate of the vector
      * @return the norm of a vector
      */
     public static double norm(double uX, double uY){
@@ -104,13 +104,14 @@ public final class Math2 {
     }
 
     /**
-     * @param aX
-     * @param aY
-     * @param bX
-     * @param bY
-     * @param pX
-     * @param pY
-     * @return the length of the orthogonal projection of a point on a line.
+     * @param aX : x-coordinate of the point A
+     * @param aY : y-coordinate of the point A
+     * @param bX : x-coordinate of the point B
+     * @param bY : y-coordinate of the point B
+     * @param pX : x-coordinate of the point P
+     * @param pY : y-coordinate of the point P
+     * @return which returns the length of the projection of the vector
+     * from point A to point P on the vector from point A to point B
      */
     public static double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY){
         double apX = pX - aX;
