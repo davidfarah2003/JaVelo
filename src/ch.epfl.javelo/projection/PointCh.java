@@ -15,7 +15,6 @@ public record PointCh(double e, double n) {
         Preconditions.checkArgument(SwissBounds.containsEN(e,n));
     }
 
-
     /**
      * @param that the object to get distance to
      * @return the square of the distance

@@ -34,7 +34,7 @@ public final class WebMercator {
      * @param x (coordinate in the Web Mercator system)
      * @return the longitude in radians of the point of interest
      */
-    private static double lon(double x){
+    public static double lon(double x){
         return 2*PI*x - PI;
     }
 
@@ -44,8 +44,13 @@ public final class WebMercator {
      * @return the latitude in radians of the point of interest
      */
 
-    private static double lat(double y){
+    public static double lat(double y){
         return atan(sinh(PI - 2*PI*y));
+    }
+
+    // Added
+    public static boolean isContained(double x, double y){
+        return (x >= 0 && x <= 1 && y >= 0 && y <= 1);
     }
 
     /*
