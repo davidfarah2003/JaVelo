@@ -14,7 +14,6 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     *
      * @param zoomLevel
      * @param x
      * @param y

@@ -7,6 +7,7 @@ import static java.lang.Math.tan;
 import static java.lang.Math.atan;
 import static java.lang.Math.sinh;
 
+
 public final class WebMercator {
     private WebMercator(){}
 
@@ -31,7 +32,7 @@ public final class WebMercator {
 
     /**
      *
-     * @param x (coordinate in the Web Mercator system)
+     * @param x coordinate in the Web Mercator system
      * @return the longitude in radians of the point of interest
      */
     public static double lon(double x){
@@ -40,7 +41,7 @@ public final class WebMercator {
 
     /**
      *
-     * @param y (coordinate in the Web Mercator system)
+     * @param y coordinate in the Web Mercator system
      * @return the latitude in radians of the point of interest
      */
 
