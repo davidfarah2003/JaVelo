@@ -13,42 +13,69 @@ public record PointWebMercator(double x, double y) {
         Preconditions.checkArgument(x >= 0 && x <= 1 && y >= 0 && y <= 1);
     }
 
+    /**
+     *
+     * @param zoomLevel
+     * @param x
+     * @param y
+     * @return
+     */
     public static PointWebMercator of(int zoomLevel, double x, double y) {
         return new PointWebMercator(Math.scalb(x, -(8 + zoomLevel)), Math.scalb(y, -(8 + zoomLevel)));
     }
 
+    /**
+     *
+     * @param pointCh
+     * @return
+     */
     public static PointWebMercator ofPointCh(PointCh pointCh) {
         return new PointWebMercator(WebMercator.x(pointCh.lon()), WebMercator.y(pointCh.lat()));
     }
 
 
+    /**
+     *
+     * @param zoomLevel
+     * @return the x-coordinate for a certain zoom level
+     */
     public double xAtZoomLevel(int zoomLevel){
         return Math.scalb(x, 8 + zoomLevel);
     }
 
+    /**
+     *
+     * @param zoomLevel
+     * @return the y-coordinate for a certain zoom level
+     */
     public double yAtZoomLevel(int zoomLevel){
         return Math.scalb(y, 8 + zoomLevel);
     }
 
+    /**
+     *
+     * @return the longitude of the point
+     */
     public double lon(){
         return WebMercator.lon(x);
     }
 
+    /**
+     *
+     * @return the latitude of the point
+     */
     public double lat(){
         return WebMercator.lat(y);
     }
 
-    public PointCh toPointCh(){
-        return new PointCh()
-
-    }
-
-    /*
-    double xAtZoomLevel(int zoomLevel), qui retourne la coordonnée x au niveau de zoom donné,
-double yAtZoomLevel(int zoomLevel), qui retourne la coordonnée y au niveau de zoom donné,
-double lon(), qui retourne la longitude du point, en radians,
-double lat(), qui retourne la latitude du point, en radians,
-PointCh toPointCh(), qui retourne le point de coordonnées suisses se trouvant à la même position que le récepteur (this)
-ou null si ce point n'est pas dans les limites de la Suisse définies par SwissBounds.
+    /**
+     *
+     * @return a point in the Swiss coordinates system if it exists
      */
+    public PointCh toPointCh() {
+        // Getting the Swiss coordinates of the point
+        double e = Ch1903.e(lon(), lat());
+        double n = Ch1903.n(lon(), lat());
+        return (!SwissBounds.containsEN(e, n) ? null : new PointCh(e, n));
+    }
 }
