@@ -19,7 +19,8 @@ public final class Math2 {
      * @param y0
      * @param y1
      * @param x
-     * @return
+     * @return the y-coordinate of the point of interest that belongs to the line
+     * passing by the points (0,y0) and (1,y1)
      */
     static double interpolate(double y0, double y1, double x){
         // (0,y0) , (1,y1)
@@ -67,10 +68,10 @@ public final class Math2 {
 
     /**
      * @param x
-     * @return
+     * @return the value of the function sinh evaluated at the point of coordinate x
      */
     static double asinh(double x){
-        return Math.log(x + Math.sqrt(1 + x*x));
+        return Math.sinh(x);
     }
 
     /**
@@ -78,7 +79,7 @@ public final class Math2 {
      * @param uY
      * @param vX
      * @param vY
-     * @return
+     * @return the dot product between two vectors
      */
     static double dotProduct(double uX, double uY, double vX, double vY){
         return uX * vX + uY * vY;
@@ -87,7 +88,7 @@ public final class Math2 {
     /**
      * @param uX
      * @param uY
-     * @return
+     * @return the norm to the square of the vector of interest
      */
     static double squaredNorm(double uX, double uY){
         return dotProduct(uX,uY,uX,uY);
@@ -96,7 +97,7 @@ public final class Math2 {
     /**
      * @param uX
      * @param uY
-     * @return
+     * @return the norm of a vector
      */
     static double norm(double uX, double uY){
         return Math.sqrt(squaredNorm(uX,uY));
@@ -109,7 +110,7 @@ public final class Math2 {
      * @param bY
      * @param pX
      * @param pY
-     * @return
+     * @return the length of the orthogonal projection of a point on a line.
      */
     static double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY){
         double apX = pX - aX;
