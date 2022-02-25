@@ -25,9 +25,7 @@ public final class Functions {
     }
 
     public static DoubleUnaryOperator sampled(float[] samples, double xMax){
-        if (samples.length < 2 || xMax <= 0){
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(samples.length >= 2 && xMax > 0);
         return new Sampled(samples, xMax);
     }
 
@@ -47,10 +45,18 @@ public final class Functions {
             } else if (operand < 0) {
                 return samples[0];
             } else {
-                double interval = (samples.length - 1) / xMax; //* nb intervalles
-
-                double roundedValue = Math.round(operand);
-                return 0;
+                double intervalLength = xMax /  (samples.length - 1); //* nb intervalles
+                if (operand % intervalLength == 0){
+                    return samples[(int)(operand/ intervalLength)];
+                }
+                double division = operand / intervalLength;
+                int lower_index = (int) Math.floor(division);
+                int upper_index = (int) Math.ceil(division);
+                double x_lower = lower_index * intervalLength;
+                double x_upper = upper_index * intervalLength;
+                double slope = (samples[upper_index] - samples[lower_index])/(x_upper - x_lower);
+                double y_intercept = samples[upper_index] - slope * upper_index;
+                return Math.fma(slope, y_intercept , operand);
             }
 
         }

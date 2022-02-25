@@ -2,8 +2,7 @@ package ch.epfl.javelo;
 
 public class Main {
     public static void main(String[] args) {
-        double n = 1.7;
-        System.out.println(Math.round(n));
+        System.out.println((4.5/1.5));
 
     }
 }
