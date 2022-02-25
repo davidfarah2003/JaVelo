@@ -19,7 +19,7 @@ public record PointCh(double e, double n) {
      * @param that the object to get distance to
      * @return the square of the distance
      */
-    double squaredDistanceTo(PointCh that){
+    public double squaredDistanceTo(PointCh that){
         return pow(distanceTo(that), 2);
     }
 
@@ -27,7 +27,7 @@ public record PointCh(double e, double n) {
      * @param that the object to get distance to
      * @return The distance between this and that
      */
-    double distanceTo(PointCh that){
+    public double distanceTo(PointCh that){
         double distanceE = abs(this.e - that.e);
         double distanceN = abs(this.n - that.n);
         return Math.hypot(distanceE, distanceN);
@@ -37,14 +37,14 @@ public record PointCh(double e, double n) {
     /**
      * @return longitude in rad W... system (RAD)
      */
-    double lon(){
+    public double lon(){
         return Ch1903.lon(e, n);
     }
 
     /**
      * @return latitude in rad W... system (RAD)
      */
-    double lat(){
+    public double lat(){
         return Ch1903.lat(e, n);
     }
 

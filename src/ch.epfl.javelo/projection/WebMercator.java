@@ -15,7 +15,7 @@ public final class WebMercator {
      * @param lon (in radians)
      * @return the x-coordinate (in the Web Mercator system) of the projection of the point of interest
      */
-    private static double x(double lon){ //?
+    public static double x(double lon){ //?
         return (1/(2*PI)) * (lon + PI);
     }
 
@@ -25,7 +25,7 @@ public final class WebMercator {
      * @return the y-coordinate (in the Web Mercator system) of the projection of the point of interest
      */
 
-    private static double y(double lat){//?
+    public static double y(double lat){//?
         return (1/(2*PI))*(PI - Math2.asinh(tan(lat)));
     }
 
