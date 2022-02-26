@@ -11,16 +11,11 @@ public final class Functions {
         return new Constant(y);
     }
 
-    private static final class Constant implements DoubleUnaryOperator {
-        double y;
-
-        Constant(double y) {
-            this.y = y;
-        }
-
+    //Make Constant as a record
+    private static final record Constant(double y) implements DoubleUnaryOperator {
         @Override
         public double applyAsDouble(double operand) {
-            return y;
+            return this.y;
         }
     }
 
@@ -29,17 +24,11 @@ public final class Functions {
         return new Sampled(samples, xMax);
     }
 
-    private static final class Sampled implements DoubleUnaryOperator{
-        float[] samples;
-        double xMax;
-
-        Sampled(float[] samples, double xMax){
-            this.samples = samples;
-            this.xMax = xMax;
-        }
-        
+    //Make Sampled a record (more concise)
+    private static final record Sampled(float[] samples, double xMax) implements DoubleUnaryOperator{
         @Override
         public double applyAsDouble(double operand) {
+            //Not using interpolation method?
             if (operand > xMax) {
                 return samples[samples.length - 1];
             } else if (operand < 0) {

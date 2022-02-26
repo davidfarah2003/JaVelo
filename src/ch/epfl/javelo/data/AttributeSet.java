@@ -50,7 +50,6 @@ public record AttributeSet(long bits) {
      *
      * @return a textual representation of an Attribute Set.
      */
-
     @Override
     public String toString(){
         StringJoiner j = new StringJoiner(",", "{", "}");
