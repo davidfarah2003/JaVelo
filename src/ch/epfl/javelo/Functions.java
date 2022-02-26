@@ -28,22 +28,32 @@ public final class Functions {
     private static final record Sampled(float[] samples, double xMax) implements DoubleUnaryOperator{
         @Override
         public double applyAsDouble(double operand) {
-            //Not using interpolation method?
+            //Not using interpolation method? (I assume because (0,y0),(1,y1) ?)
+
             if (operand > xMax) {
                 return samples[samples.length - 1];
             } else if (operand < 0) {
                 return samples[0];
             } else {
-                double intervalLength = xMax /  (samples.length - 1); //* nb intervalles
+                double intervalLength = xMax /  (samples.length - 1); // nb of intervals
+
+                //if operand is on a sample, return the corresponding sample y value
                 if (operand % intervalLength == 0){
                     return samples[(int)(operand/ intervalLength)];
                 }
-                double division = operand / intervalLength;
-                int lower_index = (int) Math.floor(division);
-                int upper_index = (int) Math.ceil(division);
+
+                //get the 2 sample indexes that are closest to the operand
+                double operand_index = operand / intervalLength;
+                int lower_index = (int) Math.floor(operand_index);
+                int upper_index = (int) Math.ceil(operand_index);
+
+                //x values of the samples
                 double x_lower = lower_index * intervalLength;
                 double x_upper = upper_index * intervalLength;
+
                 double slope = (samples[upper_index] - samples[lower_index])/(x_upper - x_lower);
+
+                //I didn't quite get these 2 steps, what does Math.fma() do in practice and why do we need the y intercept?
                 double y_intercept = samples[upper_index] - slope * upper_index;
                 return Math.fma(slope, y_intercept , operand);
             }
