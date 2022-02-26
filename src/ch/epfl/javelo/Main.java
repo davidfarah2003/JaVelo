@@ -1,8 +1,9 @@
 package ch.epfl.javelo;
 
+import ch.epfl.javelo.data.Attribute;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println(4.5 % 1.5 == 0);
 
     }
 }
