@@ -49,14 +49,4 @@ public final class WebMercator {
         return atan(sinh(PI - 2*PI*y));
     }
 
-
-    /*
-
-
-    double x(double lon), qui retourne la coordonnée x de la projection d'un point se trouvant à la longitude lon, donnée en radians,
-    double y(double lat), qui retourne la coordonnée y de la projection d'un point se trouvant à la latitude lat, donnée en radians,
-    double lon(double x), qui retourne la longitude, en radians, d'un point dont la projection se trouve à la coordonnée x donnée,
-    double lat(double y), qui retourne la latitude, en radians, d'un point dont la projection se trouve à la coordonnée y donnée.
-
-     */
 }

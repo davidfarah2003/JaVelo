@@ -5,7 +5,7 @@ import ch.epfl.javelo.Preconditions;
 import java.util.StringJoiner;
 
 public record AttributeSet(long bits) {
-    /**
+    /** Constructor
      * @param bits
      */
     public AttributeSet{

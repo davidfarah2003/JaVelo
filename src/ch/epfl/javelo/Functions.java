@@ -4,12 +4,21 @@ import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 
+/**
+ * This class implements multiple mathematical functions
+ */
 public final class Functions {
     private Functions() {}
 
+    /**
+     *
+     * @param y : constant which is the output of the function to be returned
+     * @return a constant function
+     */
     public static DoubleUnaryOperator constant(double y) {
         return new Constant(y);
     }
+
 
     //Make Constant as a record
     private static final record Constant(double y) implements DoubleUnaryOperator {
@@ -51,9 +60,8 @@ public final class Functions {
                 double x_lower = lower_index * intervalLength;
                 double x_upper = upper_index * intervalLength;
 
+                //calculating the slope and y-intercept needed of the function needed to compute the y-value of the operand
                 double slope = (samples[upper_index] - samples[lower_index])/(x_upper - x_lower);
-
-                //I didn't quite get these 2 steps, what does Math.fma() do in practice and why do we need the y intercept?
                 double y_intercept = samples[upper_index] - slope * upper_index;
                 return Math.fma(slope, y_intercept , operand);
             }
