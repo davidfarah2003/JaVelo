@@ -6,7 +6,6 @@ import java.util.StringJoiner;
 
 public record AttributeSet(long bits) {
     /**
-     *
      * @param bits
      */
     public AttributeSet{
