@@ -35,7 +35,7 @@ public final class Functions {
             } else if (operand < 0) {
                 return samples[0];
             } else {
-                double intervalLength = xMax /  (samples.length - 1); // nb of intervals
+                double intervalLength = xMax / (samples.length - 1); // length of an interval (between each sample)
 
                 //if operand is on a sample, return the corresponding sample y value
                 if (operand % intervalLength == 0){
