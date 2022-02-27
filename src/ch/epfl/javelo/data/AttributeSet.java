@@ -9,40 +9,41 @@ public record AttributeSet(long bits) {
      * @param bits
      */
     public AttributeSet{
-        //I don't get this test
-        long bitsTEST = 0b11L;
-        bitsTEST = bitsTEST << 62;
-        Preconditions.checkArgument((bitsTEST & bits) == 0);
+        //check if any bit with index larger than the number of attributes is 1
+        Preconditions.checkArgument(((Long.MAX_VALUE << Attribute.COUNT) & bits) == 0);
     }
 
-    //Seems OK
+
+    /**
+     * @param attributes attributes to add to attributeSet
+     * @return a new AttributeSet with elements
+     */
     public static AttributeSet of(Attribute... attributes){
-        long bits = 0b0L;
+        long bits = 0;
         for (Attribute attribute : attributes){
-            bits |= 1L << attribute.ordinal();      // | is the bit-wise OR operator (|= equivalent to += for bits)
+            Preconditions.checkArgument(attribute.ordinal() <= 64);
+            bits |= (1L << attribute.ordinal());      // | is the bit-wise OR operator (|= equivalent to += for bits)
         }
         return new AttributeSet(bits);
-        // 62 attributs dans la classe Attribute.
     }
 
 
     /**
      * @param attribute
-     * @return a boolean value <code>true</code> if the Attribute set contains
-     * a specific attribute or <code>false</code> if not
+     * @return a boolean value <code>true</code> if the Attribute set contains a specific attribute or
+     * <code>false</code> if not
      */
     public boolean contains(Attribute attribute){
-        return (bits & (1L << attribute.ordinal())) != 0; //added parenthesis on 1L << attribute.ordinal() order matters
+        return (bits & (1L << attribute.ordinal())) != 0;
     }
 
     /**
      * @param that
-     * @return a boolean value <code>true</code> if the two Attribute sets
-     * have common elements or <code>false</code> if not
+     * @return <code>true</code> if the two Attribute sets have common elements and <code>false</code> otherwise
      */
     public boolean intersects(AttributeSet that){
         return (this.bits & that.bits) != 0;
-    } //OK
+    }
 
     /**
      * @return a textual representation of an Attribute Set.
