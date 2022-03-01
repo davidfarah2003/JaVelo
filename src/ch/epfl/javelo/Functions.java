@@ -63,7 +63,7 @@ public final class Functions {
                 //calculating the slope and y-intercept needed of the function needed to compute the y-value of the operand
                 double slope = (samples[upper_index] - samples[lower_index])/(x_upper - x_lower);
                 double y_intercept = samples[upper_index] - slope * upper_index;
-                return Math.fma(slope, y_intercept , operand);
+                return Math.fma(slope, operand , y_intercept);
             }
 
         }

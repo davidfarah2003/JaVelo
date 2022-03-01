@@ -8,6 +8,9 @@ class PointWebMercatorTest {
 
     @Test
     void of() {
+        PointWebMercator test = PointWebMercator.of(19, 69_561_722, 47_468_099);
+        assertEquals( 0.518275214444, test.x(), 1e-6);
+        assertEquals();
     }
 
     @Test

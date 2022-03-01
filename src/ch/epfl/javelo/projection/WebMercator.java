@@ -2,10 +2,7 @@ package ch.epfl.javelo.projection;
 
 import ch.epfl.javelo.Math2;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.tan;
-import static java.lang.Math.atan;
-import static java.lang.Math.sinh;
+import static java.lang.Math.*;
 
 
 public final class WebMercator {
@@ -17,7 +14,7 @@ public final class WebMercator {
      * @return the x-coordinate (in the Web Mercator system) of the projection of the point of interest
      */
     public static double x(double lon){ //?
-        return (1/(2*PI)) * (lon + PI);
+        return (1/(2*PI)) * (toRadians(lon) + PI);
     }
 
     /**
@@ -27,7 +24,7 @@ public final class WebMercator {
      */
 
     public static double y(double lat){//?
-        return (1/(2*PI))*(PI - Math2.asinh(tan(lat)));
+        return (1/(2*PI))*(PI - Math2.asinh(tan(toRadians(lat))));
     }
 
     /**
@@ -36,7 +33,7 @@ public final class WebMercator {
      * @return the longitude in radians of the point of interest
      */
     public static double lon(double x){
-        return 2*PI*x - PI;
+        return Math.toDegrees(2*PI*x - PI);
     }
 
     /**
@@ -46,7 +43,7 @@ public final class WebMercator {
      */
 
     public static double lat(double y){
-        return atan(sinh(PI - 2*PI*y));
+        return toDegrees(atan(sinh(PI - 2*PI*y)));
     }
 
 }

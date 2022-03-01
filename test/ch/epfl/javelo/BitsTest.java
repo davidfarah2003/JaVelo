@@ -14,11 +14,11 @@ class BitsTest {
     void extractSigned() {
         int x = 0b01110100110;
         //printBinary(x);
-        assertEquals(0b11111111111111111111111111111001, Bits.extractSigned(x, 2, 4));
-        assertEquals(0b001, Bits.extractSigned(x, 2, 3));
-        assertEquals(0, Bits.extractSigned(x, 31, 1));
-        assertEquals(0, Bits.extractSigned(x,0,0));
-        assertEquals(0b01110100110, Bits.extractSigned(x,0,32));
+       assertEquals(0b11111111111111111111111111111001, Bits.extractSigned(x, 2, 4));
+       assertEquals(0b001, Bits.extractSigned(x, 2, 3));
+       assertEquals(0, Bits.extractSigned(x, 31, 1));
+       assertEquals(0, Bits.extractSigned(x,0,0));
+       assertEquals(0b01110100110, Bits.extractSigned(x,0,32));
     }
 
     @Test
