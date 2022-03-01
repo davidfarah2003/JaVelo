@@ -16,10 +16,10 @@ public final class Functions {
      * @return a constant function
      */
     public static DoubleUnaryOperator constant(double y) {
-        return new Constant(y);
+        return (x) -> y;
     }
 
-
+/*
     //Make Constant as a record
     private static final record Constant(double y) implements DoubleUnaryOperator {
         @Override
@@ -28,6 +28,7 @@ public final class Functions {
         }
     }
 
+ */
     public static DoubleUnaryOperator sampled(float[] samples, double xMax){
         Preconditions.checkArgument(samples.length >= 2 && xMax > 0);
         return new Sampled(samples, xMax);
