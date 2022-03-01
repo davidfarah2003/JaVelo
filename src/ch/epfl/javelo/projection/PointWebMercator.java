@@ -37,6 +37,7 @@ public record PointWebMercator(double x, double y) {
      * @return the x-coordinate for a certain zoom level
      */
     public double xAtZoomLevel(int zoomLevel){
+        Preconditions.checkArgument(zoomLevel >= 0 && zoomLevel <= 20);
         return Math.scalb(x, 8 + zoomLevel);
     }
 
@@ -45,6 +46,7 @@ public record PointWebMercator(double x, double y) {
      * @return the y-coordinate for a certain zoom level
      */
     public double yAtZoomLevel(int zoomLevel){
+        Preconditions.checkArgument(zoomLevel >= 0 && zoomLevel <= 20);
         return Math.scalb(y, 8 + zoomLevel);
     }
 
