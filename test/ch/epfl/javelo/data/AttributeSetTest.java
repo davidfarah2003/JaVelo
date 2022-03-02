@@ -16,6 +16,7 @@ class AttributeSetTest {
         assertThrows(IllegalArgumentException.class, () -> {new AttributeSet(0b10L << 62);});
         assertThrows(IllegalArgumentException.class, () -> {new AttributeSet(0b01L << 62);});
         assertDoesNotThrow(() -> {new AttributeSet(~(0b11L << 62));});
+
     }
 
     @Test
@@ -43,5 +44,15 @@ class AttributeSetTest {
 
         attrSet2 = AttributeSet.of();
         assertFalse(attrSet2.intersects(attrSet1));
+    }
+    @Test
+    void toStringTest(){
+      //  AttributeSet test = AttributeSet.of(Attribute.ONEWAY_M1, Attribute.BICYCLE_NO, Attribute.ACCESS_YES);
+      //  System.out.println(test);
+
+        AttributeSet set =
+                AttributeSet.of(Attribute.TRACKTYPE_GRADE1, Attribute.HIGHWAY_TRACK);
+        assertEquals("{highway=track,tracktype=grade1}",
+                set.toString());
     }
 }

@@ -10,7 +10,7 @@ public final class Q28_4 {
      * @param i input integer
      * @return (int) value in Q28.4 representation for i (shifted by 4 decimal places left)
      */
-    static public int ofInt(int i){
+    static int ofInt(int i){
         i = i << 4;
         return i;
     }
@@ -20,7 +20,7 @@ public final class Q28_4 {
      * @param q28_4
      * @return (double) Q28.4 representation
      */
-    static public double asDouble(int q28_4){
+    static double asDouble(int q28_4){
         //divise le int par 2^4 pour obtenir le nombre a virgule dans notre convention choisie (virgule avant 4eme bits)
         return Math.scalb(q28_4, -4);
     }
@@ -30,7 +30,7 @@ public final class Q28_4 {
      * @param q28_4
      * @return (float) Q28.4 representation
      */
-    static public float asFloat(int q28_4){
+    static float asFloat(int q28_4){
         return Math.scalb(q28_4, -4);
     }
 }
