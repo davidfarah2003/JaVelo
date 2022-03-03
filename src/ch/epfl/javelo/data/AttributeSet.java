@@ -21,7 +21,7 @@ public record AttributeSet(long bits) {
     public static AttributeSet of(Attribute... attributes){
         long bits = 0;
         for (Attribute attribute : attributes){
-            Preconditions.checkArgument(attribute.ordinal() <= 64);
+          //  Preconditions.checkArgument(attribute.ordinal() <= 64);
             bits |= (1L << attribute.ordinal());      // | is the bit-wise OR operator (|= equivalent to += for bits)
         }
         return new AttributeSet(bits);

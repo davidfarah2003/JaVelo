@@ -32,6 +32,7 @@ class BitsTest {
     @Test
     void extractUnsigned() {
         int x = 0b01110100110;
+       assertEquals(0b011, Bits.extractUnsigned(x,1,3));
         assertEquals(0b1001, Bits.extractUnsigned(x, 2, 4));
         assertEquals(0b111, Bits.extractUnsigned(x, 7, 3));
         assertEquals(0, Bits.extractUnsigned(x, 31, 1));

@@ -29,18 +29,17 @@ class FunctionsTest {
     @Test
     void sampledWorksForSampleValues(){
         float[] samples = {(float) 45.76, (float) 45.50, (float) 78.90};
-        DoubleUnaryOperator test = Functions.sampled(samples, 2.0);
-        double value = test.applyAsDouble(2.0);
-        assertEquals(samples[2], value, 1e-4);
+        DoubleUnaryOperator test = Functions.sampled(samples, 100);
+        double value = test.applyAsDouble(50.0);
+        assertEquals(samples[1], value, 1e-4);
 
     }
 
     @Test
     void sampledWorksForNonSampleValues(){
-        float[] samples = {(float) 3, (float) 1, (float) 4};
-        DoubleUnaryOperator test = Functions.sampled(samples, 2.0);
-        System.out.println(test.applyAsDouble(0.5));
-        assertEquals(2, test.applyAsDouble(0.5),1e-4);
+        float[] samples = {(float) 4, (float) 45.67, (float) 30.5};
+        DoubleUnaryOperator test = Functions.sampled(samples, 20.0);
+        assertEquals(0.8*45.67 + 0.2 * 4, test.applyAsDouble(8.0),1e-4);
 
     }
 

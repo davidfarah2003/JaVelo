@@ -28,6 +28,7 @@ public final class Math2 {
         return Math.fma(slope, x, y0);
     }
 
+
     /**
      *
      * @param min : lower bound
