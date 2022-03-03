@@ -38,8 +38,8 @@ class FunctionsTest {
     @Test
     void sampledWorksForNonSampleValues(){
         float[] samples = {(float) 4, (float) 45.67, (float) 30.5};
-        DoubleUnaryOperator test = Functions.sampled(samples, 20.0);
-        assertEquals(0.8*45.67 + 0.2 * 4, test.applyAsDouble(8.0),1e-4);
+        DoubleUnaryOperator test = Functions.sampled(samples, 25);
+        assertEquals(567, test.applyAsDouble(10),1e-4);
 
     }
 

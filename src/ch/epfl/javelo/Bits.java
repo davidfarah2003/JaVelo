@@ -18,8 +18,8 @@ public final class Bits {
             return 0;
         }
 
-        value =  value << 31-(start+length-1); //shift left to make start the first bit. working with indexes
-        value = value >> 31 - (length - 1); //shift right (signed) . value >> 31 - (length - 1) // You are correct
+        value =  value << 32 - (start+length); //shift left to make start the first bit. working with indexes
+        value = value >> 32 - length; //shift right (signed) . value >> 31 - (length - 1) // You are correct
         return value;
     }
 
@@ -37,8 +37,8 @@ public final class Bits {
             return 0;
         }
 
-        value =  value << 31-(start+length-1); //shift left to make start the first bit.
-        value = value >>> 31 - (length - 1);
+        value =  value << 32-(start+length); //shift left to make start the first bit.
+        value = value >>> 32 - length;
         return value;
     }
 

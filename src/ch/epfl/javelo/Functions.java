@@ -45,23 +45,19 @@ public final class Functions {
 
                 //get the 2 sample indexes that are closest to the operand
                 double operand_index = operand / intervalLength;
-                System.out.println(operand_index);
                 int lower_index = (int) Math.floor(operand_index);
-                System.out.println(lower_index);
                 int upper_index = (int) Math.ceil(operand_index);
-                System.out.println(upper_index);
+
 
                 //x values of the samples
                 double x_lower = lower_index * intervalLength;
-                System.out.println(x_lower);
                 double x_upper = upper_index * intervalLength;
-                System.out.println(x_upper);
+
 
                 //calculating the slope and y-intercept needed of the function needed to compute the y-value of the operand
                 double slope = (samples[upper_index] - samples[lower_index])/(x_upper - x_lower);
-                System.out.println(slope);
                 double y_intercept = samples[upper_index] - slope * x_upper;
-                System.out.println(y_intercept);
+              //  System.out.println(y_intercept);
                 return Math.fma(slope, operand , y_intercept);
             }
 
