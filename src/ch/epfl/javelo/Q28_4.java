@@ -22,6 +22,7 @@ public final class Q28_4 {
      */
     public static double asDouble(int q28_4){
         //divide by 2^4 to obtain the decimal number representation in Q28_4 (decimal point before 4th bit)
+        //Is this correct? What about negative values?
         return Math.scalb(q28_4, -4);
     }
 
