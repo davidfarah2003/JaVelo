@@ -6,7 +6,8 @@ import java.util.StringJoiner;
 
 public record AttributeSet(long bits) {
     /** Constructor
-     * @param bits
+     * Raises IllegalArgumentException if any bit with index larger than the number of attributes is 1
+     * @param bits input bit string representing attributes
      */
     public AttributeSet{
         //check if any bit with index larger than the number of attributes is 1
@@ -21,7 +22,7 @@ public record AttributeSet(long bits) {
     public static AttributeSet of(Attribute... attributes){
         long bits = 0;
         for (Attribute attribute : attributes){
-          //  Preconditions.checkArgument(attribute.ordinal() <= 64);
+            Preconditions.checkArgument(attribute.ordinal() < 64);
             bits |= (1L << attribute.ordinal());      // | is the bit-wise OR operator (|= equivalent to += for bits)
         }
         return new AttributeSet(bits);
@@ -29,7 +30,7 @@ public record AttributeSet(long bits) {
 
 
     /**
-     * @param attribute
+     * @param attribute to check in the set
      * @return a boolean value <code>true</code> if the Attribute set contains a specific attribute or
      * <code>false</code> if not
      */
@@ -38,7 +39,7 @@ public record AttributeSet(long bits) {
     }
 
     /**
-     * @param that
+     * @param that other attribute set to compare with this
      * @return <code>true</code> if the two Attribute sets have common elements and <code>false</code> otherwise
      */
     public boolean intersects(AttributeSet that){
