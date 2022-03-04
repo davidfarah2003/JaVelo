@@ -51,7 +51,7 @@ public final class Math2 {
      * @param max : upper bound
      * @return the value of v restricted to the interval [min, max]
      */
-    static double clamp(double min, double v, double max){
+    public static double clamp(double min, double v, double max){
         Preconditions.checkArgument(min <= max);
         if (v <= min) {
             return min;
