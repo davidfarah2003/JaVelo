@@ -23,7 +23,7 @@ public record GraphNodes(IntBuffer buffer) {
      * @return East coordinate E of the node with id nodeId (CH)
      */
     public double nodeE(int nodeId){
-        int nodeIndex = nodeId*3;
+        int nodeIndex = nodeId*NODE_INTS;
         return Q28_4.asDouble(buffer.get(nodeIndex+OFFSET_E));
     }
 
@@ -32,7 +32,7 @@ public record GraphNodes(IntBuffer buffer) {
      * @return North coordinate N of the node with id nodeId (CH)
      */
     public double nodeN(int nodeId){
-        int nodeIndex = nodeId*3;
+        int nodeIndex = nodeId*NODE_INTS;
         return Q28_4.asDouble(buffer.get(nodeIndex+OFFSET_N));
     }
 
@@ -41,7 +41,7 @@ public record GraphNodes(IntBuffer buffer) {
      * @return the number of edges exiting the node with the given identity
      */
     public int outDegree(int nodeId){
-        int nodeIndex = nodeId*3;
+        int nodeIndex = nodeId*NODE_INTS;
         return Bits.extractUnsigned(buffer.get(nodeIndex+OFFSET_OUT_EDGES), 27, 4);
     }
 
@@ -52,7 +52,7 @@ public record GraphNodes(IntBuffer buffer) {
      */
     public int edgeId(int nodeId, int edgeIndex){
         assert 0 <= edgeIndex && edgeIndex < outDegree(nodeId);
-        int nodeIndex = nodeId*3;
+        int nodeIndex = nodeId*NODE_INTS;
         return Bits.extractUnsigned(buffer.get(nodeIndex+OFFSET_OUT_EDGES), 0, 28) + edgeIndex;
     }
 }
