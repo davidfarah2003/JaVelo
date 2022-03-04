@@ -68,7 +68,6 @@ public record PointWebMercator(double x, double y) {
      * @return a point in the Swiss coordinates system if it exists
      */
     public PointCh toPointCh() {
-        // Getting the Swiss coordinates of the point
         double e = Ch1903.e(lon(), lat());
         System.out.println(e);
         double n = Ch1903.n(lon(), lat());

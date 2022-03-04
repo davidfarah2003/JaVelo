@@ -17,7 +17,6 @@ public final class WebMercator {
     }
 
     /**
-     *
      * @param lat (in radians)
      * @return the y-coordinate (in the Web Mercator system) of the projection of the point of interest (WGS84 -> WebMercator)
      */

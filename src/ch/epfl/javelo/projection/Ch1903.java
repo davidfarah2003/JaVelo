@@ -54,7 +54,6 @@ public final class Ch1903 {
      * @param n north coordinates
      * @return longitude in the WGS84 system (RAD)
      */
-
     public static double lon(double e, double n){
         double x = pow(10, -6) * (e - 2_600_000);
         double y = pow(10, -6) * (n - 1_200_000);
@@ -69,7 +68,6 @@ public final class Ch1903 {
     }
 
     /**
-     *
      * @param e east coordinates
      * @param n north coordinates
      * @return latitude in the WGS84 system (RAD)

@@ -16,18 +16,18 @@ public final class Q28_4 {
     }
 
     /**
-     * Converts the integer to Q28.4 representation
-     * @param q28_4
+     * Converts the integer to Q28.4 representation as double
+     * @param q28_4 integer input
      * @return (double) Q28.4 representation
      */
     static double asDouble(int q28_4){
-        //divise le int par 2^4 pour obtenir le nombre a virgule dans notre convention choisie (virgule avant 4eme bits)
+        //divide by 2^4 to obtain the decimal number representation in Q28_4 (decimal point before 4th bit)
         return Math.scalb(q28_4, -4);
     }
 
     /**
-     * Converts the integer to Q28.4 representation
-     * @param q28_4
+     * Converts the integer to Q28.4 representation as float
+     * @param q28_4 integer input
      * @return (float) Q28.4 representation
      */
     static float asFloat(int q28_4){

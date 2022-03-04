@@ -2,7 +2,7 @@ package ch.epfl.javelo;
 
 public final class Math2 {
 
-    private Math2(){};
+    private Math2(){}
 
     /**
      * @param x : integer to be divided
@@ -15,7 +15,6 @@ public final class Math2 {
     }
 
     /**
-     *
      * @param y0 : y-coordinate of the first point belonging to the line
      * @param y1 : y-coordinate of the second point belonging to the line
      * @param x : x-coordinate of the point of interest
@@ -30,7 +29,6 @@ public final class Math2 {
 
 
     /**
-     *
      * @param min : lower bound
      * @param v : value of interest
      * @param max : upper bound
@@ -48,7 +46,6 @@ public final class Math2 {
     }
 
     /**
-     *
      * @param min :lower bound
      * @param v : value of interest
      * @param max : upper bound

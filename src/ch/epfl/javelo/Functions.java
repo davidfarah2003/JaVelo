@@ -1,8 +1,5 @@
 package ch.epfl.javelo;
-
-import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.Function;
 
 /**
  * This class implements multiple mathematical functions
@@ -11,25 +8,34 @@ public final class Functions {
     private Functions() {}
 
     /**
-     *
      * @param y : constant which is the output of the function to be returned
-     * @return a constant function
+     * @return a constant function with value y (DoubleUnaryOperator)
      */
     public static DoubleUnaryOperator constant(double y) {
-        return (x) -> y;
+        return x -> y;
     }
 
+    /**
+     * @param samples coordinate samples (y)
+     * @param xMax higher bound x
+     * @return function obtained by linear interpolation between regularly spaced samples covering the range from 0 to xMax
+     */
     public static DoubleUnaryOperator sampled(float[] samples, double xMax){
         Preconditions.checkArgument(samples.length >= 2 && xMax > 0);
         return new Sampled(samples, xMax);
     }
 
-    //Make Sampled a record (more concise)
+    /**
+     * Class implementing DoubleUnaryOperator, function obtained by linear interpolation between regularly
+     * spaced samples covering the range from 0 to xMax
+     */
     private static final record Sampled(float[] samples, double xMax) implements DoubleUnaryOperator{
+        /**
+         * @param operand x value for which we want to find the y value
+         * @return y value of the operand
+         */
         @Override
         public double applyAsDouble(double operand) {
-            //Not using interpolation method? (I assume because (0,y0),(1,y1) ?)
-
             if (operand > xMax) {
                 return samples[samples.length - 1];
             } else if (operand < 0) {
@@ -42,22 +48,19 @@ public final class Functions {
                     return samples[(int)(operand/ intervalLength)];
                 }
 
-
                 //get the 2 sample indexes that are closest to the operand
                 double operand_index = operand / intervalLength;
                 int lower_index = (int) Math.floor(operand_index);
                 int upper_index = (int) Math.ceil(operand_index);
 
-
                 //x values of the samples
                 double x_lower = lower_index * intervalLength;
                 double x_upper = upper_index * intervalLength;
 
-
                 //calculating the slope and y-intercept needed of the function needed to compute the y-value of the operand
                 double slope = (samples[upper_index] - samples[lower_index])/(x_upper - x_lower);
                 double y_intercept = samples[upper_index] - slope * x_upper;
-              //  System.out.println(y_intercept);
+
                 return Math.fma(slope, operand , y_intercept);
             }
 
