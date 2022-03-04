@@ -5,7 +5,7 @@ public final class Bits {
 
     /**
      * @param value initial integer value
-     * @param start start bit index
+     * @param start start bit index (right)
      * @param length length of the extracted bit string
      * @return (int) the resulting signed bit string
      */
@@ -19,7 +19,7 @@ public final class Bits {
 
     /**
      * @param value initial integer value
-     * @param start start bit index
+     * @param start start bit index (right)
      * @param length length of the extracted bit string
      * @return (int) the resulting unsigned bit string
      */
