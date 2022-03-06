@@ -36,6 +36,21 @@ public record GraphSectors (ByteBuffer buffer){
         double lower_right_x =  center.e() - SwissBounds.MIN_E + 2*distance;
         double lower_right_y =  center.n() - SwissBounds.MIN_N - 2*distance;
 
+        if (upper_left_x < 0){
+            upper_left_x = 0;
+        }
+        if (lower_right_y < 0){
+            lower_right_y = 0;
+        }
+
+        if (upper_left_y > SwissBounds.HEIGHT){
+            upper_left_y = SwissBounds.HEIGHT;
+        }
+
+        if (lower_right_x > SwissBounds.WIDTH){
+            lower_right_x = SwissBounds.WIDTH;
+        }
+
 
         // defining some indexes alon the horizontal and vertical axes which will be
         // needed to compute the actual index of every sector
@@ -50,7 +65,10 @@ public record GraphSectors (ByteBuffer buffer){
         // which intersect with square centered at the input (PointCh)
         for (int i = xMin; i <= xMax; i++){
             for (int j = yMin; j <= yMax; j++){
+               // System.out.println(i);
+              //  System.out.println(j);
                 indexes.add(128 * j + i);
+                System.out.println(128 * j + i);
             }
         }
 
