@@ -41,6 +41,5 @@ public class GraphSectorsTest {
         List<GraphSectors.Sector> list =  sector.sectorsInArea(point, distance);
         System.out.println(list.get(1).startNodeId());
         System.out.println(list.get(1).endNodeId());
-
     }
 }
