@@ -124,6 +124,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
         int i = 1;
         int idCounter = 1;
+        int bitCounter = 0;
 
         int profileId = profileIds.get(edgeId);
         switch (Bits.extractUnsigned(profileId, 30, 2)){
@@ -136,20 +137,23 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 //reread consignes for this
                 while(i <= nbSamples){
                     short elevationShort = elevations.get(idFirstSample+idCounter);
-                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 0,8)));
-                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 8,8)));
-                    i+= 2;
+                    while(bitCounter < 16 && i <= nbSamples){
+                        profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,8)));
+                        bitCounter += 8;
+                        i+= 1;
+                    }
+                    bitCounter = 0;
                     idCounter++;
                 }
                 break;
             case 3:
                 while(i <= nbSamples){
                     short elevationShort = elevations.get(idFirstSample+idCounter);
-                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 0,4)));
-                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 4,4)));
-                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 8,4)));
-                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 12,4)));
-                    i+= 4;
+                    while(bitCounter < 16 && i <= nbSamples){
+                        profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,4)));
+                        bitCounter += 4;
+                        i+= 1;
+                    }
                     idCounter++;
                 }
                 break;
