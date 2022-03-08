@@ -114,7 +114,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         int lengthIndex = EDGE_INTS*edgeId + OFFSET_LENGTH;
 
         int profileId = profileIds.get(edgeId);
-        int nbSamples = 1 + Math2.ceilDiv(Q28_4.ofInt(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex))), Q28_4.ofInt(2));
+        int nbSamples = 1 + Math2.ceilDiv(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex)), Q28_4.ofInt(2));
         int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
 
         float[] profileSamples = new float[nbSamples];
@@ -160,6 +160,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      */
     public int attributesIndex(int edgeId){
         int attributeSetIndex = EDGE_INTS*edgeId + OFFSET_IDS_OSM;
-        return edgesBuffer.getShort(attributeSetIndex);
+        return Short.toUnsignedInt(edgesBuffer.getShort(attributeSetIndex));
     }
 }
