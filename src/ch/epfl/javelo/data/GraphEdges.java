@@ -154,6 +154,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                         bitCounter += 4;
                         i+= 1;
                     }
+                    bitCounter = 0;
                     idCounter++;
                 }
                 break;
