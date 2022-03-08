@@ -138,7 +138,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 while(i <= nbSamples){
                     short elevationShort = elevations.get(idFirstSample+idCounter);
                     while(bitCounter < 16 && i <= nbSamples){
-                        profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,8)));
+                        profileSamples.add(profileSamples.get(i-1)+ Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,8)));
                         bitCounter += 8;
                         i+= 1;
                     }
@@ -150,7 +150,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 while(i <= nbSamples){
                     short elevationShort = elevations.get(idFirstSample+idCounter);
                     while(bitCounter < 16 && i <= nbSamples){
-                        profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,4)));
+                        profileSamples.add(profileSamples.get(i-1) + Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,4)));
                         bitCounter += 4;
                         i+= 1;
                     }
@@ -162,7 +162,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
        if (isInverted(edgeId)){
            Collections.reverse(profileSamples);
        }
-        return toArray(profileSamples);
+
+       return toArray(profileSamples);
 
     }
 
