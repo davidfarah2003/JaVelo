@@ -117,16 +117,15 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         int nbSamples = 1 + Math2.ceilDiv(Q28_4.ofInt(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex))), Q28_4.ofInt(2));
         int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
 
-        ArrayList<Float> profileSamples = new ArrayList<>();
-        profileSamples.add(Q28_4.asFloat(elevations.get(idFirstSample)));
+        float[] profileSamples = new float[nbSamples];
+        profileSamples[0] = Q28_4.asFloat(elevations.get(idFirstSample));
 
-        int i = 1;
+
         int idCounter = 1;
         switch (Bits.extractUnsigned(profileId, 30, 2)){
             case 1:
-                while(i <= nbSamples){
-                    profileSamples.add(Q28_4.asFloat(elevations.get(idFirstSample+i)));
-                    i++;
+                for (int i = 0; i < nbSamples; i++) {
+                    profileSamples[i] = Q28_4.asFloat(elevations.get(idFirstSample + i));
                 }
                 break;
             case 2:
