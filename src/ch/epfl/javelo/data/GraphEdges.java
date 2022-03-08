@@ -116,7 +116,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         }
 
         int lengthIndex = EDGE_INTS*edgeId + OFFSET_LENGTH;
-        int nbSamples = 1 + Math2.ceilDiv(Q28_4.ofInt(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex))), Q28_4.ofInt(2));
+        int nbSamples = 1 + Math2.ceilDiv(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex)), Q28_4.ofInt(2));
 
         ArrayList<Float> profileSamples = new ArrayList<>();
         int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
@@ -147,9 +147,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 }
                 break;
             case 3:
-                while(i <= nbSamples){
+                while(i < nbSamples){
                     short elevationShort = elevations.get(idFirstSample+idCounter);
-                    while(bitCounter < 16 && i <= nbSamples){
+                    while(bitCounter < 16 && i < nbSamples){
                         profileSamples.add(profileSamples.get(i-1) + Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,4)));
                         bitCounter += 4;
                         i+= 1;
