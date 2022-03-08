@@ -1,6 +1,7 @@
 package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Bits;
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Q28_4;
 
 import java.nio.ByteBuffer;
@@ -74,9 +75,11 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
             return new float[] {};
 
         int profileId = profileIds.get(edgeId);
-        int nbSamples =(int)(1 + Math.ceil(length(edgeId)/2));
+        int lengthIndex = EDGE_INTS*edgeId + OFFSET_LENGTH;
+        edgesBuffer.getShort(lengthIndex);
+        int nbSamples = 1 + Math2.ceilDiv(Q28_4.ofInt(edgesBuffer.getShort(lengthIndex)), Q28_4.ofInt(2));//(int)(1 + Math.ceil(length(edgeId)/2));
         int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
-        double distanceSamples = length(edgeId)/nbSamples;
+        double distanceSamples = length(edgeId)/(nbSamples - 1);
 
         float[] profileSamples = new float[nbSamples];
 
