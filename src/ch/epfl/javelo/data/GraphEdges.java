@@ -43,7 +43,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     public double length(int edgeId){
         //take care for neg values (ask)
         int lengthIndex = EDGE_INTS*edgeId + OFFSET_LENGTH;
-        return Q28_4.asDouble(edgesBuffer.getShort(lengthIndex));
+        return Q28_4.asDouble(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex)));
     }
 
     /**
@@ -52,7 +52,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      */
     public double elevationGain(int edgeId){
         int elevationIndex = EDGE_INTS*edgeId + OFFSET_ELEVATION_GAIN;
-        return Q28_4.asDouble((edgesBuffer.getShort(elevationIndex)));
+        return Q28_4.asDouble(Short.toUnsignedInt(edgesBuffer.getShort(elevationIndex)));
     }
 
     /**
