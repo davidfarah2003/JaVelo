@@ -51,7 +51,6 @@ public record GraphNodes(IntBuffer buffer) {
      * @return returns the identity of the edgeIndex-th edge outgoing from the node with identity nodeId
      */
     public int edgeId(int nodeId, int edgeIndex){
-        // I think there's smthg wrong (to be checked)
         assert 0 <= edgeIndex && edgeIndex < outDegree(nodeId);
         int nodeIndex = nodeId*NODE_INTS;
         return Bits.extractUnsigned(buffer.get(nodeIndex+OFFSET_OUT_EDGES), 0, 28) + edgeIndex;
