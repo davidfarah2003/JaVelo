@@ -8,13 +8,15 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
     private static final int OFFSET_EDGE_DIRECTION_AND_ID = 0;
-    private static final int OFFSET_LENGTH = OFFSET_EDGE_DIRECTION_AND_ID + 4;
-    private static final int OFFSET_ELEVATION_GAIN = OFFSET_LENGTH + 2;
-    private static final int OFFSET_IDS_OSM = OFFSET_ELEVATION_GAIN + 2;
-    private static final int EDGE_INTS = OFFSET_IDS_OSM + 2;
+    private static final int OFFSET_LENGTH = OFFSET_EDGE_DIRECTION_AND_ID + 4; //4
+    private static final int OFFSET_ELEVATION_GAIN = OFFSET_LENGTH + 2; //6
+    private static final int OFFSET_IDS_OSM = OFFSET_ELEVATION_GAIN + 2; //8
+    private static final int EDGE_INTS = OFFSET_IDS_OSM + 2; // 10
 
     //edgesBuffer contains in order:    an integer of type int (direction of the edge and identity of the destination node),
     //                                  an integer of type short (length of the edge),
@@ -109,23 +111,25 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         //For each case of compression create a float array containing the elevation values (samples), in Q28_4 representation (use Q28_4.asFloat)
         //return the array of samples
 
-        if(!hasProfile(edgeId))
-            return new float[] {};
+        if(!hasProfile(edgeId)) {
+            return new float[]{};
+        }
+
         int lengthIndex = EDGE_INTS*edgeId + OFFSET_LENGTH;
+        int nbSamples = 1 + Math2.ceilDiv(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex)), Q28_4.ofInt(2));
+
+        ArrayList<Float> profileSamples = new ArrayList<>();
+        int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
+        profileSamples.add(Q28_4.asFloat(elevations.get(idFirstSample)));
+
+        int i = 1;
+        int idCounter = 1;
 
         int profileId = profileIds.get(edgeId);
-        int nbSamples = 1 + Math2.ceilDiv(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex)), Q28_4.ofInt(2));
-        int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
-
-        float[] profileSamples = new float[nbSamples];
-        profileSamples[0] = Q28_4.asFloat(elevations.get(idFirstSample));
-
-
-        int idCounter = 1;
         switch (Bits.extractUnsigned(profileId, 30, 2)){
             case 1:
-                for (int i = 0; i < nbSamples; i++) {
-                    profileSamples[i] = Q28_4.asFloat(elevations.get(idFirstSample + i));
+                for (int j = 1; j < nbSamples; j++) {
+                    profileSamples.add(Q28_4.asFloat(elevations.get(idFirstSample + j)));
                 }
                 break;
             case 2:
@@ -141,16 +145,29 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
             case 3:
                 while(i <= nbSamples){
                     short elevationShort = elevations.get(idFirstSample+idCounter);
-                    float elevation1 = Q28_4.asFloat(Bits.extractSigned(elevationShort, 0,4));
-                    float elevation2 = Q28_4.asFloat(Bits.extractSigned(elevationShort, 4,4));
-                    float elevation3 = Q28_4.asFloat(Bits.extractSigned(elevationShort, 8,4));
-                    float elevation4 = Q28_4.asFloat(Bits.extractSigned(elevationShort, 12,4));
-                    i+= 2;
+                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 0,4)));
+                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 4,4)));
+                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 8,4)));
+                    profileSamples.add(Q28_4.asFloat(Bits.extractSigned(elevationShort, 12,4)));
+                    i+= 4;
                     idCounter++;
                 }
                 break;
         }
-        return new float[] {};
+
+       if (isInverted(edgeId)){
+           Collections.reverse(profileSamples);
+       }
+        return toArray(profileSamples);
+
+    }
+
+    private float[] toArray(ArrayList<Float> list){
+        float[] toArray = new float[list.size()];
+        for (int z = 0; z < list.size(); z++){
+            toArray[z] = list.get(z);
+        }
+        return toArray;
     }
 
     /**
