@@ -7,14 +7,23 @@ import ch.epfl.javelo.Q28_4;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
 
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
-    //Repartition (in bytes) of edgesBuffer
     private static final int OFFSET_EDGE_DIRECTION_AND_ID = 0;
     private static final int OFFSET_LENGTH = OFFSET_EDGE_DIRECTION_AND_ID + 4;
     private static final int OFFSET_ELEVATION_GAIN = OFFSET_LENGTH + 2;
     private static final int OFFSET_IDS_OSM = OFFSET_ELEVATION_GAIN + 2;
     private static final int EDGE_INTS = OFFSET_IDS_OSM + 2;
+
+    //edgesBuffer contains in order:    an integer of type int (direction of the edge and identity of the destination node),
+    //                                  an integer of type short (length of the edge),
+    //                                  an integer of type short (total positive elevation) and
+    //                                  an integer of type short (identity of the set of OSM attributes)
+
+    //profileIds contains, for each edge of the graph, a single integer of type int (type of the profile and index of the first sample)
+
+    //elevations : the buffer memory containing all the samples of the profiles, compressed or not
 
 
     /**
@@ -70,7 +79,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * which is empty if the edge does not have a profile
      * ask about this method. not very clear
      */
-    public float[] profileSamples(int edgeId){
+/*    public float[] profileSamples(int edgeId){
         if(!hasProfile(edgeId))
             return new float[] {};
 
@@ -85,13 +94,40 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
         switch (Bits.extractUnsigned(profileId, 30, 2)){
             case 1:
-
                 break;
             case 2:
                 break;
             case 3:
                 break;
 }
+        return new float[] {};
+    }*/
+
+    public float[] profileSamples(int edgeId){
+        //return an empty array if the edge does not have a profile
+        //determine the number of samples of the profile of the edge according to its length
+        //For each case of compression create a float array containing the elevation values (samples), in Q28_4 representation (use Q28_4.asFloat)
+        //return the array of samples
+
+        if(!hasProfile(edgeId))
+            return new float[] {};
+        int lengthIndex = EDGE_INTS*edgeId + OFFSET_LENGTH;
+
+        int profileId = profileIds.get(edgeId);
+        int nbSamples = 1 + Math2.ceilDiv(Q28_4.ofInt(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex))), Q28_4.ofInt(2));
+        int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
+
+        ArrayList<Float> profileSamples = new ArrayList<>();
+        profileSamples.add(Q28_4.asFloat(elevations.get(idFirstSample)));
+
+        switch (Bits.extractUnsigned(profileId, 30, 2)){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+        }
         return new float[] {};
     }
 
