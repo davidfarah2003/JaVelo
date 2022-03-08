@@ -41,7 +41,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return the length, in meters, of the given identity edge
      */
     public double length(int edgeId){
-        //take care for neg values (ask)
         int lengthIndex = EDGE_INTS*edgeId + OFFSET_LENGTH;
         return Q28_4.asDouble(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex)));
     }

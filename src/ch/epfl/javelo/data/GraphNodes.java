@@ -15,7 +15,7 @@ public record GraphNodes(IntBuffer buffer) {
      * @return total number of nodes
      */
     public int count() {
-        return buffer.capacity()/3;
+        return buffer.capacity()/NODE_INTS;
     }
 
     /**
@@ -23,8 +23,8 @@ public record GraphNodes(IntBuffer buffer) {
      * @return East coordinate E of the node with id nodeId (CH)
      */
     public double nodeE(int nodeId){
-        int nodeIndex = nodeId*NODE_INTS;
-        return Q28_4.asDouble(buffer.get(nodeIndex+OFFSET_E));
+        int nodeIndex = nodeId*NODE_INTS + OFFSET_E;
+        return Q28_4.asDouble(buffer.get(nodeIndex));
     }
 
     /**
@@ -51,6 +51,7 @@ public record GraphNodes(IntBuffer buffer) {
      * @return returns the identity of the edgeIndex-th edge outgoing from the node with identity nodeId
      */
     public int edgeId(int nodeId, int edgeIndex){
+        // I think there's smthg wrong (to be checked)
         assert 0 <= edgeIndex && edgeIndex < outDegree(nodeId);
         int nodeIndex = nodeId*NODE_INTS;
         return Bits.extractUnsigned(buffer.get(nodeIndex+OFFSET_OUT_EDGES), 0, 28) + edgeIndex;
