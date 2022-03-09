@@ -81,29 +81,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * which is empty if the edge does not have a profile
      * ask about this method. not very clear
      */
-/*    public float[] profileSamples(int edgeId){
-        if(!hasProfile(edgeId))
-            return new float[] {};
-
-        int profileId = profileIds.get(edgeId);
-        int lengthIndex = EDGE_INTS*edgeId + OFFSET_LENGTH;
-        edgesBuffer.getShort(lengthIndex);
-        int nbSamples = 1 + Math2.ceilDiv(Q28_4.ofInt(edgesBuffer.getShort(lengthIndex)), Q28_4.ofInt(2));//(int)(1 + Math.ceil(length(edgeId)/2));
-        int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
-        double distanceSamples = length(edgeId)/(nbSamples - 1);
-
-        float[] profileSamples = new float[nbSamples];
-
-        switch (Bits.extractUnsigned(profileId, 30, 2)){
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-}
-        return new float[] {};
-    }*/
 
     public float[] profileSamples(int edgeId){
         //return an empty array if the edge does not have a profile
@@ -130,14 +107,14 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         switch (Bits.extractUnsigned(profileId, 30, 2)){
             case 1:
                 for (int j = 1; j < nbSamples; j++) {
-                    profileSamples.add(Q28_4.asFloat(elevations.get(idFirstSample + j)));
+                    profileSamples.add(Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idFirstSample + j))));
                 }
                 break;
             case 2:
+                bitCounter = 8;
                 while(i < nbSamples){
-                    bitCounter = 8;
                     short elevationShort = elevations.get(idFirstSample+idCounter);
-                    while(bitCounter > 0 && i < nbSamples){
+                    while(bitCounter >= 0 && i < nbSamples){
                         profileSamples.add(profileSamples.get(i-1)+ Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,8)));
                         bitCounter -= 8;
                         i+= 1;
