@@ -52,7 +52,7 @@ public record GraphSectors (ByteBuffer buffer){
         }
 
 
-        // defining some indexes alon the horizontal and vertical axes which will be
+        // defining some indexes along the horizontal and vertical axes which will be
         // needed to compute the actual index of every sector
         int xMin = (int) Math.floor(upper_left_x / 2730);
         int yMin = (int) Math.floor(lower_right_y / 1730);
@@ -65,10 +65,7 @@ public record GraphSectors (ByteBuffer buffer){
         // which intersect with square centered at the input (PointCh)
         for (int i = xMin; i <= xMax; i++){
             for (int j = yMin; j <= yMax; j++){
-               // System.out.println(i);
-              //  System.out.println(j);
                 indexes.add(128 * j + i);
-                System.out.println(128 * j + i);
             }
         }
 
@@ -87,6 +84,5 @@ public record GraphSectors (ByteBuffer buffer){
     /**
      * This nested record represents a sector
      */
-    public record Sector(int startNodeId, int endNodeId){
-    }
+    public record Sector(int startNodeId, int endNodeId){}
 }
