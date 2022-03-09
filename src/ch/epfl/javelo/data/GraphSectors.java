@@ -36,6 +36,8 @@ public record GraphSectors (ByteBuffer buffer){
         double lower_right_x =  center.e() - SwissBounds.MIN_E + 2*distance;
         double lower_right_y =  center.n() - SwissBounds.MIN_N - 2*distance;
 
+
+        // if the bounds are exceeded, taking into the account the extremes of she Swiss Coordinates
         if (upper_left_x < 0){
             upper_left_x = 0;
         }
