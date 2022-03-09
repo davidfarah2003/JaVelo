@@ -124,7 +124,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
         int i = 1;
         int idCounter = 1;
-        int bitCounter = 0;
+        int bitCounter;
 
         int profileId = profileIds.get(edgeId);
         switch (Bits.extractUnsigned(profileId, 30, 2)){
@@ -134,27 +134,28 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 }
                 break;
             case 2:
-                //reread consignes for this
-                while(i <= nbSamples){
+                while(i < nbSamples){
+                    bitCounter = 8;
                     short elevationShort = elevations.get(idFirstSample+idCounter);
-                    while(bitCounter < 16 && i <= nbSamples){
+                    while(bitCounter > 0 && i < nbSamples){
                         profileSamples.add(profileSamples.get(i-1)+ Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,8)));
-                        bitCounter += 8;
+                        bitCounter -= 8;
                         i+= 1;
                     }
-                    bitCounter = 0;
+                    bitCounter = 8;
                     idCounter++;
                 }
                 break;
             case 3:
+                bitCounter = 12;
                 while(i < nbSamples){
                     short elevationShort = elevations.get(idFirstSample+idCounter);
-                    while(bitCounter < 16 && i < nbSamples){
+                    while(bitCounter >= 0 && i < nbSamples){
                         profileSamples.add(profileSamples.get(i-1) + Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,4)));
-                        bitCounter += 4;
+                        bitCounter -= 4;
                         i+= 1;
                     }
-                    bitCounter = 0;
+                    bitCounter = 12;
                     idCounter++;
                 }
                 break;
