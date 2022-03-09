@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -81,12 +82,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * which is empty if the edge does not have a profile
      * ask about this method. not very clear
      */
-
     public float[] profileSamples(int edgeId){
-        //return an empty array if the edge does not have a profile
-        //determine the number of samples of the profile of the edge according to its length
-        //For each case of compression create a float array containing the elevation values (samples), in Q28_4 representation (use Q28_4.asFloat)
-        //return the array of samples
 
         if(!hasProfile(edgeId)) {
             return new float[]{};
@@ -99,43 +95,15 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
         profileSamples.add(Q28_4.asFloat(elevations.get(idFirstSample)));
 
-        int i = 1;
-        int idCounter = 1;
-        int bitCounter;
-
         int profileId = profileIds.get(edgeId);
         switch (Bits.extractUnsigned(profileId, 30, 2)){
-            case 1:
-                for (int j = 1; j < nbSamples; j++) {
-                    profileSamples.add(Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idFirstSample + j))));
-                }
-                break;
-            case 2:
-                bitCounter = 8;
-                while(i < nbSamples){
-                    short elevationShort = elevations.get(idFirstSample+idCounter);
-                    while(bitCounter >= 0 && i < nbSamples){
-                        profileSamples.add(profileSamples.get(i-1)+ Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,8)));
-                        bitCounter -= 8;
-                        i+= 1;
-                    }
-                    bitCounter = 8;
-                    idCounter++;
-                }
-                break;
-            case 3:
-                bitCounter = 12;
-                while(i < nbSamples){
-                    short elevationShort = elevations.get(idFirstSample+idCounter);
-                    while(bitCounter >= 0 && i < nbSamples){
-                        profileSamples.add(profileSamples.get(i-1) + Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,4)));
-                        bitCounter -= 4;
-                        i+= 1;
-                    }
-                    bitCounter = 12;
-                    idCounter++;
-                }
-                break;
+            case 1 -> {
+                for (int j = 1; j < nbSamples; j++) {profileSamples.add(Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idFirstSample + j))));}
+            }
+
+            case 2 -> updateArrayFromCompressed(8, nbSamples, idFirstSample, profileSamples);
+
+            case 3 -> updateArrayFromCompressed(4, nbSamples, idFirstSample, profileSamples);
         }
 
        if (isInverted(edgeId)){
@@ -143,15 +111,41 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
        }
 
        return toArray(profileSamples);
-
     }
 
+    /**
+     * @param list Arraylist input
+     * @return float array containing the same elements
+     */
     private float[] toArray(ArrayList<Float> list){
         float[] toArray = new float[list.size()];
         for (int z = 0; z < list.size(); z++){
             toArray[z] = list.get(z);
         }
         return toArray;
+    }
+
+    /**
+     * @param bitsPerValue bits per value in the compressed format
+     * @param nbSamples total number of samples on the edge
+     * @param idFirstSample id of the first sample
+     * @param profileSamples Array that stores the samples (already contains the first one)
+     */
+    private void updateArrayFromCompressed(int bitsPerValue, int nbSamples, int idFirstSample, ArrayList<Float> profileSamples){
+        int i = 1;
+        int idCounter = 1;
+        int bitCounter = 16 - bitsPerValue;
+
+        while(i < nbSamples){
+            short elevationShort = elevations.get(idFirstSample+idCounter);
+            while(bitCounter >= 0 && i < nbSamples){
+                profileSamples.add(profileSamples.get(i-1)+ Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter, bitsPerValue)));
+                bitCounter -= bitsPerValue;
+                i+= 1;
+            }
+            bitCounter = 16 - bitsPerValue;
+            idCounter++;
+        }
     }
 
     /**
