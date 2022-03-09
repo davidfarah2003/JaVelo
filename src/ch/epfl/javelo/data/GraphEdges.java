@@ -137,7 +137,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 while(i < nbSamples){
                     bitCounter = 8;
                     short elevationShort = elevations.get(idFirstSample+idCounter);
-                    while(bitCounter > 0 && i < nbSamples){
+                    while(bitCounter >= 0 && i < nbSamples){
                         profileSamples.add(profileSamples.get(i-1)+ Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter,8)));
                         bitCounter -= 8;
                         i+= 1;
