@@ -29,6 +29,9 @@ public record GraphSectors (ByteBuffer buffer){
      * @return a list of sectors in area of the point entered as in input
      */
     public List<Sector> sectorsInArea(PointCh center, double distance){
+        double sectorLength = 1730;
+        double sectorWidth = 2730;
+
 
         // getting the coordinates of the summits of the square which defines the range
         double upper_left_x =   center.e() - SwissBounds.MIN_E - 2*distance;
@@ -54,10 +57,10 @@ public record GraphSectors (ByteBuffer buffer){
 
         // defining some indexes along the horizontal and vertical axes which will be
         // needed to compute the actual index of every sector
-        int xMin = (int) Math.floor(upper_left_x / 2730);
-        int yMin = (int) Math.floor(lower_right_y / 1730);
-        int xMax = (int) Math.floor(lower_right_x / 2730);
-        int yMax = (int) Math.floor(upper_left_y / 1730);
+        int xMin = (int) Math.floor(upper_left_x / sectorWidth);
+        int yMin = (int) Math.floor(lower_right_y / sectorLength);
+        int xMax = (int) Math.floor(lower_right_x / sectorWidth);
+        int yMax = (int) Math.floor(upper_left_y / sectorLength);
 
 
         ArrayList<Sector> sectorsInArea = new ArrayList<>();
