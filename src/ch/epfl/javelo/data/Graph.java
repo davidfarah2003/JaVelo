@@ -1,9 +1,16 @@
 package ch.epfl.javelo.data;
 
+import ch.epfl.javelo.Functions;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 
@@ -20,8 +27,41 @@ public final class Graph {
      * @throws IOException in the event of an input/output error
      */
     public static Graph loadFrom(Path basePath) throws IOException{
-        return this;
+        ByteBuffer sectorsBuffer, edgesBuffer;
+        ShortBuffer elevationsBuffer;
+        IntBuffer nodesBuffer, profileIdsBuffer;
+        LongBuffer attributesBuffer;
+
+        nodesBuffer = extractBuffer(basePath.resolve("nodes.bin")).asIntBuffer();
+        profileIdsBuffer = extractBuffer(basePath.resolve("profile_ids.bin")).asIntBuffer();
+        sectorsBuffer =  extractBuffer(basePath.resolve("sectors.bin"));
+        edgesBuffer =  extractBuffer(basePath.resolve("edges.bin"));
+        elevationsBuffer =  extractBuffer(basePath.resolve("elevations.bin")).asShortBuffer();
+        attributesBuffer = extractBuffer(basePath.resolve("attributes.bin")).asLongBuffer();
+
+        GraphNodes nodes = new GraphNodes(nodesBuffer);
+        GraphSectors sectors = new GraphSectors(sectorsBuffer);
+        GraphEdges edges = new GraphEdges(edgesBuffer, profileIdsBuffer, elevationsBuffer);
+
+        List<AttributeSet> attributeSets = new ArrayList<>();
+        for(int i = 0; i < attributesBuffer.capacity(); i++){
+            attributeSets.add(new AttributeSet(attributesBuffer.get(i)));
+        }
+
+        return new Graph(nodes, sectors, edges, attributeSets);
     }
+
+    /**
+     * @param pathFile path to the binary file we want ti extract from (Path)
+     * @return extracted buffer from file
+     * @throws IOException in the event of an input/output error
+     */
+    private static ByteBuffer extractBuffer(Path pathFile) throws IOException{
+        try (FileChannel channel = FileChannel.open(pathFile)) {
+            return channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+        }
+    }
+
 
     /**
      * Constructor of the class
@@ -34,14 +74,14 @@ public final class Graph {
         this.nodes = nodes;
         this.sectors = sectors;
         this.edges = edges;
-        this.attributeSets = attributeSets;
+        this.attributeSets = List.copyOf(attributeSets);
     }
 
     /**
      * @return the total number of nodes in the graph
      */
     public int nodeCount(){
-        return 0;
+        return nodes.count();
     }
 
     /**
@@ -49,6 +89,7 @@ public final class Graph {
      * @return the position of the given identity node
      */
     public PointCh nodePoint(int nodeId){
+        return new PointCh(nodes.nodeE(nodeId), nodes.nodeN(nodeId));
     }
 
     /**
@@ -56,7 +97,7 @@ public final class Graph {
      * @return the number of edges leaving the given identity node
      */
     public int nodeOutDegree(int nodeId){
-
+        return nodes.outDegree(nodeId);
     }
 
     /**
@@ -65,7 +106,7 @@ public final class Graph {
      * @return the identity of the edgeIndex-th edge outgoing from the identity node nodeId
      */
     public int nodeOutEdgeId(int nodeId, int edgeIndex){
-
+        return nodes.edgeId(nodeId, edgeIndex);
     }
 
     /**
@@ -75,7 +116,17 @@ public final class Graph {
      * or -1 if no node matches these criteria
      */
     public int nodeClosestTo(PointCh point, double searchDistance){
+        double closestDistance = Double.POSITIVE_INFINITY;
+        int closestNodeIdentity = -1;
 
+        for(GraphSectors.Sector sector :sectors.sectorsInArea(point, searchDistance)){
+            for(int nodeId = sector.startNodeId() ; nodeId < sector.endNodeId(); nodeId ++){
+                if(nodePoint(nodeId).distanceTo(point) < closestDistance) {
+                    closestNodeIdentity = nodeId;
+                }
+            }
+        }
+        return closestNodeIdentity;
     }
 
     /**
@@ -83,7 +134,7 @@ public final class Graph {
      * @return the identity of the destination node of the given identity edge
      */
     public int edgeTargetNodeId(int edgeId){
-
+        return edges.targetNodeId(edgeId);
     }
 
     /**
@@ -91,7 +142,7 @@ public final class Graph {
      * @return true iff the given identity edge goes in the opposite direction of the OSM channel it comes from
      */
     public boolean edgeIsInverted(int edgeId){
-
+        return edges.isInverted(edgeId);
     }
 
     /**
@@ -99,7 +150,7 @@ public final class Graph {
      * @return the set of OSM attributes attached to the given identity edge
      */
     public AttributeSet edgeAttributes(int edgeId){
-
+        return attributeSets.get(edges.attributesIndex(edgeId));
     }
 
     /**
@@ -107,15 +158,15 @@ public final class Graph {
      * @return the length, in meters, of the given identity edge
      */
     public double edgeLength(int edgeId){
-
+        return edges.length(edgeId);
     }
 
     /**
      * @param edgeId the id of the edge
-     * @returnthe total elevation gain of the given identity edge
+     * @return the total elevation gain of the given identity edge
      */
     public double edgeElevationGain(int edgeId){
-
+        return edges.elevationGain(edgeId);
     }
 
     /**
@@ -124,7 +175,7 @@ public final class Graph {
      * and Double.NaN if the edge has no profile
      */
     public DoubleUnaryOperator edgeProfile(int edgeId){
-
+        return Functions.sampled(edges.profileSamples(edgeId), edgeLength(edgeId));
     }
 
 }

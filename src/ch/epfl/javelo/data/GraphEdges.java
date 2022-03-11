@@ -151,7 +151,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     /**
      * @param edgeId id of the edge
      * @return the identity of the attribute set attached to the edge with the given identity
-     * Is this right?
      */
     public int attributesIndex(int edgeId){
         int attributeSetIndex = EDGE_INTS*edgeId + OFFSET_IDS_OSM;
