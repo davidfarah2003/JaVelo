@@ -31,7 +31,7 @@ public record GraphSectors (ByteBuffer buffer){
     public List<Sector> sectorsInArea(PointCh center, double distance){
 
         // getting the coordinates of the summits of the square which defines the range
-        double upper_left_x =   center.e() - SwissBounds.MIN_E - 2*distance; //
+        double upper_left_x =   center.e() - SwissBounds.MIN_E - 2*distance;
         double upper_left_y =   center.n() - SwissBounds.MIN_N +  2*distance;
         double lower_right_x =  center.e() - SwissBounds.MIN_E + 2*distance;
         double lower_right_y =  center.n() - SwissBounds.MIN_N - 2*distance;
@@ -42,11 +42,9 @@ public record GraphSectors (ByteBuffer buffer){
         if (lower_right_y < 0){
             lower_right_y = 0;
         }
-
         if (upper_left_y > SwissBounds.HEIGHT){
             upper_left_y = SwissBounds.HEIGHT;
         }
-
         if (lower_right_x > SwissBounds.WIDTH){
             lower_right_x = SwissBounds.WIDTH;
         }
@@ -59,26 +57,21 @@ public record GraphSectors (ByteBuffer buffer){
         int xMax = (int) Math.floor(lower_right_x / 2730);
         int yMax = (int) Math.floor(upper_left_y / 1730);
 
-        ArrayList<Integer> indexes = new ArrayList<>();
+
+        ArrayList<Sector> sectorsInArea = new ArrayList<>();
 
         // adding the indexes of all the sectors
         // which intersect with square centered at the input (PointCh)
-        for (int i = xMin; i <= xMax; i++){
-            for (int j = yMin; j <= yMax; j++){
-                indexes.add(128 * j + i);
+        for (int x = xMin; x <= xMax; x++){
+            for (int y = yMin; y <= yMax; y++){
+                int sectorIndex = 128 * y + x;
+                int startNodeId = buffer.getInt(NODE_INT * sectorIndex + OFFSET_NODE_ID);
+                int numberOfNodes =  Short.toUnsignedInt(buffer.getShort(NODE_INT * sectorIndex + OFFSET_NUMBER_OF_NODES));
+                int endNodeId = startNodeId + numberOfNodes;
+                sectorsInArea.add(new Sector(startNodeId, endNodeId));
             }
         }
-
-        ArrayList<Sector> sectorsInArea = new ArrayList<>();
-        // iterating through all the indexes of the sector in the area
-        for (int j : indexes){
-            int startNodeId = buffer.getInt(NODE_INT * j + OFFSET_NODE_ID);
-            // making sure to interpret the short value stored in the buffer as an unsigned int (only positive values)
-            int numberOfNodes =  Short.toUnsignedInt(buffer.getShort(NODE_INT * j + OFFSET_NUMBER_OF_NODES));
-            int endNodeId = startNodeId + numberOfNodes;
-            sectorsInArea.add(new Sector(startNodeId, endNodeId));
-        }
-          return sectorsInArea;
+        return sectorsInArea;
     }
 
     /**

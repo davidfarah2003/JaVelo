@@ -14,10 +14,10 @@ import java.util.List;
 
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
     private static final int OFFSET_EDGE_DIRECTION_AND_ID = 0;
-    private static final int OFFSET_LENGTH = OFFSET_EDGE_DIRECTION_AND_ID + 4; //4
-    private static final int OFFSET_ELEVATION_GAIN = OFFSET_LENGTH + 2; //6
-    private static final int OFFSET_IDS_OSM = OFFSET_ELEVATION_GAIN + 2; //8
-    private static final int EDGE_INTS = OFFSET_IDS_OSM + 2; // 10
+    private static final int OFFSET_LENGTH = OFFSET_EDGE_DIRECTION_AND_ID + 4;
+    private static final int OFFSET_ELEVATION_GAIN = OFFSET_LENGTH + 2;
+    private static final int OFFSET_IDS_OSM = OFFSET_ELEVATION_GAIN + 2;
+    private static final int EDGE_INTS = OFFSET_IDS_OSM + 2;
 
     //edgesBuffer contains in order:    an integer of type int (direction of the edge and identity of the destination node),
     //                                  an integer of type short (length of the edge),
@@ -93,7 +93,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
         ArrayList<Float> profileSamples = new ArrayList<>();
         int idFirstSample = Bits.extractUnsigned(profileIds.get(edgeId), 0, 30);
-        profileSamples.add(Q28_4.asFloat(elevations.get(idFirstSample)));
+        profileSamples.add(Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idFirstSample))));
 
         int profileId = profileIds.get(edgeId);
         switch (Bits.extractUnsigned(profileId, 30, 2)){
