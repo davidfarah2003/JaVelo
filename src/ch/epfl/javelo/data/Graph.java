@@ -175,7 +175,9 @@ public final class Graph {
      * and Double.NaN if the edge has no profile
      */
     public DoubleUnaryOperator edgeProfile(int edgeId){
-        return Functions.sampled(edges.profileSamples(edgeId), edgeLength(edgeId));
+        if(edges.hasProfile(edgeId))
+            return Functions.sampled(edges.profileSamples(edgeId), edgeLength(edgeId));
+        return Functions.constant(Double.NaN);
     }
 
 }
