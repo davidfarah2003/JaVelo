@@ -90,7 +90,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
             return new float[]{};
         }
 
-        int lengthIndex = EDGE_INTS*edgeId + OFFSET_LENGTH;
+        int lengthIndex = EDGE_INTS * edgeId + OFFSET_LENGTH;
         int nbSamples = 1 + Math2.ceilDiv(Short.toUnsignedInt(edgesBuffer.getShort(lengthIndex)), Q28_4.ofInt(2));
 
         ArrayList<Float> profileSamples = new ArrayList<>();
