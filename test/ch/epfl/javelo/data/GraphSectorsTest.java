@@ -36,10 +36,10 @@ public class GraphSectorsTest {
         buffer.putShort(784, (short) 0b000011100101110);
 
         PointCh point = new PointCh(2_485_000 + 3000,  1_075_000 + 2000);
-        double distance = 2000;
+        double distance = 400;
         GraphSectors sector = new GraphSectors(buffer);
         List<GraphSectors.Sector> list =  sector.sectorsInArea(point, distance);
-        System.out.println(list.get(3).startNodeId());
-        System.out.println(list.get(3).endNodeId());
+        System.out.println(list.get(0).startNodeId());
+        System.out.println(list.get(0).endNodeId());
     }
 }
