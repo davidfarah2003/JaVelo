@@ -1,13 +1,53 @@
 package ch.epfl.javelo.data;
 import ch.epfl.javelo.projection.PointCh;
+import ch.epfl.javelo.projection.SwissBounds;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.random.RandomGenerator;
+
+import static ch.epfl.test.TestRandomizer.newRandom;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GraphSectorsTest {
+
+    @Test
+    void testSecteur() {
+        RandomGenerator rng = newRandom();
+        int[] noeuds = new int[16384];
+        ByteBuffer buffer = ByteBuffer.allocate(16384 * 6);
+        for (int i = 0; i < 16384; i++) {
+            int nbNoeuds = 0;
+            for (int j = i - 1; j >= 0; j--) {
+                nbNoeuds += noeuds[j];
+            }
+            if (i == 0) {
+                buffer.putInt(i * 6, 0);
+            } else {
+                buffer.putInt(i * 6, nbNoeuds);
+            }
+            int nb = rng.nextInt(1, 100);
+            noeuds[i] = nb;
+            buffer.putShort(i * 6 + 4, (short) nb);
+        }
+        GraphSectors s = new GraphSectors(buffer);
+        List<GraphSectors.Sector> liste = new ArrayList<>();
+        for (int i = 0; i < 16384; i++) {
+            int n = 0;
+            for (int j = 0; j < i; j++) {
+                n += noeuds[j];
+            }
+            liste.add(new GraphSectors.Sector(n, n + noeuds[i]));
+        }
+        double distanceE = SwissBounds.MAX_E - SwissBounds.MIN_E;
+        double distanceN = SwissBounds.MAX_N - SwissBounds.MIN_N;
+        assertEquals(liste, s.sectorsInArea(new PointCh(SwissBounds.MIN_E + distanceE/2, SwissBounds.MIN_N + distanceN/2),
+                distanceE/2));
+    }
+
     @Test
     void sectorsInAreaWorks(){
         ByteBuffer buffer = ByteBuffer.allocate(16_384 * 6);
