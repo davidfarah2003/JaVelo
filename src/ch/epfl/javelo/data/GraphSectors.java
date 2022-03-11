@@ -70,6 +70,7 @@ public record GraphSectors (ByteBuffer buffer){
         for (int x = xMin; x <= xMax; x++){
             for (int y = yMin; y <= yMax; y++){
                 int sectorIndex = 128 * y + x;
+                System.out.println(sectorIndex);
                 int startNodeId = buffer.getInt(NODE_INT * sectorIndex + OFFSET_NODE_ID);
                 int numberOfNodes =  Short.toUnsignedInt(buffer.getShort(NODE_INT * sectorIndex + OFFSET_NUMBER_OF_NODES));
                 int endNodeId = startNodeId + numberOfNodes;
