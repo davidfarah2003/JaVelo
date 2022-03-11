@@ -40,7 +40,7 @@ public final class Graph {
     /**
      * @return the total number of nodes in the graph
      */
-    int nodeCount(){
+    public int nodeCount(){
         return 0;
     }
 
@@ -48,14 +48,14 @@ public final class Graph {
      * @param nodeId the id of the node
      * @return the position of the given identity node
      */
-    PointCh nodePoint(int nodeId){
+    public PointCh nodePoint(int nodeId){
     }
 
     /**
      * @param nodeId the id of the node
      * @return the number of edges leaving the given identity node
      */
-    int nodeOutDegree(int nodeId){
+    public int nodeOutDegree(int nodeId){
 
     }
 
@@ -64,7 +64,7 @@ public final class Graph {
      * @param edgeIndex index of the edge
      * @return the identity of the edgeIndex-th edge outgoing from the identity node nodeId
      */
-    int nodeOutEdgeId(int nodeId, int edgeIndex){
+    public int nodeOutEdgeId(int nodeId, int edgeIndex){
 
     }
 
@@ -74,7 +74,7 @@ public final class Graph {
      * @return the identity of the node closest to the given point, at the given maximum distance (in meters),
      * or -1 if no node matches these criteria
      */
-    int nodeClosestTo(PointCh point, double searchDistance){
+    public int nodeClosestTo(PointCh point, double searchDistance){
 
     }
 
@@ -82,7 +82,7 @@ public final class Graph {
      * @param edgeId the id of the edge
      * @return the identity of the destination node of the given identity edge
      */
-    int edgeTargetNodeId(int edgeId){
+    public int edgeTargetNodeId(int edgeId){
 
     }
 
@@ -90,7 +90,7 @@ public final class Graph {
      * @param edgeId the id of the edge
      * @return true iff the given identity edge goes in the opposite direction of the OSM channel it comes from
      */
-    boolean edgeIsInverted(int edgeId){
+    public boolean edgeIsInverted(int edgeId){
 
     }
 
@@ -98,7 +98,7 @@ public final class Graph {
      * @param edgeId the id of the edge
      * @return the set of OSM attributes attached to the given identity edge
      */
-    AttributeSet edgeAttributes(int edgeId){
+    public AttributeSet edgeAttributes(int edgeId){
 
     }
 
@@ -106,7 +106,7 @@ public final class Graph {
      * @param edgeId the id of the edge
      * @return the length, in meters, of the given identity edge
      */
-    double edgeLength(int edgeId){
+    public double edgeLength(int edgeId){
 
     }
 
@@ -114,7 +114,7 @@ public final class Graph {
      * @param edgeId the id of the edge
      * @returnthe total elevation gain of the given identity edge
      */
-    double edgeElevationGain(int edgeId){
+    public double edgeElevationGain(int edgeId){
 
     }
 
@@ -123,7 +123,7 @@ public final class Graph {
      * @return the longitudinal profile of the given identity edge, as a function,
      * and Double.NaN if the edge has no profile
      */
-    DoubleUnaryOperator edgeProfile(int edgeId){
+    public DoubleUnaryOperator edgeProfile(int edgeId){
 
     }
 
