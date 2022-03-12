@@ -50,11 +50,14 @@ public final class Functions {
                 double x_lower = lower_index * intervalLength;
                 double x_upper = upper_index * intervalLength;
 
+                double proportion =  (operand - x_lower) / (x_upper - x_lower);
+                return Math2.interpolate(samples[lower_index], samples[upper_index], proportion);
+
                 //calculating the slope and y-intercept needed of the function needed to compute the y-value of the operand
-                double slope = (samples[upper_index] - samples[lower_index])/(x_upper - x_lower);
-                double y_intercept = samples[upper_index] - slope * x_upper;
-              //  System.out.println(y_intercept);
-                return Math.fma(slope, operand , y_intercept);
+                //double slope = (samples[upper_index] - samples[lower_index])/(x_upper - x_lower);
+               // double y_intercept = samples[upper_index] - slope * x_upper;
+
+               // return Math.fma(slope, operand , y_intercept);
             }
 
         }
