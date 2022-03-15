@@ -1,4 +1,5 @@
 package ch.epfl.javelo.projection;
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 
 import java.util.Objects;
@@ -20,7 +21,10 @@ public record PointCh(double e, double n) {
      * @return the square of the distance
      */
     public double squaredDistanceTo(PointCh that){
-        return pow(distanceTo(that), 2);
+        double x = that.e() - this.e;
+        double y = that.n() - this.n;
+
+        return Math2.squaredNorm(x,y);
     }
 
     /**

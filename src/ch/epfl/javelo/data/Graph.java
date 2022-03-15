@@ -120,8 +120,10 @@ public final class Graph {
         int closestNodeIdentity = -1;
 
         for(GraphSectors.Sector sector : sectors.sectorsInArea(point, searchDistance)){
-            for(int nodeId = sector.startNodeId() ; nodeId < sector.endNodeId(); nodeId ++){
-                if(nodePoint(nodeId).distanceTo(point) < closestDistance) {
+            for(int nodeId = sector.startNodeId() ; nodeId < sector.endNodeId(); nodeId++){
+                double distanceToSquared = nodePoint(nodeId).squaredDistanceTo(point);
+                if(distanceToSquared < closestDistance) {
+                    closestDistance = distanceToSquared;
                     closestNodeIdentity = nodeId;
                 }
             }

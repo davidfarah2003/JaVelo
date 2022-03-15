@@ -3,8 +3,12 @@ package ch.epfl.javelo.routing;
 import java.util.List;
 
 public final class ElevationProfileComputer {
-    private ElevationProfileComputer(){}
+    private ElevationProfileComputer() {
+    }
 
+    ;
+}
+/*
     ElevationProfile elevationProfile(Route route, double maxStepLength){
 
         List<Edge> edges = route.edges();
@@ -18,3 +22,6 @@ public final class ElevationProfileComputer {
 
     }
 }
+
+
+ */
