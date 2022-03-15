@@ -71,8 +71,10 @@ public final class ElevationProfile {
      */
     public double totalDescent(){
         double descent = 0.0;
+        double difference;
+
         for (int i = 0; i < elevationSamples.length - 1; i++){
-            double difference = elevationSamples[i+1] - elevationSamples[i];
+            difference = elevationSamples[i+1] - elevationSamples[i];
             if (difference < 0){
                 descent +=  difference;
             }
