@@ -22,7 +22,6 @@ public final class Math2 {
      * passing through the points (0,y0) and (1,y1)
      */
     public static double interpolate(double y0, double y1, double x){
-        // (0,y0) , (1,y1)
         double slope = y1 - y0;
         return Math.fma(slope, x, y0);
     }

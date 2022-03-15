@@ -4,13 +4,11 @@ import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 
-import java.awt.*;
 import java.util.function.DoubleUnaryOperator;
 
 /**
  * The purpose of this record is to represent all the edges that belong to a specific itinerary
  */
-
 public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPoint,
                    double length, DoubleUnaryOperator profile){
 
@@ -22,14 +20,12 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * @param toNodeId : ID of the ending node
      * @return a new Edge
      */
-
     static Edge of(Graph graph, int edgeId, int fromNodeId, int toNodeId){
         return new Edge(fromNodeId, toNodeId, graph.nodePoint(fromNodeId),
                 graph.nodePoint(toNodeId), graph.edgeLength(edgeId), graph.edgeProfile(edgeId));
     }
 
     /**
-     *
      * @param point (PointCh)
      * @return  the position along the edge, in meters, that is closest to the given point,
      */
@@ -38,11 +34,9 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
     }
 
     /**
-     *
-     * @param position
+     * @param position on the edge
      * @return the point at the given position on the edge, expressed in meters.
      */
-
     public PointCh pointAt(double position){
         double proportion = position/length;
         double east = Math2.interpolate(fromPoint.e(), toPoint.e(), proportion);
@@ -52,8 +46,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
 
 
     /**
-     *
-     * @param position
+     * @param position on the edge
      * @return the altitude, in meters, at the given position on the edge.
      */
     public double elevationAt(double position){
