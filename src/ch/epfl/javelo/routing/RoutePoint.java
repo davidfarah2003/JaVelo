@@ -10,7 +10,6 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
     public static final RoutePoint NONE = new RoutePoint(null, NaN, POSITIVE_INFINITY);
 
     /**
-     *
      * @param positionDifference (positive or negative)
      * @return a point identical to the receiver (this) but whose position is offset by the given difference
      */
@@ -19,8 +18,7 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
     }
 
     /**
-     *
-     * @param that
+     * @param that other route point
      * @return <code>this</code> if its distance to the reference
      * is less than that of the input, and conversely.
      */
@@ -29,11 +27,10 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
     }
 
     /**
-     *
-     * @param thatPoint
-     * @param thatPosition
+     * @param thatPoint other route point
+     * @param thatPosition Position of the other route point ?
      * @param thatDistanceToReference
-     * @return  <code>this</code> if its distance to the reference is less than or equal to thatDistanceToReference,
+     * @return <code>this</code> if its distance to the reference is less than or equal to thatDistanceToReference,
      * and a new instance of RoutePoint whose attributes are the arguments passed to min otherwise.
      */
     public RoutePoint min(PointCh thatPoint, double thatPosition, double thatDistanceToReference){
