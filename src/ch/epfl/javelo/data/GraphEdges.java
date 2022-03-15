@@ -43,9 +43,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     public int targetNodeId(int edgeId){
         int edgeIndex = EDGE_INTS*edgeId + OFFSET_EDGE_DIRECTION_AND_ID;
         int edgeInt = edgesBuffer.getInt(edgeIndex);
-        System.out.println(edgeInt);
-        System.out.println(~edgeInt);
-
         return (edgeInt >= 0) ? edgeInt: ~edgeInt ;
     }
 
