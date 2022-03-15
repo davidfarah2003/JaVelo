@@ -6,8 +6,8 @@ import ch.epfl.javelo.Preconditions;
 import java.util.DoubleSummaryStatistics;
 
 public final class ElevationProfile {
-    private double length;
-    private float[] elevationSamples;
+    private final double length;
+    private final float[] elevationSamples;
 
 
     /**
@@ -16,7 +16,7 @@ public final class ElevationProfile {
      * @param elevationSamples
      */
     public ElevationProfile(double length, float[] elevationSamples) {
-        Preconditions.checkArgument(length > 0 && elevationSamples.length > 2);
+        Preconditions.checkArgument(length > 0 && elevationSamples.length >= 2);
         this.length = length;
         this.elevationSamples = elevationSamples;
     }
@@ -96,6 +96,5 @@ public final class ElevationProfile {
     public double elevationAt(double position){
         return Functions.sampled(elevationSamples, length).applyAsDouble(position);
     }
-
 
 }

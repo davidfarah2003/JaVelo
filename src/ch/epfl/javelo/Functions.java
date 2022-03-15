@@ -28,7 +28,6 @@ public final class Functions {
     private static final record Sampled(float[] samples, double xMax) implements DoubleUnaryOperator{
         @Override
         public double applyAsDouble(double operand) {
-            //Not using interpolation method? (I assume because (0,y0),(1,y1) ?)
 
             if (operand > xMax) {
                 return samples[samples.length - 1];

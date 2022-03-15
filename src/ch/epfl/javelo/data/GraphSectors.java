@@ -34,10 +34,10 @@ public record GraphSectors (ByteBuffer buffer){
 
 
         // getting the coordinates of the summits of the square which defines the range
-        double upper_left_x =   center.e() - SwissBounds.MIN_E - 2*distance;
-        double upper_left_y =   center.n() - SwissBounds.MIN_N +  2*distance;
-        double lower_right_x =  center.e() - SwissBounds.MIN_E + 2*distance;
-        double lower_right_y =  center.n() - SwissBounds.MIN_N - 2*distance;
+        double upper_left_x =   center.e() - SwissBounds.MIN_E - distance;
+        double upper_left_y =   center.n() - SwissBounds.MIN_N + distance;
+        double lower_right_x =  center.e() - SwissBounds.MIN_E + distance;
+        double lower_right_y =  center.n() - SwissBounds.MIN_N - distance;
 
 
         // if the bounds are exceeded, taking into the account the extremes of the Swiss Coordinates

@@ -75,8 +75,8 @@ public class GraphSectorsTest {
         buffer.putInt(780, 0b00000001111000000100000110000001);
         buffer.putShort(784, (short) 0b000011100101110);
 
-        PointCh point = new PointCh(2_485_000 + 2730,  1_075_000 + 1730);
-        double distance = 3000;
+        PointCh point = new PointCh(2_485_000 + 2000,  1_075_000 + 1000);
+        double distance = 600;
         GraphSectors sector = new GraphSectors(buffer);
         List<GraphSectors.Sector> list =  sector.sectorsInArea(point, distance);
 

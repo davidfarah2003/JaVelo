@@ -119,7 +119,7 @@ public final class Graph {
         double closestDistance = Double.POSITIVE_INFINITY;
         int closestNodeIdentity = -1;
 
-        for(GraphSectors.Sector sector :sectors.sectorsInArea(point, searchDistance)){
+        for(GraphSectors.Sector sector : sectors.sectorsInArea(point, searchDistance)){
             for(int nodeId = sector.startNodeId() ; nodeId < sector.endNodeId(); nodeId ++){
                 if(nodePoint(nodeId).distanceTo(point) < closestDistance) {
                     closestNodeIdentity = nodeId;
@@ -175,8 +175,9 @@ public final class Graph {
      * and Double.NaN if the edge has no profile
      */
     public DoubleUnaryOperator edgeProfile(int edgeId){
-        if(edges.hasProfile(edgeId))
+        if (edges.hasProfile(edgeId)) {
             return Functions.sampled(edges.profileSamples(edgeId), edgeLength(edgeId));
+        }
         return Functions.constant(Double.NaN);
     }
 
