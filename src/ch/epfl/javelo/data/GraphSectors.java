@@ -1,5 +1,6 @@
 package ch.epfl.javelo.data;
 
+import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.SwissBounds;
 
@@ -29,6 +30,8 @@ public record GraphSectors (ByteBuffer buffer){
      * @return a list of sectors in area of the point entered as in input
      */
     public List<Sector> sectorsInArea(PointCh center, double distance){
+        //Preconditions.checkArgument(distance >= 0);
+
         double sectorLength = 1730;
         double sectorWidth = 2730;
 
@@ -41,6 +44,7 @@ public record GraphSectors (ByteBuffer buffer){
 
 
         // if the bounds are exceeded, taking into the account the extremes of the Swiss Coordinates
+        /*
         if (upper_left_x < 0){
             upper_left_x = 0;
         }
@@ -53,6 +57,8 @@ public record GraphSectors (ByteBuffer buffer){
         if (lower_right_x > SwissBounds.WIDTH){
             lower_right_x = SwissBounds.WIDTH;
         }
+        /
+         */
 
 
         // defining some indexes along the horizontal and vertical axes which will be
