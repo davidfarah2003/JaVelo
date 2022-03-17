@@ -19,6 +19,7 @@ public final class ElevationProfile {
     public ElevationProfile(double length, float[] elevationSamples) {
         Preconditions.checkArgument(length > 0 && elevationSamples.length >= 2);
         this.length = length;
+        // check
         this.elevationSamples = elevationSamples.clone();
         for (float number : elevationSamples){
             statistics.accept(number);
