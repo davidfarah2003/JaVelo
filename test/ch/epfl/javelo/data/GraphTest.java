@@ -14,9 +14,9 @@ class GraphTest {
     @Test
     void nodeClosestTo() throws IOException {
         Graph graph = Graph.loadFrom(Path.of("lausanne/"));
-        PointCh test = new PointCh(2_633_208, 1_087_349);
-        int i = graph.nodeClosestTo(test, 200_000);
-        // 2_533_132, 1_152_206
+        PointCh test = new PointCh(2_533_132, 1_152_206);
+        int i = graph.nodeClosestTo(test, 300_000);
+        //
         // nodePoint
         System.out.println(i);
         System.out.println(graph.nodePoint(i).e() + "  " + graph.nodePoint(i).n());
@@ -28,8 +28,8 @@ class GraphTest {
         System.out.println(graph.nodeCount());
        // System.out.println(graph.edgeIsInverted(i));
        // System.out.println(graph.edgeAttributes(i));
-        System.out.println(graph.edgeAttributes(200_987));
-        System.out.println(graph.edgeElevationGain(200_989));
+     //   System.out.println(graph.edgeAttributes(200_987));
+      //  System.out.println(graph.edgeElevationGain(200_989));
 
 
         PointCh newPoint = graph.nodePoint(i);

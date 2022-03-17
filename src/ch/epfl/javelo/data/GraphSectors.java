@@ -1,5 +1,6 @@
 package ch.epfl.javelo.data;
 
+import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.SwissBounds;
 
@@ -32,12 +33,13 @@ public record GraphSectors (ByteBuffer buffer){
      * @return a list of sectors in area of the point entered as in input
      */
     public List<Sector> sectorsInArea(PointCh center, double distance){
-        //Preconditions.checkArgument(distance >= 0);
+        Preconditions.checkArgument(distance >= 0);
         // getting the coordinates of the summits of the square which defines the range
         double upper_left_x =   center.e() - SwissBounds.MIN_E - distance;
         double upper_left_y =   center.n() - SwissBounds.MIN_N + distance;
         double lower_right_x =  center.e() - SwissBounds.MIN_E + distance;
         double lower_right_y =  center.n() - SwissBounds.MIN_N - distance;
+
 
 
         // if the bounds are exceeded, taking into the account the extremes of the Swiss Coordinates
@@ -49,11 +51,15 @@ public record GraphSectors (ByteBuffer buffer){
             lower_right_y = 0;
         }
         if (upper_left_y > SwissBounds.HEIGHT){
-            upper_left_y = SwissBounds.HEIGHT;
+            upper_left_y = SwissBounds.HEIGHT - 0.1;
         }
         if (lower_right_x > SwissBounds.WIDTH){
-            lower_right_x = SwissBounds.WIDTH;
+            lower_right_x = SwissBounds.WIDTH - 0.1;
         }
+
+
+
+        System.out.println(upper_left_y);
 
         // defining some indexes along the horizontal and vertical axes which will be
         // needed to compute the actual index of every sector
