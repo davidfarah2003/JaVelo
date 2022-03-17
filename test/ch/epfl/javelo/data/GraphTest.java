@@ -15,7 +15,7 @@ class GraphTest {
     void nodeClosestTo() throws IOException {
         Graph graph = Graph.loadFrom(Path.of("lausanne/"));
         PointCh test = new PointCh(2_533_132, 1_152_206);
-        int i = graph.nodeClosestTo(test, 300_000);
+        int i = graph.nodeClosestTo(test, 45);
         //
         // nodePoint
         System.out.println(i);

@@ -50,16 +50,15 @@ public record GraphSectors (ByteBuffer buffer){
         if (lower_right_y < 0){
             lower_right_y = 0;
         }
-        if (upper_left_y > SwissBounds.HEIGHT){
+        if (upper_left_y >= SwissBounds.HEIGHT){
             upper_left_y = SwissBounds.HEIGHT - 0.1;
         }
-        if (lower_right_x > SwissBounds.WIDTH){
+        if (lower_right_x >= SwissBounds.WIDTH){
             lower_right_x = SwissBounds.WIDTH - 0.1;
         }
 
 
 
-        System.out.println(upper_left_y);
 
         // defining some indexes along the horizontal and vertical axes which will be
         // needed to compute the actual index of every sector
