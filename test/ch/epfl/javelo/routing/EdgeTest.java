@@ -26,7 +26,7 @@ class EdgeTest {
     void positionClosestTo() {
         PointCh num1 = new PointCh(SwissBounds.MIN_E + 100, SwissBounds.MIN_N + 100);
         PointCh num2 = new PointCh(SwissBounds.MIN_E + 200, SwissBounds.MIN_N + 200);
-        Edge test = new Edge(1,2, num1, num2, 5.0, Functions.sampled( new float[]{34.5f, 30f, 25.7f}, 5.0));
+        Edge test = new Edge(1,2, num1, num2, Math.sqrt(20000), Functions.sampled( new float[]{34.5f, 30f, 25.7f}, 5.0));
         assertEquals(Math.sqrt(20000)/2, test.positionClosestTo(new PointCh(SwissBounds.MIN_E + 100, SwissBounds.MIN_N + 200)) );
         assertEquals(-Math.sqrt(2*25*25), test.positionClosestTo(new PointCh(SwissBounds.MIN_E + 50, SwissBounds.MIN_N + 100)));
 
