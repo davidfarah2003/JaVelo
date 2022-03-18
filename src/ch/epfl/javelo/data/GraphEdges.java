@@ -17,15 +17,16 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int OFFSET_IDS_OSM = OFFSET_ELEVATION_GAIN + 2;
     private static final int EDGE_INTS = OFFSET_IDS_OSM + 2;
 
-    //edgesBuffer contains in order:    an integer of type int (direction of the edge and identity of the destination node),
-    //                                  an integer of type short (length of the edge),
-    //                                  an integer of type short (total positive elevation) and
-    //                                  an integer of type short (identity of the set of OSM attributes)
+    /*
+    edgesBuffer contains in order:    an integer of type int (direction of the edge and identity of the destination node),
+                                      an integer of type short (length of the edge),
+                                      an integer of type short (total positive elevation) and
+                                      an integer of type short (identity of the set of OSM attributes)
 
-    //profileIds contains, for each edge of the graph, a single integer of type int (type of the profile and index of the first sample)
+    profileIds contains, for each edge of the graph, a single integer of type int (type of the profile and index of the first sample)
 
-    //elevations : the buffer memory containing all the samples of the profiles, compressed or not
-
+    elevations : the buffer memory containing all the samples of the profiles, compressed or not
+     */
 
     /**
      * @param edgeId id of the edge
