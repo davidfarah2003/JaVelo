@@ -2,11 +2,7 @@ package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.projection.Ch1903;
 import ch.epfl.javelo.projection.PointCh;
-import ch.epfl.javelo.projection.PointWebMercator;
-import ch.epfl.javelo.projection.WebMercator;
 import org.junit.jupiter.api.Test;
-
-import javax.imageio.IIOException;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -14,28 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GraphTest {
 
-    /*
-PointCh test = new PointCh(2_533_132, 1_152_206);
-int i = graph.nodeClosestTo(test, 2000);
-// nodePoint
-
-System.out.println(graph.nodeOutDegree(i));
-System.out.println(graph.nodeOutEdgeId(i,0));
-System.out.println(graph.nodeOutEdgeId(i,1));
-// System.out.println(graph.edgeTargetNodeId(i));
-System.out.println(graph.nodeCount());
-// System.out.println(graph.edgeIsInverted(i));
-// System.out.println(graph.edgeAttributes(i));
-System.out.println(graph.edgeAttributes(200_987));
-System.out.println(graph.edgeElevationGain(200_989));
-
-
-PointCh newPoint = graph.nodePoint(i);
-
-//  System.out.println(newPoint.e());
-//  System.out.println(newPoint.n());
-//  System.out.println(i);
-*/
     @Test
     void nodeClosestTo() throws IOException {
         Graph graph = Graph.loadFrom(Path.of("lausanne/"));
@@ -66,10 +40,8 @@ PointCh newPoint = graph.nodePoint(i);
         PointCh point = new PointCh(east, north);
         nodeId = graph.nodeClosestTo(point, 100);
         closestNode = graph.nodePoint(nodeId);
-        System.out.println(closestNode.e() + ", " + closestNode.n());
-        //assertEquals(2533293.5625, closestNode.e());
-        //assertEquals(1152206, closestNode.n());
-
+        assertEquals(2533692.3125, closestNode.e());
+        assertEquals(1152305.0, closestNode.n());
 
     }
 }
