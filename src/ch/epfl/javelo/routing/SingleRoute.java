@@ -106,6 +106,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public PointCh pointAt(double position) {
+        //recheck indexes
         position = Math.max(0, position);
         position = Math.min(position, routeLength);
 
@@ -140,19 +141,10 @@ public final class SingleRoute implements Route{
 
         }
         else{
-
-            /*
-            int edgeIndex = -result -2;
-            double x = position - edgesSearch[edgeIndex];
-            return edges.get(edgeIndex).elevationAt(x);
-
-             */
             //get index of the next closest node (if the position is not on an end node)
-
-            result = -(result + 1);
+            result = -(result + 2);
             position = position - edgesSearch[result];
-            return edges.get(result-1).elevationAt(position);
-
+            return edges.get(result).elevationAt(position);
 
         }
     }
