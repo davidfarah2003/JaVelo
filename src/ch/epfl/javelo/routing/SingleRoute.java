@@ -182,11 +182,10 @@ public final class SingleRoute implements Route{
         }
         else{
             int edgeIndex = -result -2;
-            PointCh start = edges.get(edgeIndex).fromPoint();
-            PointCh end = edges.get(edgeIndex).toPoint();
-            PointCh interest = pointAt(position);
+            double positionStartNodeId = edgesSearch[edgeIndex];
+            double positionEndNodeId = edgesSearch[edgeIndex + 1];
 
-            if ((start.squaredDistanceTo(interest) <= end.squaredDistanceTo(interest))){
+            if (position - positionStartNodeId <= positionEndNodeId - position){
                 return edges.get(edgeIndex).fromNodeId();
             }
             else{
