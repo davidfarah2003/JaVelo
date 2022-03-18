@@ -116,9 +116,14 @@ public final class SingleRoute implements Route{
             return points.get(result);
         }
         else{
+            /*
             result = -(result + 1);
             position = position - edgesSearch[result];
             return edges.get(result-1).pointAt(position);
+             */
+            result = -(result + 2);
+            position = position - edgesSearch[result];
+            return edges.get(result).pointAt(position);
         }
     }
 
