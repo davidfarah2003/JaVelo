@@ -117,7 +117,7 @@ public final class Graph {
      * or -1 if no node matches these criteria
      */
     public int nodeClosestTo(PointCh point, double searchDistance){
-        double closestDistance = Double.POSITIVE_INFINITY;
+        double closestDistance = Math.pow(searchDistance, 2);
         int closestNodeIdentity = -1;
         double distanceToSquared;
 
