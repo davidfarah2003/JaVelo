@@ -116,13 +116,14 @@ public final class Graph {
      * or -1 if no node matches these criteria
      */
     public int nodeClosestTo(PointCh point, double searchDistance){
-        double closestDistance = Double.POSITIVE_INFINITY;
+        double closestDistance = Math.pow(searchDistance, 2);
         int closestNodeIdentity = -1;
+        double distanceToSquared;
 
         for(GraphSectors.Sector sector : sectors.sectorsInArea(point, searchDistance)){
             for(int nodeId = sector.startNodeId() ; nodeId < sector.endNodeId(); nodeId++){
-                double distanceToSquared = nodePoint(nodeId).squaredDistanceTo(point);
-                if(distanceToSquared < closestDistance) {
+                distanceToSquared = nodePoint(nodeId).squaredDistanceTo(point);
+                if(distanceToSquared <= closestDistance) {
                     closestDistance = distanceToSquared;
                     closestNodeIdentity = nodeId;
                 }
