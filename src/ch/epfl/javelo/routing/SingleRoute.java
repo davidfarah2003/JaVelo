@@ -1,6 +1,7 @@
 package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Preconditions;
+import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.util.ArrayList;
@@ -115,8 +116,8 @@ public final class SingleRoute implements Route{
         }
         else{
             result = -(result + 1);
-            double pointPosition = edges.get(result).length() - position;
-            return edges.get(result-1).pointAt(pointPosition);
+            position = edgesSearch[result] - position;
+            return edges.get(result-1).pointAt(position);
         }
     }
 
@@ -126,12 +127,24 @@ public final class SingleRoute implements Route{
      */
     @Override
     public double elevationAt(double position) {
-        //here should we use pointAt?
-
         position = Math.max(0, position);
         position = Math.min(position, routeLength);
 
-        return 0;
+        int result = Arrays.binarySearch(edgesSearch, position);
+
+        if(result >= 0){
+            //checks if we are on the last node
+            return result == edges.size() ?
+                    edges.get(result-1).elevationAt(edges.get(result-1).length())
+                    : edges.get(result).elevationAt(0);
+
+        }
+        else{
+            //get index of the next closest node (if the position is not on an end node)
+            result = -(result + 1);
+            position = edgesSearch[result] - position;
+            return edges.get(result-1).elevationAt(position);
+        }
     }
 
     /**
