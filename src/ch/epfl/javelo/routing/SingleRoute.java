@@ -69,7 +69,8 @@ public final class SingleRoute implements Route{
 
     /**
      * @param position given position (in meters)
-     * @return the index of the segment at the given position (in meters)
+     * @return the index of the segment at the given position of the route (in meters), which is always 0 in
+     * the case of a simple route
      */
     @Override
     public int indexOfSegmentAt(double position) {
@@ -153,8 +154,24 @@ public final class SingleRoute implements Route{
      */
     @Override
     public int nodeClosestTo(double position) {
+        //How tf do I get an ID?
+
         position = Math.max(0, position);
         position = Math.min(position, routeLength);
+
+
+        int result = Arrays.binarySearch(edgesSearch, position);
+
+        if(result >= 0){
+            //return points.get(result);
+
+        }
+        else{
+            //get index of the next closest node (if the position is not on an end node)
+            result = -(result + 1);
+            position = edgesSearch[result] - position;
+            //return edges.get(result-1).elevationAt(position);
+        }
 
         return 0;
     }
