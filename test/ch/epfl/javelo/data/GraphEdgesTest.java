@@ -1,6 +1,5 @@
 package ch.epfl.javelo.data;
 
-import ch.epfl.javelo.Bits;
 import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;

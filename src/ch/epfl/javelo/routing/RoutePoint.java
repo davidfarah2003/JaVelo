@@ -28,8 +28,8 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
 
     /**
      * @param thatPoint other route point
-     * @param thatPosition Position of the other route point ?
-     * @param thatDistanceToReference
+     * @param thatPosition position (m) of thatPoint along the itinerary
+     * @param thatDistanceToReference distance to the reference point which is not along the itinerary
      * @return <code>this</code> if its distance to the reference is less than or equal to thatDistanceToReference,
      * and a new instance of RoutePoint whose attributes are the arguments passed to min otherwise.
      */
@@ -37,9 +37,4 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
         return (this.distanceToReference <= thatDistanceToReference ? this : new RoutePoint(thatPoint,thatPosition,thatDistanceToReference));
     }
 
-
-// position (itineraire cmplet)
-    // distance to reference longueur projection orthogonale)
-    // point appartient ititneraire.
-// Point P la reference
 }

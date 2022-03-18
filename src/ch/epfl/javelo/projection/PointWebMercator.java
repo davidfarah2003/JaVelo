@@ -23,7 +23,7 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     * PoinctCh -> WGS84 -> WebMercator
+     * PointCh -> WGS84 -> WebMercator
      * @param pointCh input coordinate in CH format
      * @return PointWebMercator with same coordinates as input pointCh
      */

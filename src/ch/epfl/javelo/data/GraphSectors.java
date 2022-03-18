@@ -12,22 +12,14 @@ import java.util.List;
  * This record represents models the 16_384 sectors wh
  */
 public record GraphSectors (ByteBuffer buffer){
-
-
-    // Constants which enable to access the information stored in the buffer about a sector
     private static final int OFFSET_NODE_ID = 0;
     private static final int OFFSET_NUMBER_OF_NODES = OFFSET_NODE_ID + Integer.BYTES; // 4
     private static final int NUMBER_OF_BYTES_PER_SECTOR = OFFSET_NUMBER_OF_NODES + Short.BYTES; // 6
-    private static int SUBDIVISIONS_PER_SIDE = 128;
+    private static final int SUBDIVISIONS_PER_SIDE = 128;
     private static final double SECTOR_WIDTH = SwissBounds.WIDTH / SUBDIVISIONS_PER_SIDE;
     private static final double SECTOR_HEIGHT = SwissBounds.HEIGHT / SUBDIVISIONS_PER_SIDE;
 
-    // identite du premier noeud (U32) + nombre de noeuds (U16)
-    // Chaque secteur int + short
-    // 16 384 secteurs
-
     /**
-     *
      * @param center point of interest (PointCh, east-north coordinates)
      * @param distance (meters) from which a sector is considered in the area of the point of interest
      * @return a list of sectors in area of the point entered as in input

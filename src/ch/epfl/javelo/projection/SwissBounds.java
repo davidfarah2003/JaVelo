@@ -1,14 +1,14 @@
 package ch.epfl.javelo.projection;
 
 public final class SwissBounds {
-    private SwissBounds(){};
+    private SwissBounds(){}
 
-    public static double MIN_E = 2_485_000;
-    public static double MAX_E = 2_834_000;
-    public static double MIN_N = 1_075_000;
-    public static double MAX_N = 1_296_000;
-    public static double WIDTH = MAX_E - MIN_E;
-    public static double HEIGHT = MAX_N - MIN_N;
+    public final static double MIN_E = 2_485_000;
+    public final static double MAX_E = 2_834_000;
+    public final static double MIN_N = 1_075_000;
+    public final static double MAX_N = 1_296_000;
+    public final static double WIDTH = MAX_E - MIN_E;
+    public final static double HEIGHT = MAX_N - MIN_N;
 
     /**
      * checks the if the point is within Switzerland

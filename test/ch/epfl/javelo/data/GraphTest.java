@@ -42,6 +42,5 @@ class GraphTest {
         closestNode = graph.nodePoint(nodeId);
         assertEquals(2533692.3125, closestNode.e());
         assertEquals(1152305.0, closestNode.n());
-
     }
 }

@@ -1,8 +1,6 @@
 package ch.epfl.javelo;
 
-import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.Function;
 
 /**
  * This class implements multiple mathematical functions

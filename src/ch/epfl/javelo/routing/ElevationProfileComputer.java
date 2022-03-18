@@ -1,7 +1,6 @@
 package ch.epfl.javelo.routing;
 
 import java.util.Arrays;
-import java.util.List;
 
 public final class ElevationProfileComputer {
     private ElevationProfileComputer() {

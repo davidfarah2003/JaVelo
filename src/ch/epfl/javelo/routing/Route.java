@@ -33,8 +33,7 @@ public interface Route {
     PointCh pointAt(double position);
 
     /**
-     *
-     * @param position
+     * @param position (Double)
      * @return the elevation at a given point along the itinerary
      */
     double elevationAt(double position);

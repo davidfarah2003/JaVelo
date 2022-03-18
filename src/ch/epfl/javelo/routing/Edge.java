@@ -3,8 +3,6 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
-import ch.epfl.javelo.projection.SwissBounds;
-
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -21,7 +19,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * @param toNodeId : ID of the ending node
      * @return a new Edge
      */
-    static Edge of(Graph graph, int edgeId, int fromNodeId, int toNodeId){
+    public static Edge of(Graph graph, int edgeId, int fromNodeId, int toNodeId){
         return new Edge(fromNodeId, toNodeId, graph.nodePoint(fromNodeId),
                 graph.nodePoint(toNodeId), graph.edgeLength(edgeId), graph.edgeProfile(edgeId));
     }

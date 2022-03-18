@@ -1,7 +1,6 @@
 package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Functions;
-import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.io.IOException;
