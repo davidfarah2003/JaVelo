@@ -8,80 +8,64 @@ public final class ElevationProfileComputer {
     private ElevationProfileComputer() {
     }
 
-    ElevationProfile elevationProfile(Route route, double maxStepLength) {
+    static ElevationProfile elevationProfile(Route route, double maxStepLength) {
 
         int numberOfSamples = 1 + (int) Math.ceil(route.length() / maxStepLength);
         double intervalLength = route.length() / (numberOfSamples - 1);
         float[] profile = new float[numberOfSamples];
 
-
-        for (int j = 0; j < profile.length; j++){
-            profile[j] = (float) route.elevationAt(j * intervalLength);
+        for (int sample = 0; sample < profile.length; sample++) {
+            profile[sample] = (float) route.elevationAt(sample * intervalLength);
         }
 
-        int k = 0;
-        while((k < profile.length && Float.isNaN(profile[k]))){
-            k++;
+        int indexFirstNumber = 0;
+        while ((indexFirstNumber < profile.length && Float.isNaN(profile[indexFirstNumber]))) {
+            indexFirstNumber++;
         }
 
-        if (k == profile.length){
+        // assigning each sample an elevation equal to 0 if no valid sample exists
+        if (indexFirstNumber == profile.length) {
             Arrays.fill(profile, 0);
-            return new ElevationProfile(route.length(), profile);
+        } else {
+
+            Arrays.fill(profile, 0, indexFirstNumber, profile[indexFirstNumber]);
+
+            int indexFirstNumberEnd = profile.length - 1;
+            while (Float.isNaN(profile[indexFirstNumberEnd])) {
+                indexFirstNumberEnd--;
+            }
+            Arrays.fill(profile, indexFirstNumberEnd + 1, profile.length, profile[indexFirstNumberEnd]);
+
+            int left = indexFirstNumber;
+            int right;
+            double y0;
+            double y1;
+
+            while (left < indexFirstNumberEnd) {
+                left++;
+
+                if (!Float.isNaN(profile[left])) { // if it is a number
+                    continue;
+                }
+
+                left--; // index of the number just before a NaN
+                right = left + 2; //making space
+
+                while (Float.isNaN(profile[right])) {
+                    right++;
+                }
+
+                y0 = profile[left];
+                y1 = profile[right];
+                for (int NaNindex = left + 1; NaNindex < right; NaNindex++) {
+                    profile[NaNindex] = (float) Math2.interpolate(y0, y1, (double) (NaNindex - left) / (right - left));
+                }
+            }
+
         }
-
-        Arrays.fill(profile, 0, k, profile[k]);
-
-
-       // while (l different than )
-        int l = profile.length - 1;
-        while(Float.isNaN(profile[l])){
-            l--;
-        }
-        Arrays.fill(profile, l, profile.length, profile[l]);
-
-        int left = k;
-        int right;
-
-       while (left < l) {
-               left++;
-
-           if (!Float.isNaN(profile[left])) { // while is a number
-             continue;
-           }
-
-           left--;
-           right = left + 2; //dernier N
-
-           while (Float.isNaN(profile[right])) {
-               right++;
-           }
-
-           double y0 = profile[left];
-           double y1 = profile[right];
-           for (int a = left + 1; a < right; a++) {
-               profile[a] = (float) Math2.interpolate(y0, y1, (double) (a - left) / (right - left));
-           }
-       }
-
         return new ElevationProfile(route.length(), profile);
-
-/*
-        for (int m = 0; m < profile.length; m++){
-            if (Float.isNaN(profile[m])){
-                first_index = m - 1;
-                break;
-            }
-        }
-
-        int last_index = 0;
-        for (int n = 0; n < profile.length; n++){
-            if (!Float.isNaN(profile[n]) && Float.isNaN(profile[n-1])){
-                last_index = n;
-                break;
-                */
-
-            }
-        }
+    }
+}
 
 
 

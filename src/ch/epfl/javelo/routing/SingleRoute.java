@@ -141,10 +141,17 @@ public final class SingleRoute implements Route{
 
         }
         else{
+
+            int edgeIndex = -result -2;
+            double x = position - edgesSearch[edgeIndex];
+            return edges.get(edgeIndex).elevationAt(x);
             //get index of the next closest node (if the position is not on an end node)
+            /*
             result = -(result + 1);
             position = edgesSearch[result] - position;
             return edges.get(result-1).elevationAt(position);
+            */
+
         }
     }
 
