@@ -1,7 +1,6 @@
 package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Preconditions;
-import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.util.ArrayList;
@@ -117,7 +116,7 @@ public final class SingleRoute implements Route{
         }
         else{
             result = -(result + 1);
-            position = edgesSearch[result] - position;
+            position = position - edgesSearch[result];
             return edges.get(result-1).pointAt(position);
         }
     }
@@ -142,15 +141,18 @@ public final class SingleRoute implements Route{
         }
         else{
 
+            /*
             int edgeIndex = -result -2;
             double x = position - edgesSearch[edgeIndex];
             return edges.get(edgeIndex).elevationAt(x);
+
+             */
             //get index of the next closest node (if the position is not on an end node)
-            /*
+
             result = -(result + 1);
-            position = edgesSearch[result] - position;
+            position = position - edgesSearch[result];
             return edges.get(result-1).elevationAt(position);
-            */
+
 
         }
     }
