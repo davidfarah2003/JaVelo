@@ -23,12 +23,14 @@ class ElevationProfileComputerTest {
 
 
         edges.add(new Edge(1,2, point1, point2, 7071, Functions.sampled(new float[]{20, 22, 24, 19},7071)));
-        edges.add(new Edge(2,3, point2, point3, 10_000, Functions.sampled(new float[]{19, 25, 30, 35},10_000)));
+        edges.add(new Edge(2,3, point2, point3, 10_000, Functions.sampled(new float[]{19, 10, 30, 35},10_000)));
         SingleRoute route = new SingleRoute(edges);
         ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 100);
         System.out.println(profile.length());
         System.out.println(profile.totalAscent());
         System.out.println(profile.totalDescent());
+        System.out.println(profile.minElevation());
+        System.out.println(profile.maxElevation());
         System.out.println(profile.elevationAt(7071));
 
     }

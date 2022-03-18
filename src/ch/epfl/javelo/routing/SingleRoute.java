@@ -1,6 +1,7 @@
 package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Preconditions;
+import ch.epfl.javelo.projection.Ch1903;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.util.ArrayList;
@@ -106,7 +107,6 @@ public final class SingleRoute implements Route{
      */
     @Override
     public PointCh pointAt(double position) {
-        //recheck indexes
         position = Math.max(0, position);
         position = Math.min(position, routeLength);
 
@@ -116,14 +116,15 @@ public final class SingleRoute implements Route{
             return points.get(result);
         }
         else{
+            int edgeIndex = -result - 2;
+            double x = position - edgesSearch[edgeIndex];
+            return edges.get(edgeIndex).pointAt(x);
             /*
             result = -(result + 1);
             position = position - edgesSearch[result];
             return edges.get(result-1).pointAt(position);
+
              */
-            result = -(result + 2);
-            position = position - edgesSearch[result];
-            return edges.get(result).pointAt(position);
         }
     }
 
@@ -146,10 +147,17 @@ public final class SingleRoute implements Route{
 
         }
         else{
+
+            int edgeIndex = -result -2;
+           double x = position - edgesSearch[edgeIndex];
+           return edges.get(edgeIndex).elevationAt(x);
+
             //get index of the next closest node (if the position is not on an end node)
-            result = -(result + 2);
-            position = position - edgesSearch[result];
-            return edges.get(result).elevationAt(position);
+
+          //  result = -(result + 1);
+          //  position = position - edgesSearch[result];
+          //  return edges.get(result-1).elevationAt(position);
+
 
         }
     }
@@ -160,26 +168,34 @@ public final class SingleRoute implements Route{
      */
     @Override
     public int nodeClosestTo(double position) {
-        //How tf do I get an ID?
-
         position = Math.max(0, position);
         position = Math.min(position, routeLength);
-
-
         int result = Arrays.binarySearch(edgesSearch, position);
 
-        if(result >= 0){
-            //return points.get(result);
+        if(result == edges.size()) {
+            return edges.get(result - 1).toNodeId();
+        }
+
+        else if (result >= 0){
+            return edges.get(result).fromNodeId();
 
         }
         else{
-            //get index of the next closest node (if the position is not on an end node)
-            result = -(result + 1);
-            position = edgesSearch[result] - position;
-            //return edges.get(result-1).elevationAt(position);
+            int edgeIndex = -result -2;
+            PointCh start = edges.get(edgeIndex).fromPoint();
+            PointCh end = edges.get(edgeIndex).toPoint();
+            PointCh interest = pointAt(position);
+
+            if ((start.squaredDistanceTo(interest) <= end.squaredDistanceTo(interest))){
+                return edges.get(edgeIndex).fromNodeId();
+            }
+            else{
+                return edges.get(edgeIndex).toNodeId();
+            }
+
         }
 
-        return 0;
+
     }
 
     /**
