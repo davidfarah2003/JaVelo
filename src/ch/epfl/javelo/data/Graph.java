@@ -1,6 +1,7 @@
 package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Functions;
+import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.io.IOException;
@@ -116,7 +117,7 @@ public final class Graph {
      * or -1 if no node matches these criteria
      */
     public int nodeClosestTo(PointCh point, double searchDistance){
-        double closestDistance = Math.pow(searchDistance, 2);
+        double closestDistance = Double.POSITIVE_INFINITY;
         int closestNodeIdentity = -1;
         double distanceToSquared;
 

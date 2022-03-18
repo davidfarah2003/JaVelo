@@ -33,6 +33,13 @@ public interface Route {
     PointCh pointAt(double position);
 
     /**
+     *
+     * @param position
+     * @return the elevation at a given point along the itinerary
+     */
+    double elevationAt(double position);
+
+    /**
      * @param position (Double)
      * @return the identity of the node belonging to the route and located closest to the given position
      */
