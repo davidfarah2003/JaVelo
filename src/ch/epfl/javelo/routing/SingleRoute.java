@@ -1,5 +1,6 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.Ch1903;
 import ch.epfl.javelo.projection.PointCh;
@@ -107,9 +108,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public PointCh pointAt(double position) {
-        position = Math.max(0, position);
-        position = Math.min(position, routeLength);
-
+        position = Math2.clamp(0, position, routeLength);
         int result = Arrays.binarySearch(edgesSearch, position);
 
         if(result >= 0){
@@ -134,8 +133,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public double elevationAt(double position) {
-        position = Math.max(0, position);
-        position = Math.min(position, routeLength);
+        position = Math2.clamp(0, position, routeLength);
 
         int result = Arrays.binarySearch(edgesSearch, position);
 
@@ -168,8 +166,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public int nodeClosestTo(double position) {
-        position = Math.max(0, position);
-        position = Math.min(position, routeLength);
+        position = Math2.clamp(0, position, routeLength);
         int result = Arrays.binarySearch(edgesSearch, position);
 
         if(result == edges.size()) {
@@ -203,6 +200,24 @@ public final class SingleRoute implements Route{
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        return null;
+        double distanceToReference = Double.POSITIVE_INFINITY;
+        double projectionLengthEdge = 0;
+        double distanceToReferenceEdgeI;
+        double projectionLengthEdgeI;
+        boolean value = false;
+
+        for (int i = 0; i < edges.size(); i++){
+            projectionLengthEdgeI = edges.get(i).positionClosestTo(point);
+            distanceToReferenceEdgeI = edges.get(i).pointAt(projectionLengthEdgeI).distanceTo(point);
+           if (projectionLengthEdgeI <= edges.get(i).length() && projectionLengthEdgeI >= 0 && distanceToReferenceEdgeI < distanceToReference){
+                   value = true;
+                   projectionLengthEdge = edgesSearch[i] + projectionLengthEdgeI;
+                   distanceToReference = distanceToReferenceEdgeI;
+
+
+           }
+       }
+
+        return (value? new RoutePoint(pointAt(projectionLengthEdge), projectionLengthEdge, distanceToReference) : RoutePoint.NONE);
     }
 }
