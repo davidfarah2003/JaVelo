@@ -207,13 +207,14 @@ public final class SingleRoute implements Route{
         boolean value = false;
 
         for (int i = 0; i < edges.size(); i++){
+
             projectionLengthEdgeI = edges.get(i).positionClosestTo(point);
             distanceToReferenceEdgeI = edges.get(i).pointAt(projectionLengthEdgeI).distanceTo(point);
+
            if (projectionLengthEdgeI <= edges.get(i).length() && projectionLengthEdgeI >= 0 && distanceToReferenceEdgeI < distanceToReference){
                    value = true;
                    projectionLengthEdge = edgesSearch[i] + projectionLengthEdgeI;
                    distanceToReference = distanceToReferenceEdgeI;
-
 
            }
        }

@@ -11,11 +11,12 @@ public final class ElevationProfileComputer {
     static ElevationProfile elevationProfile(Route route, double maxStepLength) {
 
         int numberOfSamples = 1 + (int) Math.ceil(route.length() / maxStepLength);
-        double intervalLength = route.length() / (numberOfSamples - 1);
+       // double intervalLength = route.length() / (numberOfSamples - 1);
         float[] profile = new float[numberOfSamples];
 
         for (int sample = 0; sample < profile.length; sample++) {
-            profile[sample] = (float) route.elevationAt(sample * intervalLength);
+            profile[sample] = (float) route.elevationAt(sample * maxStepLength);
+            System.out.println(profile[sample] + " " + sample);
         }
 
         int indexFirstNumber = 0;

@@ -79,7 +79,7 @@ public final class ElevationProfile {
      * @return the positive value of the sum of all negative differences between a sample and its predecessor.
      */
     public double totalDescent(){
-        return -descent;
+        return Math.abs(descent);
     }
 
     /**
