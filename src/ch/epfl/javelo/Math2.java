@@ -52,16 +52,10 @@ public final class Math2 {
      */
     public static double clamp(double min, double v, double max){
         Preconditions.checkArgument(min <= max);
-        if (v <= min) {
-            return min;
-        }
-        else if (v >= max) {
-            return max;
-            }
-        else {
-            return v;
-            }
-        }
+        v = Math.max(v, 0);
+        v = Math.min(v, max);
+        return v;
+    }
 
     /**
      * @param x : double value (input)
