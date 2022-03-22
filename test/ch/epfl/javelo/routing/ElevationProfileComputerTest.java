@@ -23,55 +23,26 @@ class ElevationProfileComputerTest {
         //Math.sqrt(2 * Math.pow(5000,2))
         // Math.sqrt(Math.pow(3000,2) + Math.pow(6000,2))
 
-        edges.add(new Edge(1, 2, point1, point2, Math.sqrt(2 * Math.pow(5000,2)), Functions.constant(Double.NaN)));
-        edges.add(new Edge(2, 3, point2, point3, Math.sqrt(Math.pow(3000,2) + Math.pow(6000,2)), Functions.sampled(new float[]{20, 23, Float.NaN, 21}, Math.sqrt(Math.pow(3000,2) + Math.pow(6000,2)))));
+        edges.add(new Edge(1, 2, point1, point2, 6, Functions.constant(Double.NaN)));
+        edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{20, 23, Float.NaN, 21}, 6)));
         SingleRoute route = new SingleRoute(edges);
-      //  System.out.println(route.length());
-     //  assertEquals(Float.NaN, route.elevationAt(0));
-     //  assertEquals(Float.NaN, route.elevationAt(2));
-     //  assertEquals(Float.NaN, route.elevationAt(4));
 
-       // System.out.println(route.elevationAt( Math.sqrt(2 * Math.pow(5000,2))));
-    //    System.out.println(route.elevationAt(11544));
-
-        System.out.println(edges.get(0).length());
-        System.out.println(edges.get(1).length());
-        System.out.println(route.pointClosestTo(point2));
-        System.out.println(route.pointClosestTo(point1));
-        System.out.println(route.pointClosestTo(point3));
-        System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 4000, SwissBounds.MIN_N + 4000)));
-        System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 30000, SwissBounds.MIN_N + 30000)));
-        System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 5000, SwissBounds.MIN_N + 10000)));
-        System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 5000, SwissBounds.MIN_N + 6000)));
-        System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 4000, SwissBounds.MIN_N + 9000)));
-       System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 10000, SwissBounds.MIN_N + 13_000)));
+        System.out.println(route.elevationAt(10));
+        System.out.println(route.elevationAt(11));
 
         ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
-       boolean test = true;
-        for (int l = 0; l < 6891; l++){
-            System.out.println(profile.elevationAt(l * 2));
-            if (Double.isNaN(profile.elevationAt(l * 2))){
-               test = false;
-           }
-        }
-
-        System.out.println(test);
-
-
-
-       // assertEquals(38, profile.elevationAt(0));
-       //assertEquals(38, profile.elevationAt(2));
-      //  assertEquals(38, profile.elevationAt(4));
-      //  assertEquals(34, profile.elevationAt(8));
-      //  assertEquals(8, profile.totalDescent());
-      //  assertEquals(315, profile.totalAscent());
-      //  assertEquals(345, profile.maxElevation());
-      //  assertEquals(30, profile.minElevation());
-      //  assertEquals(12, profile.length());
-
-
-
-
+        assertEquals(20, profile.elevationAt(0));
+        assertEquals(20, profile.elevationAt(-6));
+        assertEquals(23, profile.elevationAt(8));
+        assertEquals(21.5, profile.elevationAt(7));
+        assertEquals(22, profile.elevationAt(10));
+        assertEquals(21, profile.elevationAt(30));
+        assertEquals(21.5, profile.elevationAt(11));
+        assertEquals(3, profile.totalAscent());
+        assertEquals(2, profile.totalDescent());
+        assertEquals(12, profile.length());
+        assertEquals(23, profile.maxElevation());
+        assertEquals(20, profile.minElevation());
 
     }
 
@@ -87,24 +58,32 @@ class ElevationProfileComputerTest {
         edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{Float.NaN, Float.NaN, Float.NaN, Float.NaN}, 6)));
 
         SingleRoute route = new SingleRoute(edges);
-        PointCh test = route.pointAt(2);
-        PointCh test1 = route.pointAt(-45);
-        PointCh test2 = route.pointAt(600);
-
-        System.out.println(route.nodeClosestTo(-6));
-        System.out.println(route.nodeClosestTo(50));
-        System.out.println(route.nodeClosestTo(12));
-        System.out.println(route.nodeClosestTo(6));
-
-        System.out.println(test);
-        System.out.println(route.pointAt(6));
+        PointCh test1 = route.pointAt(2);
         System.out.println(test1);
+        PointCh test2 = route.pointAt(4);
         System.out.println(test2);
 
 
-        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
+       // System.out.println(route.nodeClosestTo(-6));
+       // System.out.println(route.nodeClosestTo(50));
+       // System.out.println(route.nodeClosestTo(12));
+        //System.out.println(route.nodeClosestTo(6));
 
-        assertEquals(0, profile.elevationAt(7));
+        double value = point1.e() + (point2.e() - point1.e())/3;
+        assertEquals(value , test1.e());
+
+        double value2 = point1.n() + (point2.n() - point1.n())/3;
+        assertEquals(value2, test1.n());
+        assertEquals(point1.n() + (point2.n() - point1.n())/1.5, test2.n());
+        assertEquals(point1.e() + (point2.e() - point1.e())/1.5, test2.e());
+
+        System.out.println(route.elevationAt(3));
+        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
+        System.out.println(profile.elevationAt(3));
+
+
+
+
 
 
     }
