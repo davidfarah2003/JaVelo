@@ -17,8 +17,8 @@ class PointWebMercatorTest {
     void ofPointCh() {
         PointCh learningCenter = new PointCh(2_533_132, 1_152_206);
         PointWebMercator test = PointWebMercator.ofPointCh(learningCenter);
-        System.out.println(test.x());
-        System.out.println(test.y());
+        //System.out.println(test.x());
+        //System.out.println(test.y());
     }
 
     @Test
