@@ -125,16 +125,13 @@ public final class SingleRoute implements Route {
     @Override
     public double elevationAt(double position) {
         position = Math2.clamp(0, position, routeLength);
-
         int result = Arrays.binarySearch(edgesSearch, position);
 
         if (result >= 0) {
-            //checks if we are on the last node
             return result == edges.size() ?
                     edges.get(result - 1).elevationAt(edges.get(result - 1).length())
                     : edges.get(result).elevationAt(0);
         } else {
-            //get index of the next closest node (if the position is not on an end node)
             int edgeIndex = -result - 2;
             double x = position - edgesSearch[edgeIndex];
             return edges.get(edgeIndex).elevationAt(x);

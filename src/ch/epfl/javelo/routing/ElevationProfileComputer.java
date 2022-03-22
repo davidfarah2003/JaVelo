@@ -14,9 +14,9 @@ public final class ElevationProfileComputer {
 
     /**
      *
-     * @param route
-     * @param maxStepLength
-     * @return
+     * @param route a route (implementing the interface) representing the itinerary
+     * @param maxStepLength maximal distance between two samples from the profile
+     * @return a new Elevation Profile
      */
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) {
         int numberOfSamples = 1 + (int) Math.ceil(route.length() / maxStepLength);
@@ -96,10 +96,12 @@ public final class ElevationProfileComputer {
             realNumberBeforeIndex = firstNanIndex - 1;
             realNumberAfterIndex = realNumberBeforeIndex + 2;
 
+            // finding the next real number after the hole
             while (Float.isNaN(profile[realNumberAfterIndex])) {
                 realNumberAfterIndex++;
             }
 
+            // doing the interpolation for all NaN samples using the valid samples at the extremities of the hole
             for(int NanIndex = firstNanIndex; NanIndex < realNumberAfterIndex; NanIndex++) {
                 profile[NanIndex] = (float) Math2.interpolate(
                         profile[realNumberBeforeIndex],
