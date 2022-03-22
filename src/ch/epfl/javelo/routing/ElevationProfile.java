@@ -42,7 +42,7 @@ public final class ElevationProfile {
         for (float number : elevationSamples){
             statistics.accept(number);
         }
-        profile = Functions.sampled(elevationSamples, length());
+        profile = Functions.sampled(elevationSamples, length);
     }
 
 

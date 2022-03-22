@@ -2,6 +2,7 @@ package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
+import ch.epfl.javelo.projection.Ch1903;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public final class SingleRoute implements Route{
     private final List<PointCh> points;
     private final double[] edgesSearch;
     private final double routeLength;
+
 
 
     /**
@@ -116,6 +118,12 @@ public final class SingleRoute implements Route{
             int edgeIndex = -result - 2;
             double x = position - edgesSearch[edgeIndex];
             return edges.get(edgeIndex).pointAt(x);
+            /*
+            result = -(result + 1);
+            position = position - edgesSearch[result];
+            return edges.get(result-1).pointAt(position);
+
+             */
         }
     }
 
@@ -134,12 +142,21 @@ public final class SingleRoute implements Route{
             return result == edges.size() ?
                     edges.get(result-1).elevationAt(edges.get(result-1).length())
                     : edges.get(result).elevationAt(0);
+
         }
         else{
-            //get index of the next closest node (if the position is not on an end node)
+
             int edgeIndex = -result -2;
-            double x = position - edgesSearch[edgeIndex];
-            return edges.get(edgeIndex).elevationAt(x);
+           double x = position - edgesSearch[edgeIndex];
+           return edges.get(edgeIndex).elevationAt(x);
+
+            //get index of the next closest node (if the position is not on an end node)
+
+          //  result = -(result + 1);
+          //  position = position - edgesSearch[result];
+          //  return edges.get(result-1).elevationAt(position);
+
+
         }
     }
 
@@ -155,8 +172,10 @@ public final class SingleRoute implements Route{
         if(result == edges.size()) {
             return edges.get(result - 1).toNodeId();
         }
+
         else if (result >= 0){
             return edges.get(result).fromNodeId();
+
         }
         else{
             int edgeIndex = -result -2;
@@ -169,7 +188,10 @@ public final class SingleRoute implements Route{
             else{
                 return edges.get(edgeIndex).toNodeId();
             }
+
         }
+
+
     }
 
     /**
@@ -182,15 +204,21 @@ public final class SingleRoute implements Route{
         double projectionLengthEdge = 0;
         double distanceToReferenceEdgeI;
         double projectionLengthEdgeI;
-        boolean value = false;
+       // boolean value = false;
+        RoutePoint returnedValue = RoutePoint.NONE;
 
         for (int i = 0; i < edges.size(); i++){
 
             projectionLengthEdgeI = edges.get(i).positionClosestTo(point);
-            distanceToReferenceEdgeI = edges.get(i).pointAt(projectionLengthEdgeI).distanceTo(point);
+            double clamped = Math2.clamp(0, projectionLengthEdgeI, edges.get(i).length());
+            distanceToReferenceEdgeI = edges.get(i).pointAt(clamped).distanceTo(point);
+            returnedValue = returnedValue.min(edges.get(i).pointAt(clamped), )
 
-           if (projectionLengthEdgeI <= edges.get(i).length() && projectionLengthEdgeI >= 0 && distanceToReferenceEdgeI < distanceToReference){
-                   value = true;
+
+           if (distanceToReferenceEdgeI < distanceToReference){
+               double clamped = Math2.clamp(0, projectionLengthEdgeI, edges.get(i).length());
+
+                 //  value = true;
                    projectionLengthEdge = edgesSearch[i] + projectionLengthEdgeI;
                    distanceToReference = distanceToReferenceEdgeI;
 
