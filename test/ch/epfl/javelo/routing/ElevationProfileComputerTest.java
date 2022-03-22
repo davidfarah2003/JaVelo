@@ -46,16 +46,16 @@ class ElevationProfileComputerTest {
         System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 4000, SwissBounds.MIN_N + 9000)));
        System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 10000, SwissBounds.MIN_N + 13_000)));
 
-        //ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
-       // boolean test = true;
-       // for (int l = 0; l < 6891; l++){
-       //     System.out.println(profile.elevationAt(l * 2));
-        //    if (Double.isNaN(profile.elevationAt(l * 2))){
-       //         test = false;
-       //     }
-       // }
+        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
+       boolean test = true;
+        for (int l = 0; l < 6891; l++){
+            System.out.println(profile.elevationAt(l * 2));
+            if (Double.isNaN(profile.elevationAt(l * 2))){
+               test = false;
+           }
+        }
 
-      //  System.out.println(test);
+        System.out.println(test);
 
 
 

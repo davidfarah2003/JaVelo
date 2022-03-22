@@ -77,15 +77,15 @@ public final class ElevationProfileComputer {
 
     /**
      * Fill the remaining NaN values in the array
-     * @param startIndex index where we start on the array
-     * @param endIndex index where we stop on the array
+     * @param indexFirstNumber index where we start on the array
+     * @param indexFirstNumberEnd index where we stop on the array
      */
-    private static void fillIntermediateNanValues(int startIndex, int endIndex){
-        int firstNanIndex = startIndex;
-        int RealNumberAfterIndex;
-        int RealNumberBeforeIndex;
+    private static void fillIntermediateNanValues(int indexFirstNumber, int indexFirstNumberEnd){
+        int firstNanIndex = indexFirstNumber;
+        int realNumberAfterIndex;
+        int realNumberBeforeIndex;
 
-        while (firstNanIndex < endIndex) {
+        while (firstNanIndex < indexFirstNumberEnd) {
             firstNanIndex++;
 
             //skip index if it's a real number
@@ -93,18 +93,18 @@ public final class ElevationProfileComputer {
                 continue;
             }
 
-            RealNumberBeforeIndex = firstNanIndex - 1;
-            RealNumberAfterIndex = firstNanIndex + 2;
+            realNumberBeforeIndex = firstNanIndex - 1;
+            realNumberAfterIndex = realNumberBeforeIndex + 2;
 
-            while (Float.isNaN(profile[RealNumberAfterIndex])) {
-                RealNumberAfterIndex++;
+            while (Float.isNaN(profile[realNumberAfterIndex])) {
+                realNumberAfterIndex++;
             }
 
-            for(int NanIndex = firstNanIndex + 1; NanIndex < RealNumberAfterIndex; NanIndex++) {
+            for(int NanIndex = firstNanIndex; NanIndex < realNumberAfterIndex; NanIndex++) {
                 profile[NanIndex] = (float) Math2.interpolate(
-                        profile[RealNumberBeforeIndex],
-                        profile[RealNumberAfterIndex],
-                        (double)(NanIndex - RealNumberBeforeIndex) / (RealNumberAfterIndex - RealNumberBeforeIndex)
+                        profile[realNumberBeforeIndex],
+                        profile[realNumberAfterIndex],
+                        (double)(NanIndex - realNumberBeforeIndex) / (realNumberAfterIndex - realNumberBeforeIndex)
                 );
             }
 
