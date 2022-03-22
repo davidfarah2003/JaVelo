@@ -52,7 +52,7 @@ public final class Math2 {
      */
     public static double clamp(double min, double v, double max){
         Preconditions.checkArgument(min <= max);
-        v = Math.max(v, 0);
+        v = Math.max(v, min);
         v = Math.min(v, max);
         return v;
     }
