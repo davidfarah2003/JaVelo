@@ -79,7 +79,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @param edgeId id of the edge
      * @return the array of samples of the profile of the edge with the given identity,
      * which is empty if the edge does not have a profile
-     * ask about this method. not very clear
      */
     public float[] profileSamples(int edgeId){
         if(!hasProfile(edgeId)) {

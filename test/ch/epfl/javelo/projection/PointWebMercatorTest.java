@@ -42,7 +42,7 @@ class PointWebMercatorTest {
     void toPointChTest() {
         PointWebMercator pointTest = new PointWebMercator( 0.518275214444, 0.253664894749);
         PointCh pointCh = pointTest.toPointCh();
-        pointCh.e();
+        //pointCh.e();
 
     }
 }

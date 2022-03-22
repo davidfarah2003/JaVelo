@@ -12,7 +12,6 @@ class GraphEdgesTest {
 
     @Test
     void isInverted() {
-
         ByteBuffer edgesBuffer = ByteBuffer.allocate(10);
 // Sens : inversé. Nœud destination : 12.
         edgesBuffer.putInt(0, ~12);
@@ -40,9 +39,6 @@ class GraphEdgesTest {
 
         });
 
-
-
-
         ShortBuffer elevations = ShortBuffer.wrap(new short[]{
                 (short) 0,
                 (short) 0x180C, (short) 0xFEFF,
@@ -61,7 +57,7 @@ class GraphEdgesTest {
                 384.0625f, 384.125f, 384.25f, 384.3125f, 384.375f,
                 384.4375f, 384.5f, 384.5625f, 384.6875f, 384.75f
         };
-        assertArrayEquals(expectedSamples, edges.profileSamples(1));
+        assertArrayEquals(expectedSamples, edges.profileSamples(0));
     }
 
     @Test
