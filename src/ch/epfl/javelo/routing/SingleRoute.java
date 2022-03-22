@@ -16,7 +16,6 @@ public final class SingleRoute implements Route{
     private final double routeLength;
 
 
-
     /**
      * @param edges given edges that form the route
      * constructs the simple route composed of the given edges, or throws IllegalArgumentException if the list of edges is empty
@@ -118,12 +117,6 @@ public final class SingleRoute implements Route{
             int edgeIndex = -result - 2;
             double x = position - edgesSearch[edgeIndex];
             return edges.get(edgeIndex).pointAt(x);
-            /*
-            result = -(result + 1);
-            position = position - edgesSearch[result];
-            return edges.get(result-1).pointAt(position);
-
-             */
         }
     }
 
@@ -142,21 +135,12 @@ public final class SingleRoute implements Route{
             return result == edges.size() ?
                     edges.get(result-1).elevationAt(edges.get(result-1).length())
                     : edges.get(result).elevationAt(0);
-
         }
         else{
-
-            int edgeIndex = -result -2;
-           double x = position - edgesSearch[edgeIndex];
-           return edges.get(edgeIndex).elevationAt(x);
-
             //get index of the next closest node (if the position is not on an end node)
-
-          //  result = -(result + 1);
-          //  position = position - edgesSearch[result];
-          //  return edges.get(result-1).elevationAt(position);
-
-
+            int edgeIndex = -result -2;
+            double x = position - edgesSearch[edgeIndex];
+            return edges.get(edgeIndex).elevationAt(x);
         }
     }
 
@@ -188,10 +172,7 @@ public final class SingleRoute implements Route{
             else{
                 return edges.get(edgeIndex).toNodeId();
             }
-
         }
-
-
     }
 
     /**

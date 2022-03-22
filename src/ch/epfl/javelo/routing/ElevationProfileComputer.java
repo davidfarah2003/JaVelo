@@ -8,7 +8,7 @@ public final class ElevationProfileComputer {
     private ElevationProfileComputer() {
     }
 
-    static ElevationProfile elevationProfile(Route route, double maxStepLength) {
+    public static ElevationProfile elevationProfile(Route route, double maxStepLength) {
 
         int numberOfSamples = 1 + (int) Math.ceil(route.length() / maxStepLength);
        double intervalLength = route.length() / (numberOfSamples - 1);
