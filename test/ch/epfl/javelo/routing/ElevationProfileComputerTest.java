@@ -34,7 +34,8 @@ class ElevationProfileComputerTest {
        // System.out.println(route.elevationAt( Math.sqrt(2 * Math.pow(5000,2))));
     //    System.out.println(route.elevationAt(11544));
 
-
+        System.out.println(edges.get(0).length());
+        System.out.println(edges.get(1).length());
         System.out.println(route.pointClosestTo(point2));
         System.out.println(route.pointClosestTo(point1));
         System.out.println(route.pointClosestTo(point3));
@@ -45,28 +46,28 @@ class ElevationProfileComputerTest {
         System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 4000, SwissBounds.MIN_N + 9000)));
        System.out.println(route.pointClosestTo(new PointCh(SwissBounds.MIN_E + 10000, SwissBounds.MIN_N + 13_000)));
 
-        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
-        boolean test = true;
-        for (int l = 0; l < 6891; l++){
-            System.out.println(profile.elevationAt(l * 2));
-            if (Double.isNaN(profile.elevationAt(l * 2))){
-                test = false;
-            }
-        }
+        //ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
+       // boolean test = true;
+       // for (int l = 0; l < 6891; l++){
+       //     System.out.println(profile.elevationAt(l * 2));
+        //    if (Double.isNaN(profile.elevationAt(l * 2))){
+       //         test = false;
+       //     }
+       // }
 
-        System.out.println(test);
+      //  System.out.println(test);
 
 
 
-        assertEquals(38, profile.elevationAt(0));
-       assertEquals(38, profile.elevationAt(2));
-        assertEquals(38, profile.elevationAt(4));
-        assertEquals(34, profile.elevationAt(8));
-        assertEquals(8, profile.totalDescent());
-        assertEquals(315, profile.totalAscent());
-        assertEquals(345, profile.maxElevation());
-        assertEquals(30, profile.minElevation());
-        assertEquals(12, profile.length());
+       // assertEquals(38, profile.elevationAt(0));
+       //assertEquals(38, profile.elevationAt(2));
+      //  assertEquals(38, profile.elevationAt(4));
+      //  assertEquals(34, profile.elevationAt(8));
+      //  assertEquals(8, profile.totalDescent());
+      //  assertEquals(315, profile.totalAscent());
+      //  assertEquals(345, profile.maxElevation());
+      //  assertEquals(30, profile.minElevation());
+      //  assertEquals(12, profile.length());
 
 
 
