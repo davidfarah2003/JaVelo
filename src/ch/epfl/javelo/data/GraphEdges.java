@@ -9,6 +9,7 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
     private static final int OFFSET_EDGE_DIRECTION_AND_ID = 0;
@@ -81,7 +82,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * ask about this method. not very clear
      */
     public float[] profileSamples(int edgeId){
-
         if(!hasProfile(edgeId)) {
             return new float[]{};
         }
@@ -96,7 +96,15 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         int profileId = profileIds.get(edgeId);
         switch (Bits.extractUnsigned(profileId, 30, 2)){
             case 1 -> {
-                for (int j = 1; j < nbSamples; j++) {profileSamples.add(Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idFirstSample + j))));}
+                for (int j = 1; j < nbSamples; j++) {
+                    profileSamples.add(
+                            Q28_4.asFloat(
+                                    Short.toUnsignedInt(
+                                            elevations.get(idFirstSample + j)
+                                    )
+                            )
+                    );
+                }
             }
 
             case 2 -> updateArrayFromCompressed(8, nbSamples, idFirstSample, profileSamples);
@@ -129,7 +137,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @param idFirstSample id of the first sample
      * @param profileSamples Array that stores the samples (already contains the first one)
      */
-    private void updateArrayFromCompressed(int bitsPerValue, int nbSamples, int idFirstSample, ArrayList<Float> profileSamples){
+    private void updateArrayFromCompressed(int bitsPerValue, int nbSamples, int idFirstSample, List<Float> profileSamples){
         int i = 1;
         int idCounter = 1;
         int bitCounter = 16 - bitsPerValue;
