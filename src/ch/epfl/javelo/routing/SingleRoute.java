@@ -24,7 +24,7 @@ public final class SingleRoute implements Route {
         this.edges = List.copyOf(edges);
         this.routeLength = calculateLength();
         this.edgesLength = buildEdgesSearch();
-        this.points = buildPoints();
+        this.points = List.copyOf(buildPoints()); //to make it immutable
     }
 
 
