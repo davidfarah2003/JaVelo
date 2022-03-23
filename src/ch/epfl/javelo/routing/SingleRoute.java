@@ -17,14 +17,14 @@ public final class SingleRoute implements Route {
 
     /**
      * @param edges given edges that form the route
-     *              constructs the simple route composed of the given edges, or throws IllegalArgumentException if the list of edges is empty
+     * constructs the simple route composed of the given edges, or throws IllegalArgumentException if the list of edges is empty
      */
     SingleRoute(List<Edge> edges) {
         Preconditions.checkArgument(!edges.isEmpty());
         this.edges = List.copyOf(edges);
         this.routeLength = calculateLength();
         this.edgesSearch = buildEdgesSearch();
-        this.points = List.copyOf(buildPoints());
+        this.points = buildPoints();
     }
 
 
@@ -38,6 +38,7 @@ public final class SingleRoute implements Route {
         }
         return length;
     }
+
 
     /**
      * @return double array containing the position of the end nodes of each edge used to determine the index
@@ -57,6 +58,9 @@ public final class SingleRoute implements Route {
     }
 
 
+    /**
+     * @return the list of points located at the ends of the edges of the route
+     */
     private List<PointCh> buildPoints() {
         List<PointCh> points = new ArrayList<>();
         points.add(edges.get(0).fromPoint());
@@ -65,6 +69,7 @@ public final class SingleRoute implements Route {
         }
         return points;
     }
+
 
     /**
      * @param position given position (in meters)
@@ -76,6 +81,7 @@ public final class SingleRoute implements Route {
         return 0;
     }
 
+
     /**
      * @return the length of the route, in meters
      */
@@ -83,6 +89,7 @@ public final class SingleRoute implements Route {
     public double length() {
         return routeLength;
     }
+
 
     /**
      * @return List containing all the edges of the route
@@ -92,6 +99,7 @@ public final class SingleRoute implements Route {
         return edges;
     }
 
+
     /**
      * @return List containing all the points located at the extremities of the edges of the route
      */
@@ -99,6 +107,7 @@ public final class SingleRoute implements Route {
     public List<PointCh> points() {
         return points;
     }
+
 
     /**
      * @param position (Double)
@@ -117,6 +126,7 @@ public final class SingleRoute implements Route {
             return edges.get(edgeIndex).pointAt(x);
         }
     }
+
 
     /**
      * @param position (Double)
@@ -137,6 +147,7 @@ public final class SingleRoute implements Route {
             return edges.get(edgeIndex).elevationAt(x);
         }
     }
+
 
     /**
      * @param position (Double)
@@ -165,6 +176,7 @@ public final class SingleRoute implements Route {
         }
     }
 
+
     /**
      * @param point (PointCh)
      * @return the point on the route that is closest to the given reference point
@@ -172,15 +184,20 @@ public final class SingleRoute implements Route {
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
         double clamped;
-        double distanceToReferenceEdgeI;
-        double projectionLengthEdgeI;
+        double distanceToReferenceEdge;
+        double projectionLength;
         RoutePoint RoutePointClosestTo = RoutePoint.NONE;
 
         for (int i = 0; i < edges.size(); i++) {
-            projectionLengthEdgeI = edges.get(i).positionClosestTo(point);
-            clamped = Math2.clamp(0, projectionLengthEdgeI, edges.get(i).length());
-            distanceToReferenceEdgeI = edges.get(i).pointAt(clamped).distanceTo(point);
-            RoutePointClosestTo = RoutePointClosestTo.min(edges.get(i).pointAt(clamped), edgesSearch[i] + clamped, distanceToReferenceEdgeI);
+            projectionLength = edges.get(i).positionClosestTo(point);
+            clamped = Math2.clamp(0, projectionLength, edges.get(i).length());
+            distanceToReferenceEdge = edges.get(i).pointAt(clamped).distanceTo(point);
+
+            RoutePointClosestTo = RoutePointClosestTo.min(
+                    edges.get(i).pointAt(clamped),
+                    edgesSearch[i] + clamped,
+                    distanceToReferenceEdge
+            );
         }
 
         return RoutePointClosestTo;
