@@ -121,7 +121,7 @@ public final class SingleRoute implements Route {
         if (result >= 0) {
             return points.get(result);
         } else {
-            int edgeIndex = -result - 2;
+            int edgeIndex = -result -2;
             double x = position - edgesLength[edgeIndex];
             return edges.get(edgeIndex).pointAt(x);
         }
@@ -142,7 +142,7 @@ public final class SingleRoute implements Route {
                     edges.get(result - 1).elevationAt(edges.get(result - 1).length())
                     : edges.get(result).elevationAt(0);
         } else {
-            int edgeIndex = -result - 2;
+            int edgeIndex = -result -2;
             double x = position - edgesLength[edgeIndex];
             return edges.get(edgeIndex).elevationAt(x);
         }
@@ -160,19 +160,14 @@ public final class SingleRoute implements Route {
 
         if (result == edges.size()) {
             return edges.get(result - 1).toNodeId();
-        } else if (result >= 0) {
+        } else if (result >= 0){
             return edges.get(result).fromNodeId();
-
         } else {
-            int edgeIndex = -result - 2;
-            double positionStartNodeId = edgesLength[edgeIndex];
-            double positionEndNodeId = edgesLength[edgeIndex + 1];
+            int edgeIndex = -result -2;
+            double distStartOfEdge = position - edgesLength[edgeIndex];
+            double distEndOfEdge = edgesLength[edgeIndex + 1] - position;
 
-            if (position - positionStartNodeId <= positionEndNodeId - position) {
-                return edges.get(edgeIndex).fromNodeId();
-            } else {
-                return edges.get(edgeIndex).toNodeId();
-            }
+            return (distStartOfEdge <= distEndOfEdge)? edges.get(edgeIndex).fromNodeId() : edges.get(edgeIndex).toNodeId();
         }
     }
 
