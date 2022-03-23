@@ -200,7 +200,7 @@ public final class SingleRoute implements Route {
             distanceClampedToPoint = projectedPoint.distanceTo(point);
 
             //compare previous routePoint with current one and chose the closest (is it necessary to create a new RoutePoint everytime?)
-            // iow can't we compare the distance in a double then build a new route point at the end?
+            // iow can't we compare the distance in a double then build a new route point at the end? (I'm against creating objects in a loop)
             RoutePointClosestTo = RoutePointClosestTo.min(
                     projectedPoint,
                     edgesLength[i] + clampedToEdgeLength,
