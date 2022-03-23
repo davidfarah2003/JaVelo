@@ -26,7 +26,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
 
     /**
      * @param point (PointCh)
-     * @return the position along the edge, in meters, that is closest to the given point,
+     * @return the position along the edge, in meters, that is closest to the given point (projection) (could be outside the edge)
      */
     public double positionClosestTo(PointCh point){
         return Math2.projectionLength(fromPoint.e(), fromPoint.n(), toPoint.e(), toPoint.n(), point.e(), point.n());

@@ -11,7 +11,7 @@ import java.util.List;
 public final class SingleRoute implements Route {
     private final List<Edge> edges;
     private final List<PointCh> points;
-    private final double[] edgesSearch;
+    private final double[] edgesLength;
     private final double routeLength;
 
 
@@ -23,7 +23,7 @@ public final class SingleRoute implements Route {
         Preconditions.checkArgument(!edges.isEmpty());
         this.edges = List.copyOf(edges);
         this.routeLength = calculateLength();
-        this.edgesSearch = buildEdgesSearch();
+        this.edgesLength = buildEdgesSearch();
         this.points = buildPoints();
     }
 
@@ -116,13 +116,13 @@ public final class SingleRoute implements Route {
     @Override
     public PointCh pointAt(double position) {
         position = Math2.clamp(0, position, routeLength);
-        int result = Arrays.binarySearch(edgesSearch, position);
+        int result = Arrays.binarySearch(edgesLength, position);
 
         if (result >= 0) {
             return points.get(result);
         } else {
             int edgeIndex = -result - 2;
-            double x = position - edgesSearch[edgeIndex];
+            double x = position - edgesLength[edgeIndex];
             return edges.get(edgeIndex).pointAt(x);
         }
     }
@@ -135,7 +135,7 @@ public final class SingleRoute implements Route {
     @Override
     public double elevationAt(double position) {
         position = Math2.clamp(0, position, routeLength);
-        int result = Arrays.binarySearch(edgesSearch, position);
+        int result = Arrays.binarySearch(edgesLength, position);
 
         if (result >= 0) {
             return result == edges.size() ?
@@ -143,7 +143,7 @@ public final class SingleRoute implements Route {
                     : edges.get(result).elevationAt(0);
         } else {
             int edgeIndex = -result - 2;
-            double x = position - edgesSearch[edgeIndex];
+            double x = position - edgesLength[edgeIndex];
             return edges.get(edgeIndex).elevationAt(x);
         }
     }
@@ -156,7 +156,7 @@ public final class SingleRoute implements Route {
     @Override
     public int nodeClosestTo(double position) {
         position = Math2.clamp(0, position, routeLength);
-        int result = Arrays.binarySearch(edgesSearch, position);
+        int result = Arrays.binarySearch(edgesLength, position);
 
         if (result == edges.size()) {
             return edges.get(result - 1).toNodeId();
@@ -165,8 +165,8 @@ public final class SingleRoute implements Route {
 
         } else {
             int edgeIndex = -result - 2;
-            double positionStartNodeId = edgesSearch[edgeIndex];
-            double positionEndNodeId = edgesSearch[edgeIndex + 1];
+            double positionStartNodeId = edgesLength[edgeIndex];
+            double positionEndNodeId = edgesLength[edgeIndex + 1];
 
             if (position - positionStartNodeId <= positionEndNodeId - position) {
                 return edges.get(edgeIndex).fromNodeId();
@@ -183,20 +183,33 @@ public final class SingleRoute implements Route {
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        double clamped;
-        double distanceToReferenceEdge;
-        double projectionLength;
+        double clampedToEdgeLength;
+        double distanceClampedToPoint;
+        double pointProjectionLength;
+        double edgeLength;
+
+        Edge edge;
+        PointCh projectedPoint;
+
         RoutePoint RoutePointClosestTo = RoutePoint.NONE;
 
         for (int i = 0; i < edges.size(); i++) {
-            projectionLength = edges.get(i).positionClosestTo(point);
-            clamped = Math2.clamp(0, projectionLength, edges.get(i).length());
-            distanceToReferenceEdge = edges.get(i).pointAt(clamped).distanceTo(point);
+            edge = edges.get(i);
+            edgeLength = edge.length();
 
+            pointProjectionLength = edge.positionClosestTo(point);
+            clampedToEdgeLength = Math2.clamp(0, pointProjectionLength, edgeLength);
+            projectedPoint = edge.pointAt(clampedToEdgeLength);
+
+            //we try to find the closest projection to the point in question
+            distanceClampedToPoint = projectedPoint.distanceTo(point);
+
+            //compare previous routePoint with current one and chose the closest (is it necessary to create a new RoutePoint everytime?)
+            // iow can't we compare the distance in a double then build a new route point at the end?
             RoutePointClosestTo = RoutePointClosestTo.min(
-                    edges.get(i).pointAt(clamped),
-                    edgesSearch[i] + clamped,
-                    distanceToReferenceEdge
+                    projectedPoint,
+                    edgesLength[i] + clampedToEdgeLength,
+                    distanceClampedToPoint
             );
         }
 
