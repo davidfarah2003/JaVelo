@@ -47,6 +47,7 @@ public final class MultiRoute implements Route {
             }
             else{
                 segmentIndex += segment.indexOfSegmentAt(position);
+                break;
             }
         }
         return segmentIndex;
