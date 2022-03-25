@@ -3,6 +3,7 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
 
 public final class ElevationProfileComputer {
@@ -21,7 +22,7 @@ public final class ElevationProfileComputer {
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) {
         int numberOfSamples = 1 + (int) Math.ceil(route.length() / maxStepLength);
         intervalLength = route.length() / (numberOfSamples - 1);
-        System.out.println(intervalLength);
+
         profile = new float[numberOfSamples];
         Preconditions.checkArgument(intervalLength <= maxStepLength && intervalLength > 0);
 
@@ -33,7 +34,9 @@ public final class ElevationProfileComputer {
         }
         else {
             Arrays.fill(profile, 0, indexFirstNumber, profile[indexFirstNumber]);
-            System.out.println(profile.toString());
+           for (float element : profile){
+                System.out.println(element);
+            }
             int indexFirstNumberEnd = fillNanEnd();
             fillIntermediateNanValues(indexFirstNumber, indexFirstNumberEnd);
         }
@@ -111,8 +114,6 @@ public final class ElevationProfileComputer {
                         profile[realNumberAfterIndex],
                         (double)(NanIndex - realNumberBeforeIndex) / (realNumberAfterIndex - realNumberBeforeIndex)
                 );
-
-                System.out.println(profile[NanIndex]);
 
             }
 
