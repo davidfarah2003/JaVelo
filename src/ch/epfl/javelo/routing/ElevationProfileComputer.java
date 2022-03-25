@@ -21,6 +21,7 @@ public final class ElevationProfileComputer {
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) {
         int numberOfSamples = 1 + (int) Math.ceil(route.length() / maxStepLength);
         intervalLength = route.length() / (numberOfSamples - 1);
+        System.out.println(intervalLength);
         profile = new float[numberOfSamples];
         Preconditions.checkArgument(intervalLength <= maxStepLength && intervalLength > 0);
 
@@ -32,6 +33,7 @@ public final class ElevationProfileComputer {
         }
         else {
             Arrays.fill(profile, 0, indexFirstNumber, profile[indexFirstNumber]);
+            System.out.println(profile.toString());
             int indexFirstNumberEnd = fillNanEnd();
             fillIntermediateNanValues(indexFirstNumber, indexFirstNumberEnd);
         }
@@ -46,6 +48,7 @@ public final class ElevationProfileComputer {
     private static void fillInitialArray(Route route) {
         for (int sample = 0; sample < profile.length; sample++) {
             profile[sample] = (float) route.elevationAt(sample * intervalLength);
+            System.out.println(profile[sample]);
         }
     }
 
@@ -108,6 +111,9 @@ public final class ElevationProfileComputer {
                         profile[realNumberAfterIndex],
                         (double)(NanIndex - realNumberBeforeIndex) / (realNumberAfterIndex - realNumberBeforeIndex)
                 );
+
+                System.out.println(profile[NanIndex]);
+
             }
 
         }

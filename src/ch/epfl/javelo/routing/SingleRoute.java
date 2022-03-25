@@ -138,9 +138,10 @@ public final class SingleRoute implements Route {
         int result = Arrays.binarySearch(edgesLength, position);
 
         if (result >= 0) {
-            return result == edges.size() ?
-                    edges.get(result - 1).elevationAt(edges.get(result - 1).length())
-                    : edges.get(result).elevationAt(0);
+            return result == 0 ?
+                    edges.get(0).elevationAt(0)
+                  : edges.get(result - 1).elevationAt(edges.get(result - 1).length());
+
         } else {
             int edgeIndex = -result -2;
             double x = position - edgesLength[edgeIndex];
@@ -185,7 +186,6 @@ public final class SingleRoute implements Route {
 
         Edge edge;
         PointCh projectedPoint;
-
         RoutePoint RoutePointClosestTo = RoutePoint.NONE;
 
         for (int i = 0; i < edges.size(); i++) {
