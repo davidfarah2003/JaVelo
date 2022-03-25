@@ -19,7 +19,7 @@ public final class SingleRoute implements Route {
      * @param edges given edges that form the route
      * constructs the simple route composed of the given edges, or throws IllegalArgumentException if the list of edges is empty
      */
-    SingleRoute(List<Edge> edges) {
+    public SingleRoute(List<Edge> edges) {
         Preconditions.checkArgument(!edges.isEmpty());
         this.edges = List.copyOf(edges);
         this.routeLength = calculateLength();
