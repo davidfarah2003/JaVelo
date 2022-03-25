@@ -21,13 +21,16 @@ class ElevationProfileComputerTest {
         PointCh point3 = new PointCh(SwissBounds.MIN_E + 13_000, SwissBounds.MIN_N + 16000);
 
         edges.add(new Edge(1, 2, point1, point2, 6, Functions.constant(Double.NaN)));
-        edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{20, 23, Float.NaN, 21}, 6)));
+        edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{20, 23, 22, 21}, 6)));
+        edges.add(new Edge(2, 3, point2, point3, 6, Functions.constant(Double.NaN)));
+        edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{19, 20, 23, 22}, 6)));
+
         SingleRoute route = new SingleRoute(edges);
 
         //System.out.println(route.elevationAt(10));
         //System.out.println(route.elevationAt(11));
 
-        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
+        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 4);
         assertEquals(20, profile.elevationAt(0));
         assertEquals(20, profile.elevationAt(-6));
         assertEquals(23, profile.elevationAt(8));
