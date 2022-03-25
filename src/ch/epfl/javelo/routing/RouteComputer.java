@@ -48,10 +48,10 @@ public final class RouteComputer {
                     id2 = graph.nodeOutEdgeId(id, i);
                     d = distance[id] + (float) graph.edgeLength(id2);
 
-                    if (d < distance[id2]) {
-                        distance[id2] = d;
-                        predecessor[id2] = id;
-                        nodeIdsExplored.add(id2);
+                    if (d < distance[graph.edgeTargetNodeId(id2)]) {
+                        distance[graph.edgeTargetNodeId(id2)] = d;
+                        predecessor[graph.edgeTargetNodeId(id2)] = id;
+                        nodeIdsExplored.add(graph.edgeTargetNodeId(id2));
                     }
                 }
             }
