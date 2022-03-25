@@ -27,7 +27,8 @@ public final class RouteComputer {
 
         float minDistanceFirstIdExplored;
         int id = 0;
-        int id2;
+        int idEdge;
+        int endNodeIdEdge;
 
         float d;
 
@@ -45,13 +46,14 @@ public final class RouteComputer {
                 }
 
                 for (int i = 0; i < graph.nodeOutDegree(id); i++) {
-                    id2 = graph.nodeOutEdgeId(id, i);
-                    d = distance[id] + (float) graph.edgeLength(id2);
+                    idEdge = graph.nodeOutEdgeId(id, i);
+                    endNodeIdEdge = graph.edgeTargetNodeId(idEdge);
+                    d = distance[id] + (float) graph.edgeLength(idEdge);
 
-                    if (d < distance[graph.edgeTargetNodeId(id2)]) {
-                        distance[graph.edgeTargetNodeId(id2)] = d;
-                        predecessor[graph.edgeTargetNodeId(id2)] = id;
-                        nodeIdsExplored.add(graph.edgeTargetNodeId(id2));
+                    if (d < distance[endNodeIdEdge]) {
+                        distance[endNodeIdEdge] = d;
+                        predecessor[endNodeIdEdge] = id;
+                        nodeIdsExplored.add(endNodeIdEdge);
                     }
                 }
             }
