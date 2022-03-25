@@ -39,7 +39,8 @@ public final class RouteComputer {
                     id = idExplored;
                     minDistanceFirstIdExplored = distance[id];
                 }
-                nodeIdsExplored.remove(id);
+            }
+                nodeIdsExplored.remove(new Integer(id));
 
                 if (id == endNodeId) {
                     break;
@@ -48,7 +49,7 @@ public final class RouteComputer {
                 for (int i = 0; i < graph.nodeOutDegree(id); i++) {
                     idEdge = graph.nodeOutEdgeId(id, i);
                     endNodeIdEdge = graph.edgeTargetNodeId(idEdge);
-                    d = distance[id] + (float) graph.edgeLength(idEdge);
+                    d = distance[id] + (float) (graph.edgeLength(idEdge) * costFunction.costFactor(id, idEdge));
 
                     if (d < distance[endNodeIdEdge]) {
                         distance[endNodeIdEdge] = d;
@@ -57,7 +58,6 @@ public final class RouteComputer {
                     }
                 }
             }
-        }
 
         List<Integer> finalIds = new ArrayList<>();
         int i = endNodeId;
@@ -70,10 +70,21 @@ public final class RouteComputer {
 
         List<Edge> edges = new ArrayList<>();
 
-        SingleRoute route;
+        int s;
+        int e;
+        for (int k = 0; k < finalIds.size() - 1; k++){
+            s = finalIds.get(k);
+            e = finalIds.get(k+1);
+            for (int l = 0; l < graph.nodeOutDegree(s); l++){
+                if (graph.edgeTargetNodeId(graph.nodeOutEdgeId(s,l)) == e){
+                    edges.add(Edge.of(graph,graph.nodeOutEdgeId(s,l),s,e));
+                    break;
+                }
+            }
 
+        }
 
-return null;
+        return new SingleRoute(edges);
 
     }
 }
