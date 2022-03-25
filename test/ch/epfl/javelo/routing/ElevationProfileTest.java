@@ -1,60 +1,145 @@
 package ch.epfl.javelo.routing;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
+import java.util.DoubleSummaryStatistics;
+import java.util.random.RandomGenerator;
+
+import static ch.epfl.test.TestRandomizer.RANDOM_ITERATIONS;
+import static ch.epfl.test.TestRandomizer.newRandom;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ElevationProfileTest {
 
     @Test
-    void ConstructorThrowsException(){
-        assertThrows(IllegalArgumentException.class, () -> new ElevationProfile(-0.3, new float[]{5.67f, 98.6f}));
-        assertThrows(IllegalArgumentException.class, () -> new ElevationProfile(0, new float[]{5.67f, 98.6f}));
-        assertThrows(IllegalArgumentException.class, () -> new ElevationProfile(0.7, new float[]{5.67f}));
-        assertThrows(IllegalArgumentException.class, () -> new ElevationProfile(0.7, new float[]{}));
+    void elevationProfileConstructorThrowsWithNotEnoughSamples() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new ElevationProfile(1, new float[0]);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new ElevationProfile(1, new float[]{3.14f});
+        });
     }
 
     @Test
-    void lengthWorks(){
-        ElevationProfile profile = new ElevationProfile(56, new float[]{45.7f, 57.9f});
-        assertEquals(56, profile.length());
+    void elevationProfileConstructorThrowsWithZeroLength() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new ElevationProfile(0, new float[]{1, 2, 3});
+        });
     }
 
     @Test
-    void minElevationWorks(){
-        ElevationProfile profile = new ElevationProfile(10, new float[]{45.7f, 57.9f, 35.8f, 20f, 21f});
-        assertEquals(20f, profile.minElevation());
-        profile = new ElevationProfile(10, new float[]{45.7f, 57.9f, 35.8f, 21f});
-        assertEquals(21f, profile.minElevation());
+    void elevationProfileLengthReturnsLength() {
+        var rng = newRandom();
+        for (int i = 0; i < RANDOM_ITERATIONS; i += 1) {
+            var length = Math.nextUp(rng.nextDouble(1000));
+            var profile = new ElevationProfile(length, new float[]{1, 2, 3});
+            assertEquals(length, profile.length());
+        }
     }
 
-
-    @Test
-    void maxElevationWorks(){
-        ElevationProfile profile = new ElevationProfile(10, new float[]{45.7f, 57.9f, 35.8f, 20f, 21f});
-        assertEquals(57.9f, profile.maxElevation());
-    }
-
-    @Test
-    void totalAscentWorks(){
-        ElevationProfile profile = new ElevationProfile(10, new float[]{45.7f, 57.9f, 35.8f, 20f, 21f});
-        assertEquals(13.2f, profile.totalAscent(), 1e-4);
+    private static float[] randomSamples(RandomGenerator rng, int count) {
+        var samples = new float[count];
+        for (int i = 0; i < count; i += 1)
+            samples[i] = rng.nextFloat(4096);
+        return samples;
     }
 
     @Test
-    void totalDescentWorks(){
-        ElevationProfile profile = new ElevationProfile(10, new float[]{45.7f, 57.9f, 35.8f, 20f, 21f});
-        assertEquals(37.9f, profile.totalDescent());
-
+    void elevationProfileMinElevationReturnsMinElevation() {
+        var rng = newRandom();
+        for (int i = 0; i < RANDOM_ITERATIONS; i += 1) {
+            var sampleCount = rng.nextInt(2, 1000);
+            var elevationSamples = randomSamples(rng, sampleCount);
+            var elevationStatistics = new DoubleSummaryStatistics();
+            for (var s : elevationSamples) elevationStatistics.accept(s);
+            var profile = new ElevationProfile(1000, elevationSamples);
+            assertEquals(elevationStatistics.getMin(), profile.minElevation());
+        }
     }
 
     @Test
-    void elevationAtWorks(){
-        ElevationProfile profile = new ElevationProfile(10, new float[]{45.7f, 57.9f, 35.8f, 20f, 21f});
-        assertEquals(57.9f , profile.elevationAt(2.5));
-        assertEquals(35.8f, profile.elevationAt(5));
-        assertEquals((57.9f + 35.8f)/2 , profile.elevationAt(3.75), 1e-4);
-        assertEquals(21f, profile.elevationAt(15));
-        assertEquals(45.7f, profile.elevationAt(-5));
+    void elevationProfileMaxElevationReturnsMaxElevation() {
+        var rng = newRandom();
+        for (int i = 0; i < RANDOM_ITERATIONS; i += 1) {
+            var sampleCount = rng.nextInt(2, 1000);
+            var elevationSamples = randomSamples(rng, sampleCount);
+            var elevationStatistics = new DoubleSummaryStatistics();
+            for (var s : elevationSamples) elevationStatistics.accept(s);
+            var profile = new ElevationProfile(1000, elevationSamples);
+            assertEquals(elevationStatistics.getMax(), profile.maxElevation());
+        }
+    }
+
+    @Test
+    void elevationProfileTotalAscentReturnsTotalAscent() {
+        var rng = newRandom();
+        for (int i = 0; i < RANDOM_ITERATIONS; i += 1) {
+            var sampleCount = rng.nextInt(2, 1000);
+            var elevationSamples = randomSamples(rng, sampleCount);
+            var totalAscent = 0d;
+            for (int j = 1; j < sampleCount; j += 1) {
+                var d = elevationSamples[j] - elevationSamples[j - 1];
+                if (d > 0) totalAscent += d;
+            }
+            var profile = new ElevationProfile(1000, elevationSamples);
+            assertEquals(totalAscent, profile.totalAscent());
+        }
+    }
+
+    @Test
+    void elevationProfileTotalDescentReturnsTotalDescent() {
+        var rng = newRandom();
+        for (int i = 0; i < RANDOM_ITERATIONS; i += 1) {
+            var sampleCount = rng.nextInt(2, 1000);
+            var elevationSamples = randomSamples(rng, sampleCount);
+            var totalDescent = 0d;
+            for (int j = 1; j < sampleCount; j += 1) {
+                var d = elevationSamples[j] - elevationSamples[j - 1];
+                if (d < 0) totalDescent -= d;
+            }
+            var profile = new ElevationProfile(1000, elevationSamples);
+            assertEquals(totalDescent, profile.totalDescent());
+        }
+    }
+
+    @Test
+    void elevationProfileElevationAtWorksOnKnownValues() {
+        var samples = new float[]{
+                100.00f, 123.25f, 375.50f, 212.75f, 220.00f, 210.25f
+        };
+        var profile = new ElevationProfile(1000, samples);
+
+        var actual1 = profile.elevationAt(0);
+        var expected1 = 100.0;
+        assertEquals(expected1, actual1);
+
+        var actual2 = profile.elevationAt(200);
+        var expected2 = 123.25;
+        assertEquals(expected2, actual2);
+
+        var actual3 = profile.elevationAt(400);
+        var expected3 = 375.5;
+        assertEquals(expected3, actual3);
+
+        var actual4 = profile.elevationAt(600);
+        var expected4 = 212.75;
+        assertEquals(expected4, actual4);
+
+        var actual5 = profile.elevationAt(800);
+        var expected5 = 220.0;
+        assertEquals(expected5, actual5);
+
+        var actual6 = profile.elevationAt(1000);
+        var expected6 = 210.25;
+        assertEquals(expected6, actual6);
+
+        var actual7 = profile.elevationAt(500);
+        var expected7 = 294.125;
+        assertEquals(expected7, actual7);
     }
 }

@@ -1,22 +1,18 @@
 package ch.epfl.javelo.data;
+
 import ch.epfl.javelo.projection.PointCh;
-import ch.epfl.javelo.projection.SwissBounds;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.List;
-import java.util.random.RandomGenerator;
 
-import static ch.epfl.test.TestRandomizer.newRandom;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GraphSectorsTest {
+class GraphSectorsTest {
     private static final double SWISS_MIN_E = 2_485_000;
     private static final double SWISS_MIN_N = 1_075_000;
     private static final double SWISS_WIDTH = 349_000;
@@ -133,6 +129,7 @@ public class GraphSectorsTest {
         assertEquals(List.of(new GraphSectors.Sector(0, maxSectorSize)), sectors);
     }
 
+    @Disabled
     @Test
     void graphSectorsSectorsInAreaWorksForAllOfThem() {
         var graphSectors = new GraphSectors(SECTORS_BUFFER);
