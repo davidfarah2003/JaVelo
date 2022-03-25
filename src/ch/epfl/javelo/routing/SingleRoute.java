@@ -130,7 +130,7 @@ public final class SingleRoute implements Route {
 
     /**
      * @param position (Double)
-     * @return the elevation at a given point along the itinerary
+     * @return the elevation at a given point along the itinerary, NaN if the edge has no profile
      */
     @Override
     public double elevationAt(double position) {
@@ -199,15 +199,12 @@ public final class SingleRoute implements Route {
             //we try to find the closest projection to the point in question
             distanceClampedToPoint = projectedPoint.distanceTo(point);
 
-            //compare previous routePoint with current one and chose the closest (is it necessary to create a new RoutePoint everytime?)
-            // iow can't we compare the distance in a double then build a new route point at the end? (I'm against creating objects in a loop)
             RoutePointClosestTo = RoutePointClosestTo.min(
                     projectedPoint,
                     edgesLength[i] + clampedToEdgeLength,
                     distanceClampedToPoint
             );
         }
-
         return RoutePointClosestTo;
     }
 }
