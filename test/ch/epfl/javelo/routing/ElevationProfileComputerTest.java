@@ -24,8 +24,8 @@ class ElevationProfileComputerTest {
         edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{20, 23, Float.NaN, 21}, 6)));
         SingleRoute route = new SingleRoute(edges);
 
-        System.out.println(route.elevationAt(10));
-        System.out.println(route.elevationAt(11));
+        //System.out.println(route.elevationAt(10));
+        //System.out.println(route.elevationAt(11));
 
         ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
         assertEquals(20, profile.elevationAt(0));
@@ -56,9 +56,9 @@ class ElevationProfileComputerTest {
 
         SingleRoute route = new SingleRoute(edges);
         PointCh test1 = route.pointAt(2);
-        System.out.println(test1);
+        //System.out.println(test1);
         PointCh test2 = route.pointAt(4);
-        System.out.println(test2);
+        //System.out.println(test2);
 
 
        // System.out.println(route.nodeClosestTo(-6));
@@ -99,8 +99,8 @@ class ElevationProfileComputerTest {
         SingleRoute route = new SingleRoute(edges);
         ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
 
-        System.out.println(profile.totalDescent());
-        System.out.println(profile.totalAscent());
+        //System.out.println(profile.totalDescent());
+        //System.out.println(profile.totalAscent());
         assertEquals(56.25, profile.elevationAt(1));
         assertEquals(62.5, profile.elevationAt(2));
         assertEquals(68.75, profile.elevationAt(3));
