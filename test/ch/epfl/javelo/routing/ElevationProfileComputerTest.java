@@ -20,10 +20,10 @@ class ElevationProfileComputerTest {
         PointCh point2 = new PointCh(SwissBounds.MIN_E + 10000, SwissBounds.MIN_N + 10000);
         PointCh point3 = new PointCh(SwissBounds.MIN_E + 13_000, SwissBounds.MIN_N + 16000);
 
-        edges.add(new Edge(1, 2, point1, point2, 6, Functions.constant(Double.NaN)));
-        edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{20, 23, 22, 21}, 6)));
-        edges.add(new Edge(2, 3, point2, point3, 6, Functions.constant(Double.NaN)));
-        edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{19, 20, 23, 22}, 6)));
+        edges.add(new Edge(1, 2, point1, point2, 9, Functions.constant(Double.NaN)));
+        edges.add(new Edge(2, 3, point2, point3, 9, Functions.sampled(new float[]{20, 23, 22, 21}, 9)));
+        edges.add(new Edge(2, 3, point2, point3, 9, Functions.constant(Double.NaN)));
+        edges.add(new Edge(2, 3, point2, point3, 9, Functions.sampled(new float[]{19, 20, 23, 22}, 9)));
 
         SingleRoute route = new SingleRoute(edges);
 

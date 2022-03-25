@@ -20,6 +20,7 @@ public final class ElevationProfileComputer {
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) {
         int numberOfSamples = 1 + (int) Math.ceil(route.length() / maxStepLength);
         intervalLength = route.length() / (numberOfSamples - 1);
+
         profile = new float[numberOfSamples];
         Preconditions.checkArgument(intervalLength <= maxStepLength && intervalLength > 0);
 
