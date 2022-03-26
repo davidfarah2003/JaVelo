@@ -18,11 +18,10 @@ public final class ElevationProfileComputer {
      * @return a new Elevation Profile
      */
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) {
+        Preconditions.checkArgument(maxStepLength > 0);
         int numberOfSamples = 1 + (int) Math.ceil(route.length() / maxStepLength);
         intervalLength = route.length() / (numberOfSamples - 1);
-
         profile = new float[numberOfSamples];
-        Preconditions.checkArgument(intervalLength <= maxStepLength && intervalLength > 0);
 
         fillInitialArray(route);
         int indexFirstNumber = firstNumberIndex();
