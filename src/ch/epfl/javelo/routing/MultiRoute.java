@@ -112,7 +112,11 @@ public final class MultiRoute implements Route {
     public PointCh pointAt(double position) {
         position = Math2.clamp(0, position, routeLength);
         Route segment = segments.get(globalIndexOfSegmentAt(position));
-        return segment.pointAt(position);
+        double length = 0;
+        for (int i = 0; i < globalIndexOfSegmentAt(position); i++){
+            length += segments.get(i).length();
+        }
+        return segment.pointAt(position - length);
     }
 
     /**
@@ -123,7 +127,11 @@ public final class MultiRoute implements Route {
     public double elevationAt(double position) {
         position = Math2.clamp(0, position, routeLength);
         Route segment = segments.get(globalIndexOfSegmentAt(position));
-        return segment.elevationAt(position);
+        double length = 0;
+        for (int i = 0; i < globalIndexOfSegmentAt(position); i++){
+            length += segments.get(i).length();
+        }
+        return segment.elevationAt(position - length);
     }
 
     /**
@@ -134,7 +142,11 @@ public final class MultiRoute implements Route {
     public int nodeClosestTo(double position) {
         position = Math2.clamp(0, position, routeLength);
         Route segment = segments.get(globalIndexOfSegmentAt(position));
-        return segment.nodeClosestTo(position);
+        double length = 0;
+        for (int i = 0; i < globalIndexOfSegmentAt(position); i++){
+            length += segments.get(i).length();
+        }
+        return segment.nodeClosestTo(position - length);
     }
 
     /**
@@ -154,6 +166,8 @@ public final class MultiRoute implements Route {
                 distanceToReference = closestPoint.distanceToReference();
             }
         }
+
+
         return closestPoint;
     }
 }
