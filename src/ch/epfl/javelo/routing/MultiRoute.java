@@ -159,15 +159,22 @@ public final class MultiRoute implements Route {
         RoutePoint routePoint;
         RoutePoint closestPoint = RoutePoint.NONE;
 
+        int i = -1;
         for(Route segment : segments){
             routePoint = segment.pointClosestTo(point);
             if(routePoint.distanceToReference() < distanceToReference){
+                i++;
                 closestPoint = routePoint;
                 distanceToReference = closestPoint.distanceToReference();
             }
         }
 
+        double length = 0;
+        for (int l = 0; l < i; l++){
+            length += segments.get(l).length();
+        }
 
-        return closestPoint;
+
+        return closestPoint.withPositionShiftedBy(length);
     }
 }
