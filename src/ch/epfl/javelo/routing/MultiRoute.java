@@ -39,6 +39,7 @@ public final class MultiRoute implements Route {
     public int indexOfSegmentAt(double position) {
         position = Math2.clamp(0, position, routeLength);
 
+
         int segmentIndex = 0;
         for(Route segment : segments){
             if(position > segment.length()){
@@ -50,6 +51,7 @@ public final class MultiRoute implements Route {
                 break;
             }
         }
+
         return segmentIndex;
     }
 
