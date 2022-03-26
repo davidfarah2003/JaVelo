@@ -30,7 +30,14 @@ class MultiRouteTest {
         MultiRoute multiRoute2 = new MultiRoute(List.of(singleRoute4,singleRoute5,singleRoute6));
         MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
 
-        multiRouteFinal.indexOfSegmentAt(5500);
+        //System.out.println(multiRouteFinal.indexOfSegmentAt(5500));
+        System.out.println(multiRouteFinal.edges().size());
+        List<PointCh> list = multiRouteFinal.points();
+        System.out.println(list.get(0));
+        System.out.println(list.get(1));
+        System.out.println(list.get(2));
+        System.out.println(list.get(3));
+
         // should return 5 and returns 0
     }
 

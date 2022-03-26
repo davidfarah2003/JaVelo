@@ -3,8 +3,7 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.projection.PointCh;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class MultiRoute implements Route {
     private final List<Route> segments;
@@ -37,14 +36,14 @@ public final class MultiRoute implements Route {
      */
     @Override
     public int indexOfSegmentAt(double position) {
-        position = Math2.clamp(0, position, routeLength);
 
+        position = Math2.clamp(0, position, routeLength);
 
         int segmentIndex = 0;
         for(Route segment : segments){
-            if(position > segment.length()){
+            if(position >= segment.length()){
                 position -= segment.length();
-                segmentIndex += segment.indexOfSegmentAt(segment.length());
+                    segmentIndex += segment.indexOfSegmentAt(segment.length());
             }
             else{
                 segmentIndex += segment.indexOfSegmentAt(position);
@@ -98,11 +97,11 @@ public final class MultiRoute implements Route {
      */
     @Override
     public List<PointCh> points() {
-        List<PointCh> points = new ArrayList<>();
+        Set<PointCh> set = new LinkedHashSet<>();
         for(Route segment : segments){
-            points.addAll(segment.points());
+            set.addAll(segment.points());
         }
-        return points;
+        return new ArrayList<>(set);
     }
 
     /**
