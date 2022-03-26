@@ -31,6 +31,7 @@ class MultiRouteTest {
         MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
 
         multiRouteFinal.indexOfSegmentAt(5500);
+        // should return 5 and returns 0
     }
 
     @Test
