@@ -85,6 +85,9 @@ public final class RouteComputer {
             distance[nodeChosenId] = Float.NEGATIVE_INFINITY;
         }
 
+        if (nodesExplored.isEmpty()){
+            return null;
+        }
 
         // getting all the nodes which we find along
         // the path from the startNode to the end Node
