@@ -36,14 +36,18 @@ public final class MultiRoute implements Route {
      */
     @Override
     public int indexOfSegmentAt(double position) {
-
         position = Math2.clamp(0, position, routeLength);
 
         int segmentIndex = 0;
+
+        if(position == routeLength){
+            return edges().size()-1;
+        }
+
         for(Route segment : segments){
             if(position >= segment.length()){
                 position -= segment.length();
-                    segmentIndex += segment.indexOfSegmentAt(segment.length());
+                segmentIndex += segment.edges().size();
             }
             else{
                 segmentIndex += segment.indexOfSegmentAt(position);
