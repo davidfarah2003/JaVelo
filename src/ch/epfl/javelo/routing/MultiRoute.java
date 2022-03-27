@@ -8,6 +8,7 @@ import java.util.*;
 public final class MultiRoute implements Route {
     private final List<Route> segments;
     private final double routeLength;
+    private final double segmentsLength[];
 
 
     /**
@@ -17,6 +18,19 @@ public final class MultiRoute implements Route {
     public MultiRoute(List<Route> segments){
         this.segments = List.copyOf(segments);
         routeLength = calculateLength();
+        segmentsLength = computeSegmentsLength();
+    }
+
+    public double[] computeSegmentsLength() {
+        double[] segmentsLength = new double[edges().size() + 1];
+        double totalLength = 0;
+        int index = 1;
+            for (int j = 0; j < edges().size(); j++){
+                totalLength += edges().get(j).length();
+                segmentsLength[index] = totalLength;
+                index++;
+            }
+            return segmentsLength;
     }
 
     /**
@@ -102,21 +116,26 @@ public final class MultiRoute implements Route {
      */
     @Override
     public List<PointCh> points() {
-        List <PointCh> points = new ArrayList<>();
-        ListIterator<Route> segmentIterator = segments.listIterator();
-        Route segment;
-
-        while(segmentIterator.hasNext()) {
-            segment = segmentIterator.next();
-            points.addAll(segment.points().subList(0, segment.points().size() - 1));
-
-            if(!segmentIterator.hasNext()){
-                int lastPointIndex = segment.points().size()-1;
-                points.add(segment.points().get(lastPointIndex));
-            }
+        Set<PointCh> set = new LinkedHashSet<>();
+        for(Route segment : segments){
+            set.addAll(segment.points());
         }
+        return new ArrayList<>(set);
+       // List <PointCh> points = new ArrayList<>();
+      //  ListIterator<Route> segmentIterator = segments.listIterator();
+      //  Route segment;
 
-        return points;
+    //    while(segmentIterator.hasNext()) {
+       //     segment = segmentIterator.next();
+       //     points.addAll(segment.points().subList(0, segment.points().size() - 1));
+
+        //    if(!segmentIterator.hasNext()){
+       //         int lastPointIndex = segment.points().size()-1;
+        //        points.add(segment.points().get(lastPointIndex));
+       //     }
+      //  }
+
+     //   return points;
     }
 
     /**
@@ -126,9 +145,10 @@ public final class MultiRoute implements Route {
     @Override
     public PointCh pointAt(double position) {
         position = Math2.clamp(0, position, routeLength);
-        Route segment = segments.get(globalIndexOfSegmentAt(position));
+        int index = globalIndexOfSegmentAt(position);
+        Route segment = segments.get(index);
         double length = 0;
-        for (int i = 0; i < globalIndexOfSegmentAt(position); i++){
+        for (int i = 0; i < index; i++){
             length += segments.get(i).length();
         }
         return segment.pointAt(position - length);
@@ -141,9 +161,10 @@ public final class MultiRoute implements Route {
     @Override
     public double elevationAt(double position) {
         position = Math2.clamp(0, position, routeLength);
-        Route segment = segments.get(globalIndexOfSegmentAt(position));
+        int index = globalIndexOfSegmentAt(position);
+        Route segment = segments.get(index);
         double length = 0;
-        for (int i = 0; i < globalIndexOfSegmentAt(position); i++){
+        for (int i = 0; i < index; i++){
             length += segments.get(i).length();
         }
         return segment.elevationAt(position - length);
@@ -156,9 +177,10 @@ public final class MultiRoute implements Route {
     @Override
     public int nodeClosestTo(double position) {
         position = Math2.clamp(0, position, routeLength);
-        Route segment = segments.get(globalIndexOfSegmentAt(position));
+        int index = globalIndexOfSegmentAt(position);
+        Route segment = segments.get(index);
         double length = 0;
-        for (int i = 0; i < globalIndexOfSegmentAt(position); i++){
+        for (int i = 0; i < index; i++){
             length += segments.get(i).length();
         }
         return segment.nodeClosestTo(position - length);
@@ -174,6 +196,7 @@ public final class MultiRoute implements Route {
         RoutePoint routePoint;
         RoutePoint closestPoint = RoutePoint.NONE;
 
+
         int i = -1;
         for(Route segment : segments){
             routePoint = segment.pointClosestTo(point);
@@ -184,12 +207,7 @@ public final class MultiRoute implements Route {
             }
         }
 
-        //why in another loop?
-        double length = 0;
-        for (int l = 0; l < i; l++){
-            length += segments.get(l).length();
-        }
-
-        return closestPoint.withPositionShiftedBy(length); //???
+        closestPoint = closestPoint.withPositionShiftedBy(segmentsLength[i]);
+        return closestPoint; //???
     }
 }
