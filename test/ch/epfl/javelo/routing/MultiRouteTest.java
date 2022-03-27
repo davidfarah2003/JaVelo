@@ -39,14 +39,18 @@ class MultiRouteTest {
         System.out.println(list.get(1));
         System.out.println(list.get(2));
         System.out.println(list.get(3));
+        System.out.println(multiRouteFinal.pointAt(3000));
        // System.out.println(multiRouteFinal.elevationAt(5500));
        // System.out.println(multiRouteFinal.pointAt(5500));
        // System.out.println(multiRouteFinal.nodeClosestTo(5500));
        // System.out.println(multiRouteFinal.pointAt(1500));
         //System.out.println(multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 5500, SwissBounds.MIN_N + 6000)));
-        multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 10500, SwissBounds.MIN_N + 6000));
-        System.out.println(multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 9500, SwissBounds.MIN_N + 6000)));
+       // multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 10500, SwissBounds.MIN_N + 6000));
+      // System.out.println(multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 9500, SwissBounds.MIN_N + 6000)));
+       // System.out.println(multiRouteFinal);
 
+       // multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 9500, SwissBounds.MIN_N + 7000));
+        System.out.println(multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 7500, SwissBounds.MIN_N + 6000)));
         // should return 5 and returns 0
     }
 
