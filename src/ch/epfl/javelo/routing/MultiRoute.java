@@ -64,10 +64,11 @@ public final class MultiRoute implements Route {
      */
     private int globalIndexOfSegmentAt(double position) {
         position = Math2.clamp(0, position, routeLength);
-        int segmentIndex = 0;
+        if(position == routeLength) return segments.size()-1;
 
+        int segmentIndex = 0;
         for(Route segment : segments){
-            if(position > segment.length()){
+            if(position >= segment.length()){
                 position -= segment.length();
                 segmentIndex ++;
             }
@@ -177,18 +178,18 @@ public final class MultiRoute implements Route {
         for(Route segment : segments){
             routePoint = segment.pointClosestTo(point);
             if(routePoint.distanceToReference() < distanceToReference){
-                i++;
                 closestPoint = routePoint;
                 distanceToReference = closestPoint.distanceToReference();
+                i++;
             }
         }
 
+        //why in another loop?
         double length = 0;
         for (int l = 0; l < i; l++){
             length += segments.get(l).length();
         }
 
-
-        return closestPoint.withPositionShiftedBy(length);
+        return closestPoint.withPositionShiftedBy(length); //???
     }
 }
