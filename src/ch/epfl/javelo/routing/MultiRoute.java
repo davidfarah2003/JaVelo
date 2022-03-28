@@ -8,7 +8,10 @@ import java.util.*;
 public final class MultiRoute implements Route {
     private final List<Route> segments;
     private final double routeLength;
-    private final double segmentsLength[];
+    //private final double segmentsLength[];
+    private final int numberOfSingleRoutes;
+
+
 
 
     /**
@@ -18,19 +21,41 @@ public final class MultiRoute implements Route {
     public MultiRoute(List<Route> segments){
         this.segments = List.copyOf(segments);
         routeLength = calculateLength();
-        segmentsLength = computeSegmentsLength();
+        numberOfSingleRoutes = computeNumberOfSingleRoutes();
     }
 
+    private int computeNumberOfSingleRoutes() {
+        int count = 0;
+        for (Route segment : segments){
+            if (segment instanceof MultiRoute){
+                count += ((MultiRoute) segment).segments.size();
+            }
+            else{
+                count +=1;
+            }
+        }
+        return count;
+    }
+    /*
     public double[] computeSegmentsLength() {
-        double[] segmentsLength = new double[edges().size() + 1];
+        double[] segmentsLength = new double[numberOfSingleRoutes + 1];
         double totalLength = 0;
         int index = 1;
-            for (int j = 0; j < edges().size(); j++){
-                totalLength += edges().get(j).length();
-                segmentsLength[index] = totalLength;
-                index++;
-            }
-            return segmentsLength;
+            for (int j = 0; j < segments.size(); j++){
+                if (segments.get(j) instanceof MultiRoute) {
+                    for (int k = 0; k < ((MultiRoute) segments.get(j)).segments.size(); k++) {
+                        totalLength += ((MultiRoute) segments.get(j)).segments.get(k).length();
+                        segmentsLength[index] = totalLength;
+                        index++;
+                    }
+                }
+                else{
+                    totalLength += segments.get(j).length();
+                    segmentsLength[index] = totalLength;
+                    index++;
+                    }
+                }
+               return segmentsLength;
     }
 
     /**
@@ -53,6 +78,33 @@ public final class MultiRoute implements Route {
         position = Math2.clamp(0, position, routeLength);
 
         int segmentIndex = 0;
+        if(position == routeLength) return numberOfSingleRoutes - 1;
+
+        //if (position == routeLength) {
+       //     return segments.size() - 1;
+      //  }
+
+        for (Route segment : segments) {
+            if (position >= segment.length()) {
+                position -= segment.length();
+                if (segment instanceof MultiRoute)
+                    segmentIndex += ((MultiRoute) segment).segments.size();
+                else{
+                    segmentIndex += 1;
+                }
+            } else {
+                segmentIndex += segment.indexOfSegmentAt(position);
+                break;
+            }
+        }
+
+
+        return segmentIndex;
+    }
+        /*
+        position = Math2.clamp(0, position, routeLength);
+
+        int segmentIndex = 0;
 
         if(position == routeLength){
             return edges().size()-1;
@@ -71,6 +123,8 @@ public final class MultiRoute implements Route {
 
         return segmentIndex;
     }
+
+         */
 
     /**
      * @param position given position (in meters)
@@ -194,20 +248,20 @@ public final class MultiRoute implements Route {
     public RoutePoint pointClosestTo(PointCh point) {
         double distanceToReference = Double.POSITIVE_INFINITY;
         RoutePoint routePoint;
-        RoutePoint closestPoint = RoutePoint.NONE;
+        RoutePoint closestPoint = new RoutePoint(null, 0, Double.POSITIVE_INFINITY);
 
 
-        int i = -1;
         for(Route segment : segments){
             routePoint = segment.pointClosestTo(point);
             if(routePoint.distanceToReference() < distanceToReference){
-                closestPoint = routePoint;
+                closestPoint = routePoint.withPositionShiftedBy(closestPoint.position());
                 distanceToReference = closestPoint.distanceToReference();
-                i++;
+
             }
         }
 
-        closestPoint = closestPoint.withPositionShiftedBy(segmentsLength[i]);
-        return closestPoint; //???
+
+        //closestPoint = closestPoint.withPositionShiftedBy(segmentsLength[i]);
+        return closestPoint;
     }
 }

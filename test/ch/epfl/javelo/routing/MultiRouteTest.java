@@ -66,7 +66,12 @@ class MultiRouteTest {
         MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
 
 
+        multiRouteFinal.indexOfSegmentAt(6000);
+        multiRouteFinal.indexOfSegmentAt(5500);
 
+
+        assertEquals(3, multiRouteFinal.indexOfSegmentAt(3000));
+        assertEquals(5, multiRouteFinal.indexOfSegmentAt(8000));
         assertEquals(5, multiRouteFinal.indexOfSegmentAt(5500));
         assertEquals(5, multiRouteFinal.indexOfSegmentAt(6000));
         assertEquals(5, multiRouteFinal.indexOfSegmentAt(10000));
@@ -134,7 +139,8 @@ class MultiRouteTest {
 
         MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
 
-       multiRouteFinal.elevationAt(6000);
+        System.out.println(multiRouteFinal.elevationAt(6000));
+        System.out.println(multiRouteFinal.elevationAt(0));
 
     }
 
@@ -166,9 +172,8 @@ class MultiRouteTest {
 
         MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
 
-        for (double element : multiRouteFinal.computeSegmentsLength())
-            System.out.println(element);
         System.out.println(multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 10500, SwissBounds.MIN_N + 6000)));
+       multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 6500, SwissBounds.MIN_N + 6000));
 
     }
 }
