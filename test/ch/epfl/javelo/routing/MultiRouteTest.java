@@ -69,6 +69,8 @@ class MultiRouteTest {
         multiRouteFinal.indexOfSegmentAt(6000);
         multiRouteFinal.indexOfSegmentAt(5500);
 
+        System.out.println(multiRouteFinal.computeNumberOfSingleRoutes());
+
 
         assertEquals(3, multiRouteFinal.indexOfSegmentAt(3000));
         assertEquals(5, multiRouteFinal.indexOfSegmentAt(8000));
@@ -146,6 +148,19 @@ class MultiRouteTest {
 
     @Test
     void nodeClosestTo() {
+        PointCh point1 = new PointCh(SwissBounds.MIN_E + 5000, SwissBounds.MIN_N + 5000);
+        PointCh point2 = new PointCh(SwissBounds.MIN_E + 6000, SwissBounds.MIN_N + 5000);
+        PointCh point3 = new PointCh(SwissBounds.MIN_E + 7000, SwissBounds.MIN_N + 5000);
+        PointCh point4 = new PointCh(SwissBounds.MIN_E + 8000, SwissBounds.MIN_N + 5000);
+        SingleRoute singleRoute1 = new SingleRoute(List.of(new Edge(1,2, point1, point2, 1000, Functions.constant(Float.NaN)),
+                new Edge(2,3, point2, point3, 1000, Functions.constant(Float.NaN))));
+        SingleRoute singleRoute2 = new SingleRoute(List.of(new Edge(2,3, point3, point4, 1000, Functions.constant(Float.NaN))));
+
+        MultiRoute finalM = new MultiRoute(List.of(singleRoute1,singleRoute2));
+        System.out.println(finalM.computeNumberOfSingleRoutes());
+        System.out.println(finalM.indexOfSegmentAt(3400));
+        System.out.println(finalM.pointClosestTo(new PointCh(SwissBounds.MIN_E + 7230, SwissBounds.MIN_N + 5500)));
+
     }
 
     @Test
@@ -174,6 +189,7 @@ class MultiRouteTest {
 
         System.out.println(multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 10500, SwissBounds.MIN_N + 6000)));
        multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 6500, SwissBounds.MIN_N + 6000));
+        System.out.println(multiRouteFinal.pointClosestTo(new PointCh(SwissBounds.MIN_E + 6000, SwissBounds.MIN_N + 5000)));
 
     }
 }

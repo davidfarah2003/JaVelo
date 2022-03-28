@@ -24,11 +24,11 @@ public final class MultiRoute implements Route {
         numberOfSingleRoutes = computeNumberOfSingleRoutes();
     }
 
-    private int computeNumberOfSingleRoutes() {
+    public int computeNumberOfSingleRoutes() {
         int count = 0;
         for (Route segment : segments){
             if (segment instanceof MultiRoute){
-                count += ((MultiRoute) segment).segments.size();
+                count += ((MultiRoute) segment).computeNumberOfSingleRoutes();
             }
             else{
                 count +=1;
@@ -88,7 +88,7 @@ public final class MultiRoute implements Route {
             if (position >= segment.length()) {
                 position -= segment.length();
                 if (segment instanceof MultiRoute)
-                    segmentIndex += ((MultiRoute) segment).segments.size();
+                    segmentIndex += ((MultiRoute) segment).computeNumberOfSingleRoutes();
                 else{
                     segmentIndex += 1;
                 }
@@ -259,9 +259,7 @@ public final class MultiRoute implements Route {
 
             }
         }
-
-
-        //closestPoint = closestPoint.withPositionShiftedBy(segmentsLength[i]);
+        
         return closestPoint;
     }
 }
