@@ -9,7 +9,7 @@ public final class MultiRoute implements Route {
     private final List<Route> segments;
     private final double routeLength;
     private final double[] segmentsLength;
-    private final int numberOfSingleRoutes;
+   // private final int numberOfSingleRoutes;
 
 
     /** Constructor of the class
@@ -19,7 +19,7 @@ public final class MultiRoute implements Route {
     public MultiRoute(List<Route> segments){
         this.segments = List.copyOf(segments);
         routeLength = calculateLength();
-        numberOfSingleRoutes = computeNumberOfSingleRoutes();
+  //      numberOfSingleRoutes = computeNumberOfSingleRoutes();
         segmentsLength = buildSegmentsLength();
     }
 
@@ -67,25 +67,35 @@ public final class MultiRoute implements Route {
     public int indexOfSegmentAt(double position) {
         position = Math2.clamp(0, position, routeLength);
 
-        int segmentIndex = 0;
-        if(position == routeLength) return numberOfSingleRoutes - 1;
-
-        for (Route segment : segments) {
-            if (position >= segment.length()) {
-                position -= segment.length();
-                if (segment instanceof MultiRoute)
-                    segmentIndex += ((MultiRoute) segment).computeNumberOfSingleRoutes();
-                else{
-                    segmentIndex += 1;
-                }
-            } else {
-                segmentIndex += segment.indexOfSegmentAt(position);
-                break;
-            }
+     //   if(position == routeLength) return numberOfSingleRoutes - 1;
+        int index = globalIndexOfSegmentAt(position);
+        int numberOfSingleRoutes = 0;
+        double length = 0;
+        for (int j = 0; j < index; j++){
+                length += segments.get(j).length();
+                numberOfSingleRoutes += segments.get(j).indexOfSegmentAt(segments.get(j).length()) + 1;
         }
 
+        return numberOfSingleRoutes + segments.get(index).indexOfSegmentAt(position - length);
 
-        return segmentIndex;
+     //   for (Route segment : segments) {
+      //      if (position >= segment.length()) {
+      //          position -= segment.length();
+      //          int index = globalIndexOfSegmentAt(position);
+       //         segmentIndex += segment.indexOfSegmentAt(segment.length()) + 1;
+                //if (segment instanceof MultiRoute)
+               //     segmentIndex += ((MultiRoute) segment).computeNumberOfSingleRoutes();
+             //   else{
+              //      segmentIndex += 1;
+              //  }
+      //      } else {
+       //         segmentIndex += segment.indexOfSegmentAt(position);
+        //        break;
+       //     }
+      //  }
+
+
+    //    return segmentIndex;
     }
         /*
         position = Math2.clamp(0, position, routeLength);
@@ -219,18 +229,13 @@ public final class MultiRoute implements Route {
         position = Math2.clamp(0, position, routeLength);
         int index = globalIndexOfSegmentAt(position);
         Route segment = segments.get(index);
-        double length = getShift(index);
-        return segment.nodeClosestTo(position - length);
-    }
-
-    private double getShift(int index){
-        //int index = globalIndexOfSegmentAt(position);
         double length = 0;
         for (int i = 0; i < index; i++){
             length += segments.get(i).length();
         }
-        return length;
+        return segment.nodeClosestTo(position - length);
     }
+
 
     /**
      * @param point (PointCh)
