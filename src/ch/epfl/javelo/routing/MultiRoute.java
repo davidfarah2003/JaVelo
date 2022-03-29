@@ -70,49 +70,19 @@ public final class MultiRoute implements Route {
         position = Math2.clamp(0, position, routeLength);
 
         int segmentIndex = 0;
-        if(position == routeLength) return numberOfSingleRoutes - 1;
+        int globalIndex = globalIndexOfSegmentAt(position);
+        int previousLength = 0;
 
-        for (Route segment : segments) {
-            if (position >= segment.length()) {
-                position -= segment.length();
-                if (segment instanceof MultiRoute)
-                    segmentIndex += ((MultiRoute) segment).computeNumberOfSingleRoutes();
-                else{
-                    segmentIndex += 1;
-                }
-            } else {
-                segmentIndex += segment.indexOfSegmentAt(position);
-                break;
-            }
+        for (Route route : segments.subList(0, globalIndex)) {
+            previousLength += route.length();
+            segmentIndex += route.indexOfSegmentAt(route.length()) + 1;
         }
 
-
-        return segmentIndex;
-    }
-        /*
-        position = Math2.clamp(0, position, routeLength);
-
-        int segmentIndex = 0;
-
-        if(position == routeLength){
-            return edges().size()-1;
-        }
-
-        for(Route segment : segments){
-            if(position >= segment.length()){
-                position -= segment.length();
-                segmentIndex += segment.edges().size();
-            }
-            else{
-                segmentIndex += segment.indexOfSegmentAt(position);
-                break;
-            }
-        }
+        segmentIndex += segments.get(globalIndex).indexOfSegmentAt(position - previousLength);
 
         return segmentIndex;
     }
 
-         */
 
     /**
      * @param position given position (in meters)

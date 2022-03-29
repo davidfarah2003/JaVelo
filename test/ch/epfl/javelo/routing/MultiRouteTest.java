@@ -65,7 +65,7 @@ class MultiRouteTest {
 
         MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
 
-         assertEquals(5, multiRouteFinal.indexOfSegmentAt(5500));
+        assertEquals(5, multiRouteFinal.indexOfSegmentAt(5500));
         assertEquals(3, multiRouteFinal.indexOfSegmentAt(3000));
         assertEquals(5, multiRouteFinal.indexOfSegmentAt(8000));
         assertEquals(5, multiRouteFinal.indexOfSegmentAt(5500));
