@@ -1,6 +1,7 @@
 package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Math2;
+import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.util.*;
@@ -17,6 +18,7 @@ public final class MultiRoute implements Route {
      * @param segments forming the multi-route
      */
     public MultiRoute(List<Route> segments){
+        Preconditions.checkArgument(!segments.isEmpty());
         this.segments = List.copyOf(segments);
         routeLength = calculateLength();
         numberOfSingleRoutes = computeNumberOfSingleRoutes();
@@ -68,22 +70,25 @@ public final class MultiRoute implements Route {
         position = Math2.clamp(0, position, routeLength);
 
         int segmentIndex = 0;
-        if(position == routeLength) return numberOfSingleRoutes - 1;
+        double segmentLength;
 
         for (Route segment : segments) {
-            if (position >= segment.length()) {
-                position -= segment.length();
-                if (segment instanceof MultiRoute)
-                    segmentIndex += ((MultiRoute) segment).computeNumberOfSingleRoutes();
-                else{
-                    segmentIndex += 1;
-                }
+            segmentLength = segment.length();
+
+            if(position == segmentLength){
+                segmentIndex += segment.indexOfSegmentAt(segmentLength);
+                break;
+            }
+            else if (position > segment.length()) {
+                position -= segmentLength;
+                segmentIndex += segment.indexOfSegmentAt(position) == 0 ?
+                        1 :
+                        segment.indexOfSegmentAt(segmentLength);
             } else {
                 segmentIndex += segment.indexOfSegmentAt(position);
                 break;
             }
         }
-
 
         return segmentIndex;
     }
@@ -156,21 +161,27 @@ public final class MultiRoute implements Route {
      */
     @Override
     public List<PointCh> points() {
-        List <PointCh> points = new ArrayList<>();
-        ListIterator<Route> segmentIterator = segments.listIterator();
-        Route segment;
-
-        while(segmentIterator.hasNext()) {
-            segment = segmentIterator.next();
-            points.addAll(segment.points().subList(0, segment.points().size() - 1));
-
-            if(!segmentIterator.hasNext()){
-                int lastPointIndex = segment.points().size()-1;
-                points.add(segment.points().get(lastPointIndex));
-            }
+        Set<PointCh> set = new LinkedHashSet<>();
+        for(Route segment : segments){
+            set.addAll(segment.points());
         }
+        return new ArrayList<>(set);
 
-        return points;
+       // List <PointCh> points = new ArrayList<>();
+      //  ListIterator<Route> segmentIterator = segments.listIterator();
+      //  Route segment;
+
+    //    while(segmentIterator.hasNext()) {
+       //     segment = segmentIterator.next();
+       //     points.addAll(segment.points().subList(0, segment.points().size() - 1));
+
+        //    if(!segmentIterator.hasNext()){
+       //         int lastPointIndex = segment.points().size()-1;
+        //        points.add(segment.points().get(lastPointIndex));
+       //     }
+      //  }
+
+     //   return points;
     }
 
     /**
