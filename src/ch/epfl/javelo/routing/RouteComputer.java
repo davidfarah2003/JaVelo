@@ -34,20 +34,19 @@ public final class RouteComputer {
                 implements Comparable<WeightedNode> {
             @Override
             public int compareTo(WeightedNode that) {
-                return Float.compare(this.distance + this.distanceStraightLine,
-                        that.distance + that.distanceStraightLine);
+                return Float.compare(this.distance + this.distanceStraightLine, that.distance + that.distanceStraightLine);
             }
         }
 
-        float[] distance = new float[graph.nodeCount()];
-        int[] predecessor = new int[graph.nodeCount()];
+        float[] distance = new float[graph.nodeCount()]; //distance depuis a de chaque node
+        int[] predecessor = new int[graph.nodeCount()]; //id de noeud avant lui
         Arrays.fill(distance, Float.POSITIVE_INFINITY);
-        Arrays.fill(predecessor, 0);
         distance[startNodeId] = 0;
 
         PriorityQueue<WeightedNode> nodesExplored = new PriorityQueue<>();
         nodesExplored.add(new WeightedNode(startNodeId, distance[startNodeId],
                 (float) graph.nodePoint(startNodeId).distanceTo(graph.nodePoint(endNodeId))));
+
 
 
         WeightedNode nodeChosen;
@@ -59,6 +58,7 @@ public final class RouteComputer {
 
         // Dijkstra's Algorithm
         while (!nodesExplored.isEmpty()) {
+            //skip negative infinities
             do {
                 nodeChosen = nodesExplored.remove();
             } while (distance[nodeChosen.nodeId] == Float.NEGATIVE_INFINITY);
@@ -75,6 +75,8 @@ public final class RouteComputer {
                     i = predecessor[i];
                 }
 
+
+                //reconstruction
                 finalIds.add(startNodeId);
                 Collections.reverse(finalIds);
                 List<Edge> edges = new ArrayList<>();
@@ -94,6 +96,7 @@ public final class RouteComputer {
                 return new SingleRoute(edges);
             }
 
+            // explorer toutes les edges qui sortent du node
             for (int i = 0; i < graph.nodeOutDegree(nodeChosenId); i++) {
                 edgeId = graph.nodeOutEdgeId(nodeChosenId, i);
                 endNodeIdOfTheEdge = graph.edgeTargetNodeId(edgeId);
@@ -106,9 +109,9 @@ public final class RouteComputer {
                     predecessor[endNodeIdOfTheEdge] = nodeChosenId;
                     nodesExplored.add(new WeightedNode(endNodeIdOfTheEdge, d, (float)
                             graph.nodePoint(endNodeIdOfTheEdge).distanceTo(graph.nodePoint(endNodeId))));
-
                 }
             }
+
             // since we found the shortest path to the nodeChosen
             // it will never be necessary to explore its out edges again.
             distance[nodeChosenId] = Float.NEGATIVE_INFINITY;
