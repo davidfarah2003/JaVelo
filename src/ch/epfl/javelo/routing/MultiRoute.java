@@ -10,7 +10,7 @@ public final class MultiRoute implements Route {
     private final List<Route> segments;
     private final double routeLength;
     private final double[] segmentsLength;
-    private final int numberOfSingleRoutes;
+   // private final int numberOfSingleRoutes;
 
 
     /** Constructor of the class
@@ -21,7 +21,7 @@ public final class MultiRoute implements Route {
         Preconditions.checkArgument(!segments.isEmpty());
         this.segments = List.copyOf(segments);
         routeLength = calculateLength();
-        numberOfSingleRoutes = computeNumberOfSingleRoutes();
+  //      numberOfSingleRoutes = computeNumberOfSingleRoutes();
         segmentsLength = buildSegmentsLength();
     }
 
@@ -70,25 +70,22 @@ public final class MultiRoute implements Route {
         position = Math2.clamp(0, position, routeLength);
 
         int segmentIndex = 0;
-        double segmentLength;
+        if(position == routeLength) return numberOfSingleRoutes - 1;
 
         for (Route segment : segments) {
-            segmentLength = segment.length();
-
-            if(position == segmentLength){
-                segmentIndex += segment.indexOfSegmentAt(segmentLength);
-                break;
-            }
-            else if (position > segment.length()) {
-                position -= segmentLength;
-                segmentIndex += segment.indexOfSegmentAt(position) == 0 ?
-                        1 :
-                        segment.indexOfSegmentAt(segmentLength);
+            if (position >= segment.length()) {
+                position -= segment.length();
+                if (segment instanceof MultiRoute)
+                    segmentIndex += ((MultiRoute) segment).computeNumberOfSingleRoutes();
+                else{
+                    segmentIndex += 1;
+                }
             } else {
                 segmentIndex += segment.indexOfSegmentAt(position);
                 break;
             }
         }
+
 
         return segmentIndex;
     }
@@ -166,7 +163,6 @@ public final class MultiRoute implements Route {
             set.addAll(segment.points());
         }
         return new ArrayList<>(set);
-
        // List <PointCh> points = new ArrayList<>();
       //  ListIterator<Route> segmentIterator = segments.listIterator();
       //  Route segment;
@@ -225,18 +221,13 @@ public final class MultiRoute implements Route {
         position = Math2.clamp(0, position, routeLength);
         int index = globalIndexOfSegmentAt(position);
         Route segment = segments.get(index);
-        double length = getShift(index);
-        return segment.nodeClosestTo(position - length);
-    }
-
-    private double getShift(int index){
-        //int index = globalIndexOfSegmentAt(position);
         double length = 0;
         for (int i = 0; i < index; i++){
             length += segments.get(i).length();
         }
-        return length;
+        return segment.nodeClosestTo(position - length);
     }
+
 
     /**
      * @param point (PointCh)
