@@ -6,49 +6,28 @@ import ch.epfl.javelo.projection.PointCh;
 
 import java.util.*;
 
+
+/**
+ * Class that represents a Multi-Route, which is formed from other routes (type Route)
+ * A segment is considered to be SingleRoute
+ * (but is the class attribute <code>segments</code> there could be any object of type Route).
+ */
 public final class MultiRoute implements Route {
     private final List<Route> segments;
     private final double routeLength;
-    private final double[] segmentsLength;
-   // private final int numberOfSingleRoutes;
 
 
     /** Constructor of the class
-     * Builds a multi-route consisting of the given segments, or throws IllegalArgumentException if the list of segments is empty
+     * Builds a multi-route consisting of the given segments,
+     * or throws IllegalArgumentException if the list of segments is empty
      * @param segments forming the multi-route
      */
     public MultiRoute(List<Route> segments){
         Preconditions.checkArgument(!segments.isEmpty());
         this.segments = List.copyOf(segments);
         routeLength = calculateLength();
-  //      numberOfSingleRoutes = computeNumberOfSingleRoutes();
-        segmentsLength = buildSegmentsLength();
     }
 
-    public double[] buildSegmentsLength() {
-        double[] segmentsLength = new double[segments.size() + 1];
-        int i = 1;
-        double value = 0;
-        for (Route segment : segments){
-            value += segment.length();
-            segmentsLength[i] = value;
-            i++;
-        }
-        return segmentsLength;
-    }
-
-    public int computeNumberOfSingleRoutes() {
-        int count = 0;
-        for (Route segment : segments){
-            if (segment instanceof MultiRoute){
-                count += ((MultiRoute) segment).computeNumberOfSingleRoutes();
-            }
-            else{
-                count +=1;
-            }
-        }
-        return count;
-    }
 
     /**
      * @param index of the route to know the distance before
@@ -64,6 +43,7 @@ public final class MultiRoute implements Route {
         return length;
     }
 
+
     /**
      * @return length of the multi-route
      */
@@ -74,6 +54,7 @@ public final class MultiRoute implements Route {
         }
         return length;
     }
+
 
     /**
      * @param position given position (in meters)
@@ -117,6 +98,7 @@ public final class MultiRoute implements Route {
         return segmentIndex;
     }
 
+
     /**
      * @return the length of the route, in meters
      */
@@ -124,6 +106,7 @@ public final class MultiRoute implements Route {
     public double length() {
         return this.routeLength;
     }
+
 
     /**
      * @return List containing all the edges of the route
@@ -136,6 +119,7 @@ public final class MultiRoute implements Route {
         }
         return edges;
     }
+
 
     /**
      * @return List containing all the points located at the extremities of the edges of the route
@@ -160,6 +144,7 @@ public final class MultiRoute implements Route {
         return points;
     }
 
+
     /**
      * @param position (Double)
      * @return the point at the given position along the route
@@ -172,6 +157,7 @@ public final class MultiRoute implements Route {
         return segments.get(routeIndex).pointAt(position - lengthBeforeRoute(routeIndex));
     }
 
+
     /**
      * @param position (Double)
      * @return the elevation at a given point along the itinerary, NaN if the edge has no profile
@@ -183,6 +169,7 @@ public final class MultiRoute implements Route {
         int routeIndex = globalIndexOfSegmentAt(position);
         return segments.get(routeIndex).elevationAt(position - lengthBeforeRoute(routeIndex));
     }
+
 
     /**
      * @param position (Double)
@@ -199,19 +186,19 @@ public final class MultiRoute implements Route {
 
     /**
      * @param point (PointCh)
-     * @return the point on the route that is closest to the given reference point
+     * @return the point on the route that is closest to the given reference point (RoutePoint)
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        RoutePoint routePoint;
+        RoutePoint currentPoint;
         RoutePoint closestPoint = RoutePoint.NONE;
 
-        for (int j = 0; j < segments.size(); j++){
-            routePoint = segments.get(j).
+        for (int index = 0; index < segments.size(); index++){
+            currentPoint = segments.get(index).
                     pointClosestTo(point).
-                    withPositionShiftedBy(segmentsLength[j]);
+                    withPositionShiftedBy(lengthBeforeRoute(index));
 
-            closestPoint = closestPoint.min(routePoint);
+            closestPoint = closestPoint.min(currentPoint);
         }
         return closestPoint;
     }
