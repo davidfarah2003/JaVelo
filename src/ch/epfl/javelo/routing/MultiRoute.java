@@ -51,6 +51,20 @@ public final class MultiRoute implements Route {
     }
 
     /**
+     * @param index of the route to know the distance before
+     * @return the length of the route up until the specified route index (exclusive)
+     */
+    private double lengthBeforeRoute(int index){
+        Preconditions.checkArgument(index < segments.size() && index >= 0);
+
+        double length = 0;
+        for(Route route : segments.subList(0, index)){
+            length += route.length();
+        }
+        return length;
+    }
+
+    /**
      * @return length of the multi-route
      */
     private double calculateLength(){
@@ -128,26 +142,22 @@ public final class MultiRoute implements Route {
      */
     @Override
     public List<PointCh> points() {
-        Set<PointCh> set = new LinkedHashSet<>();
-        for(Route segment : segments){
-            set.addAll(segment.points());
+        List <PointCh> points = new ArrayList<>();
+        ListIterator<Route> segmentIterator = segments.listIterator();
+        Route segment;
+
+        while(segmentIterator.hasNext()) {
+            //add all points except last
+            segment = segmentIterator.next();
+            points.addAll(segment.points().subList(0, segment.points().size() - 1));
+
+            if(!segmentIterator.hasNext()){
+                //add the last point
+                int lastPointIndex = segment.points().size()-1;
+                points.add(segment.points().get(lastPointIndex));
+            }
         }
-        return new ArrayList<>(set);
-       // List <PointCh> points = new ArrayList<>();
-      //  ListIterator<Route> segmentIterator = segments.listIterator();
-      //  Route segment;
-
-    //    while(segmentIterator.hasNext()) {
-       //     segment = segmentIterator.next();
-       //     points.addAll(segment.points().subList(0, segment.points().size() - 1));
-
-        //    if(!segmentIterator.hasNext()){
-       //         int lastPointIndex = segment.points().size()-1;
-        //        points.add(segment.points().get(lastPointIndex));
-       //     }
-      //  }
-
-     //   return points;
+        return points;
     }
 
     /**
@@ -157,13 +167,9 @@ public final class MultiRoute implements Route {
     @Override
     public PointCh pointAt(double position) {
         position = Math2.clamp(0, position, routeLength);
-        int index = globalIndexOfSegmentAt(position);
-        Route segment = segments.get(index);
-        double length = 0;
-        for (int i = 0; i < index; i++){
-            length += segments.get(i).length();
-        }
-        return segment.pointAt(position - length);
+
+        int routeIndex = globalIndexOfSegmentAt(position);
+        return segments.get(routeIndex).pointAt(position - lengthBeforeRoute(routeIndex));
     }
 
     /**
@@ -173,13 +179,9 @@ public final class MultiRoute implements Route {
     @Override
     public double elevationAt(double position) {
         position = Math2.clamp(0, position, routeLength);
-        int index = globalIndexOfSegmentAt(position);
-        Route segment = segments.get(index);
-        double length = 0;
-        for (int i = 0; i < index; i++){
-            length += segments.get(i).length();
-        }
-        return segment.elevationAt(position - length);
+
+        int routeIndex = globalIndexOfSegmentAt(position);
+        return segments.get(routeIndex).elevationAt(position - lengthBeforeRoute(routeIndex));
     }
 
     /**
@@ -189,13 +191,9 @@ public final class MultiRoute implements Route {
     @Override
     public int nodeClosestTo(double position) {
         position = Math2.clamp(0, position, routeLength);
-        int index = globalIndexOfSegmentAt(position);
-        Route segment = segments.get(index);
-        double length = 0;
-        for (int i = 0; i < index; i++){
-            length += segments.get(i).length();
-        }
-        return segment.nodeClosestTo(position - length);
+
+        int routeIndex = globalIndexOfSegmentAt(position);
+        return segments.get(routeIndex).nodeClosestTo(position - lengthBeforeRoute(routeIndex));
     }
 
 
