@@ -8,10 +8,10 @@ import java.util.*;
 public final class RouteComputer {
     private final Graph graph;
     private final CostFunction costFunction;
-
     private final PriorityQueue<WeightedNode> nodesToExplore;
     private final float[] nodesDistanceToOrigin;
     private final int[] predecessors;
+
     private int nodeChosenId;
 
 
