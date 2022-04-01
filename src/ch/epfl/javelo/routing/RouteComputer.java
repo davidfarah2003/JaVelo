@@ -10,8 +10,8 @@ public final class RouteComputer {
     private final CostFunction costFunction;
 
     private final PriorityQueue<WeightedNode> nodesExplored;
-    private final float[] nodesDistanceToOrigin;
-    private final int[] predecessors;
+    private final float[] nodesDistanceToOrigin; //distance depuis A de chaque node
+    private final int[] predecessor; //id de noeud avant lui
     private int nodeChosenId;
 
 
@@ -23,7 +23,7 @@ public final class RouteComputer {
     public RouteComputer(Graph graph, CostFunction costFunction) {
         this.graph = graph;
         nodesDistanceToOrigin = new float[graph.nodeCount()];
-        predecessors = new int[graph.nodeCount()];
+        predecessor = new int[graph.nodeCount()];
         nodesExplored = new PriorityQueue<>();
         this.costFunction = costFunction;
     }
@@ -53,7 +53,7 @@ public final class RouteComputer {
                 return new SingleRoute(edges);
             }
 
-            chooseNextNode(endNodeId);
+            addNodesToExplored(endNodeId);
             nodesDistanceToOrigin[nodeChosenId] = Float.NEGATIVE_INFINITY;
         }
 
@@ -62,7 +62,7 @@ public final class RouteComputer {
     }
 
 
-    private void chooseNextNode(int endNodeId){
+    private void addNodesToExplored(int endNodeId){
         int currentEdgeId;
         int edgeEndNodeId;
         float nodeDistanceToOrigin;
@@ -77,7 +77,7 @@ public final class RouteComputer {
 
             if (nodeDistanceToOrigin < nodesDistanceToOrigin[edgeEndNodeId]) {
                 nodesDistanceToOrigin[edgeEndNodeId] = nodeDistanceToOrigin;
-                predecessors[edgeEndNodeId] = nodeChosenId;
+                predecessor[edgeEndNodeId] = nodeChosenId;
                 nodesExplored.add(new WeightedNode(edgeEndNodeId, nodeDistanceToOrigin, (float)
                         graph.nodePoint(edgeEndNodeId).distanceTo(graph.nodePoint(endNodeId))));
             }
@@ -104,7 +104,7 @@ public final class RouteComputer {
         int i = endNodeId;
         while (i != startNodeId) {
             finalIds.add(i);
-            i = predecessors[i];
+            i = predecessor[i];
         }
 
 
