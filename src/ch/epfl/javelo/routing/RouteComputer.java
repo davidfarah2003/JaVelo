@@ -17,9 +17,8 @@ public final class RouteComputer {
 
     /**
      * Constructor of the class
-     *
-     * @param graph        graph
-     * @param costFunction cost function
+     * @param graph        Graph used for the route
+     * @param costFunction cost function of the route
      */
     public RouteComputer(Graph graph, CostFunction costFunction) {
         this.graph = graph;
@@ -29,11 +28,12 @@ public final class RouteComputer {
         this.costFunction = costFunction;
     }
 
+
     /**
      * This method computes the shortest route between the nodes given as parameters
      *
-     * @param startNodeId : ID of the initial node
-     * @param endNodeId   : ID of the final node
+     * @param startNodeId  ID of the initial node
+     * @param endNodeId    ID of the final node
      * @return a Route,
      */
     public Route bestRouteBetween(int startNodeId, int endNodeId) {
@@ -51,7 +51,6 @@ public final class RouteComputer {
         );
 
 
-        // Dijkstra's Algorithm, while the explored list is not empty (we can still find a route)
         while (!nodesToExplore.isEmpty()) {
             nodeChosenId = removeExplored().nodeId;
 
@@ -66,12 +65,13 @@ public final class RouteComputer {
         return null;
     }
 
+
     /**
      * This method adds weighted nodes that are connected
      * to the nodeChosen to the ToExplore list (if the distance
      * computed is smaller than the actual one stored in the array).
      *
-     * @param endNodeId
+     * @param endNodeId id of the node at the end of the route
      */
     private void addNodesToExplore(int endNodeId){
         int currentEdgeId;
@@ -87,14 +87,20 @@ public final class RouteComputer {
             nodeDistanceToOrigin = nodesDistanceToOrigin[nodeChosenId] + (float) (graph.edgeLength(currentEdgeId)
                     * costFunction.costFactor(nodeChosenId, currentEdgeId));
 
+
             if (nodeDistanceToOrigin < nodesDistanceToOrigin[edgeEndNodeId]) {
-                nodesDistanceToOrigin[edgeEndNodeId] = nodeDistanceToOrigin;
                 predecessors[edgeEndNodeId] = nodeChosenId;
-                nodesToExplore.add(new WeightedNode(edgeEndNodeId, nodeDistanceToOrigin, (float)
-                        graph.nodePoint(edgeEndNodeId).distanceTo(graph.nodePoint(endNodeId))));
+                nodesDistanceToOrigin[edgeEndNodeId] = nodeDistanceToOrigin;
+
+                nodesToExplore.add(
+                        new WeightedNode(
+                                edgeEndNodeId,
+                                nodeDistanceToOrigin,
+                                (float) graph.nodePoint(edgeEndNodeId).distanceTo(graph.nodePoint(endNodeId))
+                        )
+                );
             }
         }
-
     }
 
 
@@ -102,8 +108,7 @@ public final class RouteComputer {
      * @return the weighted node which is closest to the start node ID and
      * closest to the end node ID (ignores weighted nodes already explored)
      */
-    private WeightedNode removeExplored() {
-        //skip negative infinities
+    private WeightedNode removeExplored(){
         WeightedNode nodeChosen;
         do {
             nodeChosen = nodesToExplore.remove();
@@ -114,8 +119,8 @@ public final class RouteComputer {
 
 
     /**
-     * @param startNodeId
-     * @param endNodeId
+     * @param startNodeId   id of the node at the start of the route
+     * @param endNodeId     id of the node at the end of the route
      * @return the list of edges which compose the path/itinerary.
      */
     private List<Edge> reconstructRoute(int startNodeId, int endNodeId){
@@ -140,13 +145,13 @@ public final class RouteComputer {
         return edges;
     }
 
-    /**
-     * inner record to represent a node, implementing the comparable interface to let the
-     * PriorityQueue remove() method know which element is the smallest in the queue.
-     */
 
-    private record WeightedNode(int nodeId, float distance,
-                                float distanceStraightLine) implements Comparable<WeightedNode> {
+    /**
+     * Inner record to represent a node, implementing the comparable interface to let the PriorityQueue know which
+     * element is the smallest in the queue.
+     */
+    private record WeightedNode(int nodeId, float distance, float distanceStraightLine)
+            implements Comparable<WeightedNode> {
         @Override
         public int compareTo(WeightedNode that) {
             return Float.compare(this.distance + this.distanceStraightLine, that.distance + that.distanceStraightLine);

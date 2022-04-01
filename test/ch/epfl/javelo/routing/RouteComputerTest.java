@@ -7,8 +7,8 @@ import java.nio.file.Path;
 
 public class RouteComputerTest {
         public static void main(String[] args) throws IOException {
-           Graph g = Graph.loadFrom(Path.of("ch_west/"));
-           // Graph g = Graph.loadFrom(Path.of("lausanne/"));
+            Graph g = Graph.loadFrom(Path.of("ch_west/"));
+            //Graph g = Graph.loadFrom(Path.of("lausanne/"));
             CostFunction cf = new CityBikeCF(g);
             RouteComputer rc = new RouteComputer(g, cf);
 
