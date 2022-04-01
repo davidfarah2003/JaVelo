@@ -70,7 +70,7 @@ public final class MultiRoute implements Route {
      * @return the global index of the segment at the given position of the route (first layer)
      */
     private int globalIndexOfSegmentAt(double position) {
-        position = Math2.clamp(0, position, routeLength);
+      //  position = Math2.clamp(0, position, routeLength);
         if(position == routeLength) return segments.size()-1;
 
         int segmentIndex = 0;
