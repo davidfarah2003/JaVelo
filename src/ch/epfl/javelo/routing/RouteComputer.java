@@ -83,6 +83,7 @@ public final class RouteComputer {
 
         // explorer toutes les edges qui sortent du node
         for (int i = 0; i < graph.nodeOutDegree(nodeChosenId); i++) {
+
             currentEdgeId = graph.nodeOutEdgeId(nodeChosenId, i);
             edgeEndNodeId = graph.edgeTargetNodeId(currentEdgeId);
 
@@ -143,32 +144,32 @@ public final class RouteComputer {
                     edges.addFirst(Edge.of(graph, graph.nodeOutEdgeId(s, l), s, e));
                     break;
                 }
-
-                // Collections.reverse(finalIds);
-        /*
-        List<Edge> edges = new LinkedList<>();
-        int s;
-        int e;
-        // getting all the corresponding edges
-        for (int k = 0; k < finalIds.size() - 1; k++) {
-            s = finalIds.get(k);
-            e = finalIds.get(k + 1);
-            for (int l = 0; l < graph.nodeOutDegree(s); l++) {
-                if (graph.edgeTargetNodeId(graph.nodeOutEdgeId(s, l)) == e) {
-                    edges.add(Edge.of(graph, graph.nodeOutEdgeId(s, l), s, e));
-                    break;
-                }
-            }
-        }
-
-         */
-
             }
 
         }
         return edges;
     }
 
+    private List<Edge> reconstructRoute2(int startNodeId, int endNodeId){
+        LinkedList<Edge> edges = new LinkedList<>();
+        int start = 0;
+        int end = endNodeId;
+
+        while((start != startNodeId)){
+            start = predecessors[end];
+
+            for (int l = 0; l < graph.nodeOutDegree(start); l++) {
+                if (graph.edgeTargetNodeId(graph.nodeOutEdgeId(start, l)) == end) {
+                    edges.addFirst(Edge.of(graph, graph.nodeOutEdgeId(start, l), start, end));
+                    break;
+                }
+            }
+
+            end = start;
+        }
+
+        return edges;
+    }
 
     /**
      * inner record to represent a node, implementing the comparable interface to let the
