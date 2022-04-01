@@ -33,10 +33,14 @@ class MultiRouteTest {
         MultiRoute multiRoute1 = new MultiRoute(List.of(singleRoute1,singleRoute2,singleRoute3));
         MultiRoute multiRoute2 = new MultiRoute(List.of(singleRoute4,singleRoute5,singleRoute6));
 
-        MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
+        MultiRoute multiRoute3 = new MultiRoute(List.of(singleRoute5,singleRoute6));
 
-         multiRouteFinal.points();
+        MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
+        MultiRoute multiRouteFinal2 = new MultiRoute(List.of(multiRoute1,singleRoute4, multiRoute3));
+
+
         assertEquals(List.of(point1, point2, point3, point4, point5, point6, point7), multiRouteFinal.points());
+        assertEquals(List.of(point1, point2, point3, point4, point5, point6, point7), multiRouteFinal2.points());
 
     }
 
@@ -114,6 +118,35 @@ class MultiRouteTest {
 
     @Test
     void pointAt() {
+        PointCh point1 = new PointCh(SwissBounds.MIN_E + 5000, SwissBounds.MIN_N + 5000);
+        PointCh point2 = new PointCh(SwissBounds.MIN_E + 6000, SwissBounds.MIN_N + 5000);
+        PointCh point3 = new PointCh(SwissBounds.MIN_E + 7000, SwissBounds.MIN_N + 5000);
+        PointCh point4 = new PointCh(SwissBounds.MIN_E + 8000, SwissBounds.MIN_N + 5000);
+        PointCh point5 = new PointCh(SwissBounds.MIN_E + 9000, SwissBounds.MIN_N + 5000);
+        PointCh point6 = new PointCh(SwissBounds.MIN_E + 10000, SwissBounds.MIN_N + 5000);
+        PointCh point7 = new PointCh(SwissBounds.MIN_E + 11000, SwissBounds.MIN_N + 5000);
+
+
+        SingleRoute singleRoute1 = new SingleRoute(List.of(new Edge(1,2, point1, point2, 1000, Functions.sampled(new float[]{18,23},1000))));
+        SingleRoute singleRoute2 = new SingleRoute(List.of(new Edge(2,3, point2, point3, 1000, Functions.sampled(new float[]{23,21},1000))));
+        SingleRoute singleRoute3 = new SingleRoute(List.of(new Edge(3,4, point3, point4, 1000, Functions.sampled(new float[]{21,22},1000))));
+        SingleRoute singleRoute4 = new SingleRoute(List.of(new Edge(4,5, point4, point5, 1000, Functions.sampled(new float[]{22,24},1000))));
+        SingleRoute singleRoute5 = new SingleRoute(List.of(new Edge(5,6, point5, point6, 1000, Functions.sampled(new float[]{24,20},1000))));
+        SingleRoute singleRoute6 = new SingleRoute(List.of(new Edge(6,7, point6, point7, 1000, Functions.sampled(new float[]{20,21},1000))));
+
+
+        MultiRoute multiRoute1 = new MultiRoute(List.of(singleRoute1,singleRoute2,singleRoute3));
+        MultiRoute multiRoute2 = new MultiRoute(List.of(singleRoute4,singleRoute5,singleRoute6));
+
+        MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
+
+        assertEquals(point1, multiRouteFinal.pointAt(-50));
+        assertEquals(new PointCh(SwissBounds.MIN_E + 5500, SwissBounds.MIN_N + 5000), multiRouteFinal.pointAt(500));
+        assertEquals(point7, multiRouteFinal.pointAt(9000));
+        multiRouteFinal.pointAt(9000);
+        multiRouteFinal.pointAt(2400);
+        assertEquals( new PointCh(SwissBounds.MIN_E + 7400, SwissBounds.MIN_N + 5000), multiRouteFinal.pointAt(2400));
+
     }
 
     @Test
@@ -164,6 +197,9 @@ class MultiRouteTest {
         assertEquals(3000, finalM.length());
         assertEquals(4, finalM.nodeClosestTo(5000));
         assertEquals(1, finalM.nodeClosestTo(-3));
+        assertEquals(0, finalM.indexOfSegmentAt(1500));
+        assertEquals(0, finalM.indexOfSegmentAt(-344));
+        assertEquals(1, finalM.indexOfSegmentAt(32322));
         assertEquals(1, finalM.indexOfSegmentAt(2500));
         assertEquals(3, finalM.nodeClosestTo(2100));
         assertEquals(3, finalM.nodeClosestTo(1800));
@@ -196,6 +232,16 @@ class MultiRouteTest {
         MultiRoute multiRouteFinal2 = new MultiRoute(List.of(multiRoute1, singleRoute4, multiRoute3));
         assertEquals(new RoutePoint(new PointCh(SwissBounds.MIN_E + 8600,SwissBounds.MIN_N + 5000), 3600, 1000),
                 multiRouteFinal2.pointClosestTo(new PointCh(SwissBounds.MIN_E + 8600,SwissBounds.MIN_N + 6000)));
+      //  assertEquals(new RoutePoint(new PointCh(SwissBounds.MIN_E + 6213,SwissBounds.MIN_N + 5000), 1213, 1000),
+       //         multiRouteFinal2.pointClosestTo(new PointCh(SwissBounds.MIN_E + 6213, SwissBounds.MIN_N + 6200)));
+
+        multiRouteFinal2.pointClosestTo(new PointCh(SwissBounds.MIN_E + 6213, SwissBounds.MIN_N + 6200));
+
+   //    assertEquals(new RoutePoint(point7, 6000 ,3400), multiRouteFinal2.pointClosestTo(
+   //             new PointCh(SwissBounds.MIN_E +80000, SwissBounds.MIN_N + 20000)));
+
+       multiRouteFinal2.indexOfSegmentAt(500);
+       multiRouteFinal2.indexOfSegmentAt(1000);
 
 
 
