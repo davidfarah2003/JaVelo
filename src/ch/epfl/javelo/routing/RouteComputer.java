@@ -9,7 +9,7 @@ public final class RouteComputer {
     private final Graph graph;
     private final CostFunction costFunction;
 
-    private final PriorityQueue<WeightedNode> nodesExplored;
+    private final PriorityQueue<WeightedNode> nodesToExplore;
     private final float[] nodesDistanceToOrigin;
     private final int[] predecessors;
     private int nodeChosenId;
@@ -24,7 +24,7 @@ public final class RouteComputer {
         this.graph = graph;
         nodesDistanceToOrigin = new float[graph.nodeCount()];
         predecessors = new int[graph.nodeCount()];
-        nodesExplored = new PriorityQueue<>();
+        nodesToExplore = new PriorityQueue<>();
         this.costFunction = costFunction;
     }
 
@@ -40,12 +40,17 @@ public final class RouteComputer {
         Arrays.fill(nodesDistanceToOrigin, Float.POSITIVE_INFINITY);
         nodesDistanceToOrigin[startNodeId] = 0;
 
-        nodesExplored.add(new WeightedNode(startNodeId, nodesDistanceToOrigin[startNodeId],
-                (float) graph.nodePoint(startNodeId).distanceTo(graph.nodePoint(endNodeId))));
+        nodesToExplore.add(
+                new WeightedNode(
+                        startNodeId,
+                        nodesDistanceToOrigin[startNodeId],
+                        (float) graph.nodePoint(startNodeId).distanceTo(graph.nodePoint(endNodeId))
+                )
+        );
 
 
         // Dijkstra's Algorithm, while the explored list is not empty (we can still find a route)
-        while (!nodesExplored.isEmpty()) {
+        while (!nodesToExplore.isEmpty()) {
             nodeChosenId = removeExplored().nodeId;
 
             if (nodeChosenId == endNodeId) {
@@ -53,7 +58,7 @@ public final class RouteComputer {
                 return new SingleRoute(edges);
             }
 
-            addNodesToExplored(endNodeId);
+            addNodesToExplore(endNodeId);
             nodesDistanceToOrigin[nodeChosenId] = Float.NEGATIVE_INFINITY;
         }
 
@@ -62,7 +67,7 @@ public final class RouteComputer {
     }
 
 
-    private void addNodesToExplored(int endNodeId){
+    private void addNodesToExplore(int endNodeId){
         int currentEdgeId;
         int edgeEndNodeId;
         float nodeDistanceToOrigin;
@@ -78,7 +83,7 @@ public final class RouteComputer {
             if (nodeDistanceToOrigin < nodesDistanceToOrigin[edgeEndNodeId]) {
                 nodesDistanceToOrigin[edgeEndNodeId] = nodeDistanceToOrigin;
                 predecessors[edgeEndNodeId] = nodeChosenId;
-                nodesExplored.add(new WeightedNode(edgeEndNodeId, nodeDistanceToOrigin, (float)
+                nodesToExplore.add(new WeightedNode(edgeEndNodeId, nodeDistanceToOrigin, (float)
                         graph.nodePoint(edgeEndNodeId).distanceTo(graph.nodePoint(endNodeId))));
             }
         }
@@ -90,7 +95,7 @@ public final class RouteComputer {
         //skip negative infinities
         WeightedNode nodeChosen;
         do {
-            nodeChosen = nodesExplored.remove();
+            nodeChosen = nodesToExplore.remove();
         } while (nodesDistanceToOrigin[nodeChosen.nodeId] == Float.NEGATIVE_INFINITY);
 
         return nodeChosen;
