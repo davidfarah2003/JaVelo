@@ -126,6 +126,7 @@ public final class RouteComputer {
         while((end != startNodeId)){
             start = predecessors[end];
 
+            //iterate over edges going out of the node to find the corresponding edge
             for (int l = 0; l < graph.nodeOutDegree(start); l++) {
                 if (graph.edgeTargetNodeId(graph.nodeOutEdgeId(start, l)) == end) {
                     edges.addFirst(Edge.of(graph, graph.nodeOutEdgeId(start, l), start, end));
