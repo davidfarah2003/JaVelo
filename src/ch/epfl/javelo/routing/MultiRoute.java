@@ -112,11 +112,6 @@ public final class MultiRoute implements Route {
      */
     @Override
     public List<PointCh> points() {
-       // Set<PointCh> set = new LinkedHashSet<>();
-      //  for (Route route : segments){
-      //      set.addAll(route.points());
-     ////   }
-      //  return new ArrayList<>(set);
         List <PointCh> points = new ArrayList<>();
         ListIterator<Route> segmentIterator = segments.listIterator();
         Route segment;
