@@ -78,7 +78,6 @@ public final class RouteComputer {
         int edgeEndNodeId;
         float nodeDistanceToOrigin;
 
-        // explorer toutes les edges qui sortent du node
         for (int i = 0; i < graph.nodeOutDegree(nodeChosenId); i++) {
 
             currentEdgeId = graph.nodeOutEdgeId(nodeChosenId, i);
