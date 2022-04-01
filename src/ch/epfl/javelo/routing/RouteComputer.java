@@ -11,7 +11,6 @@ public final class RouteComputer {
     private final PriorityQueue<WeightedNode> nodesToExplore;
     private final float[] nodesDistanceToOrigin;
     private final int[] predecessors;
-
     private int nodeChosenId;
 
 
