@@ -9,9 +9,9 @@ public final class RouteComputer {
     private final Graph graph;
     private final CostFunction costFunction;
 
-    private PriorityQueue<WeightedNode> nodesExplored;
-    private float[] nodesDistanceToOrigin; //distance depuis A de chaque node
-    private int[] predecessor; //id de noeud avant lui
+    private final PriorityQueue<WeightedNode> nodesExplored;
+    private final float[] nodesDistanceToOrigin;
+    private final int[] predecessors;
     private int nodeChosenId;
 
 
@@ -23,7 +23,7 @@ public final class RouteComputer {
     public RouteComputer(Graph graph, CostFunction costFunction) {
         this.graph = graph;
         nodesDistanceToOrigin = new float[graph.nodeCount()];
-        predecessor = new int[graph.nodeCount()];
+        predecessors = new int[graph.nodeCount()];
         nodesExplored = new PriorityQueue<>();
         this.costFunction = costFunction;
     }
@@ -77,7 +77,7 @@ public final class RouteComputer {
 
             if (nodeDistanceToOrigin < nodesDistanceToOrigin[edgeEndNodeId]) {
                 nodesDistanceToOrigin[edgeEndNodeId] = nodeDistanceToOrigin;
-                predecessor[edgeEndNodeId] = nodeChosenId;
+                predecessors[edgeEndNodeId] = nodeChosenId;
                 nodesExplored.add(new WeightedNode(edgeEndNodeId, nodeDistanceToOrigin, (float)
                         graph.nodePoint(edgeEndNodeId).distanceTo(graph.nodePoint(endNodeId))));
             }
@@ -104,7 +104,7 @@ public final class RouteComputer {
         int i = endNodeId;
         while (i != startNodeId) {
             finalIds.add(i);
-            i = predecessor[i];
+            i = predecessors[i];
         }
 
 
