@@ -17,7 +17,8 @@ public final class RouteComputer {
 
     /**
      * Constructor of the class
-     * @param graph graph
+     *
+     * @param graph        graph
      * @param costFunction cost function
      */
     public RouteComputer(Graph graph, CostFunction costFunction) {
@@ -30,8 +31,9 @@ public final class RouteComputer {
 
     /**
      * This method computes the shortest route between the nodes given as parameters
+     *
      * @param startNodeId : ID of the initial node
-     * @param endNodeId : ID of the final node
+     * @param endNodeId   : ID of the final node
      * @return a Route,
      */
     public Route bestRouteBetween(int startNodeId, int endNodeId) {
@@ -66,6 +68,13 @@ public final class RouteComputer {
 
     }
 
+    /**
+     * This method adds weighted nodes that are connected
+     * to the nodeChosen to the ToExplore list (if the distance
+     * computed is smaller than the actual one stored in the array).
+     *
+     * @param endNodeId
+     */
 
     private void addNodesToExplore(int endNodeId){
         int currentEdgeId;
@@ -91,7 +100,11 @@ public final class RouteComputer {
     }
 
 
-    private WeightedNode removeExplored(){
+    /**
+     * @return the weighted node which is closest to the start node ID and
+     * closest to the end node ID (ignores weighted nodes already explored)
+     */
+    private WeightedNode removeExplored() {
         //skip negative infinities
         WeightedNode nodeChosen;
         do {
@@ -102,7 +115,12 @@ public final class RouteComputer {
     }
 
 
-    private List<Edge> reconstructRoute(int startNodeId, int endNodeId){
+    /**
+     * @param startNodeId
+     * @param endNodeId
+     * @return the list of edges which compose the path/itinerary.
+     */
+    private List<Edge> reconstructRoute(int startNodeId, int endNodeId) {
         // getting all the nodes which we find along
         // the path from the startNode to the end Node
         List<Integer> finalIds = new ArrayList<>();
@@ -111,12 +129,24 @@ public final class RouteComputer {
             finalIds.add(i);
             i = predecessors[i];
         }
-
+        finalIds.add(startNodeId);
 
         //reconstruction
-        finalIds.add(startNodeId);
-        Collections.reverse(finalIds);
-        List<Edge> edges = new ArrayList<>();
+        LinkedList<Edge> edges = new LinkedList<>();
+        int s;
+        int e;
+        for (int k = finalIds.size() - 1; k > 0; k--) {
+            s = finalIds.get(k - 1);
+            e = finalIds.get(k);
+            for (int l = 0; l < graph.nodeOutDegree(s); l++) {
+                if (graph.edgeTargetNodeId(graph.nodeOutEdgeId(s, l)) == e) {
+                    edges.addFirst(Edge.of(graph, graph.nodeOutEdgeId(s, l), s, e));
+                    break;
+                }
+
+                // Collections.reverse(finalIds);
+        /*
+        List<Edge> edges = new LinkedList<>();
         int s;
         int e;
         // getting all the corresponding edges
@@ -130,18 +160,28 @@ public final class RouteComputer {
                 }
             }
         }
+
+         */
+
+            }
+
+        }
         return edges;
     }
 
 
-    // inner record to represent a node, implementing the comparable interface to let the
-    // PriorityQueue remove method know which element is lowest  in the queue.
-    private record WeightedNode(int nodeId, float distance, float distanceStraightLine) implements Comparable<WeightedNode> {
+    /**
+     * inner record to represent a node, implementing the comparable interface to let the
+     * PriorityQueue remove() method know which element is the smallest in the queue.
+     */
+
+    private record WeightedNode(int nodeId, float distance,
+                                float distanceStraightLine) implements Comparable<WeightedNode> {
         @Override
         public int compareTo(WeightedNode that) {
             return Float.compare(this.distance + this.distanceStraightLine, that.distance + that.distanceStraightLine);
         }
     }
-
-
 }
+
+
