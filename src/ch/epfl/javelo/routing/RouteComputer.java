@@ -63,9 +63,7 @@ public final class RouteComputer {
             addNodesToExplore(endNodeId);
             nodesDistanceToOrigin[nodeChosenId] = Float.NEGATIVE_INFINITY;
         }
-
         return null;
-
     }
 
     /**
@@ -75,7 +73,6 @@ public final class RouteComputer {
      *
      * @param endNodeId
      */
-
     private void addNodesToExplore(int endNodeId){
         int currentEdgeId;
         int edgeEndNodeId;
@@ -121,41 +118,12 @@ public final class RouteComputer {
      * @param endNodeId
      * @return the list of edges which compose the path/itinerary.
      */
-    private List<Edge> reconstructRoute(int startNodeId, int endNodeId) {
-        // getting all the nodes which we find along
-        // the path from the startNode to the end Node
-        List<Integer> finalIds = new ArrayList<>();
-        int i = endNodeId;
-        while (i != startNodeId) {
-            finalIds.add(i);
-            i = predecessors[i];
-        }
-        finalIds.add(startNodeId);
-
-        //reconstruction
+    private List<Edge> reconstructRoute(int startNodeId, int endNodeId){
         LinkedList<Edge> edges = new LinkedList<>();
-        int s;
-        int e;
-        for (int k = finalIds.size() - 1; k > 0; k--) {
-            s = finalIds.get(k - 1);
-            e = finalIds.get(k);
-            for (int l = 0; l < graph.nodeOutDegree(s); l++) {
-                if (graph.edgeTargetNodeId(graph.nodeOutEdgeId(s, l)) == e) {
-                    edges.addFirst(Edge.of(graph, graph.nodeOutEdgeId(s, l), s, e));
-                    break;
-                }
-            }
-
-        }
-        return edges;
-    }
-
-    private List<Edge> reconstructRoute2(int startNodeId, int endNodeId){
-        LinkedList<Edge> edges = new LinkedList<>();
-        int start = 0;
+        int start;
         int end = endNodeId;
 
-        while((start != startNodeId)){
+        while((end != startNodeId)){
             start = predecessors[end];
 
             for (int l = 0; l < graph.nodeOutDegree(start); l++) {
