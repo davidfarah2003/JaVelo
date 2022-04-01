@@ -9,13 +9,22 @@ public final class RouteComputer {
     private final Graph graph;
     private final CostFunction costFunction;
 
+    private PriorityQueue<WeightedNode> nodesExplored;
+    private float[] nodesDistanceToOrigin; //distance depuis A de chaque node
+    private int[] predecessor; //id de noeud avant lui
+    private int nodeChosenId;
+
+
     /**
      * Constructor of the class
-     * @param graph
-     * @param costFunction
+     * @param graph graph
+     * @param costFunction cost function
      */
     public RouteComputer(Graph graph, CostFunction costFunction) {
         this.graph = graph;
+        nodesDistanceToOrigin = new float[graph.nodeCount()];
+        predecessor = new int[graph.nodeCount()];
+        nodesExplored = new PriorityQueue<>();
         this.costFunction = costFunction;
     }
 
@@ -28,93 +37,24 @@ public final class RouteComputer {
     public Route bestRouteBetween(int startNodeId, int endNodeId) {
         Preconditions.checkArgument(startNodeId != endNodeId);
 
-        // inner record to represent a node, implementing the comparable interface to let the
-        // PriorityQueue remove method know which element is lowest  in the queue.
-        record WeightedNode(int nodeId, float distance, float distanceStraightLine)
-                implements Comparable<WeightedNode> {
-            @Override
-            public int compareTo(WeightedNode that) {
-                return Float.compare(this.distance + this.distanceStraightLine, that.distance + that.distanceStraightLine);
-            }
-        }
+        Arrays.fill(nodesDistanceToOrigin, Float.POSITIVE_INFINITY);
+        nodesDistanceToOrigin[startNodeId] = 0;
 
-        float[] distance = new float[graph.nodeCount()]; //distance depuis a de chaque node
-        int[] predecessor = new int[graph.nodeCount()]; //id de noeud avant lui
-        Arrays.fill(distance, Float.POSITIVE_INFINITY);
-        distance[startNodeId] = 0;
-
-        PriorityQueue<WeightedNode> nodesExplored = new PriorityQueue<>();
-        nodesExplored.add(new WeightedNode(startNodeId, distance[startNodeId],
+        nodesExplored.add(new WeightedNode(startNodeId, nodesDistanceToOrigin[startNodeId],
                 (float) graph.nodePoint(startNodeId).distanceTo(graph.nodePoint(endNodeId))));
 
 
-
-        WeightedNode nodeChosen;
-        int nodeChosenId;
-        int edgeId;
-        int endNodeIdOfTheEdge;
-        float d;
-
-
-        // Dijkstra's Algorithm
+        // Dijkstra's Algorithm, while the explored list is not empty (we can still find a route)
         while (!nodesExplored.isEmpty()) {
-            //skip negative infinities
-            do {
-                nodeChosen = nodesExplored.remove();
-            } while (distance[nodeChosen.nodeId] == Float.NEGATIVE_INFINITY);
-
-            nodeChosenId = nodeChosen.nodeId;
+            nodeChosenId = removeExplored().nodeId;
 
             if (nodeChosenId == endNodeId) {
-                // getting all the nodes which we find along
-                // the path from the startNode to the end Node
-                List<Integer> finalIds = new ArrayList<>();
-                int i = endNodeId;
-                while (i != startNodeId) {
-                    finalIds.add(i);
-                    i = predecessor[i];
-                }
-
-
-                //reconstruction
-                finalIds.add(startNodeId);
-                Collections.reverse(finalIds);
-                List<Edge> edges = new ArrayList<>();
-                int s;
-                int e;
-                // getting all the corresponding edges
-                for (int k = 0; k < finalIds.size() - 1; k++) {
-                    s = finalIds.get(k);
-                    e = finalIds.get(k + 1);
-                    for (int l = 0; l < graph.nodeOutDegree(s); l++) {
-                        if (graph.edgeTargetNodeId(graph.nodeOutEdgeId(s, l)) == e) {
-                            edges.add(Edge.of(graph, graph.nodeOutEdgeId(s, l), s, e));
-                            break;
-                        }
-                    }
-                }
+                List<Edge> edges = reconstructRoute(startNodeId, endNodeId);
                 return new SingleRoute(edges);
             }
 
-            // explorer toutes les edges qui sortent du node
-            for (int i = 0; i < graph.nodeOutDegree(nodeChosenId); i++) {
-                edgeId = graph.nodeOutEdgeId(nodeChosenId, i);
-                endNodeIdOfTheEdge = graph.edgeTargetNodeId(edgeId);
-                d = distance[nodeChosenId]
-                        + (float) (graph.edgeLength(edgeId)
-                        * costFunction.costFactor(nodeChosenId, edgeId));
-
-                if (d < distance[endNodeIdOfTheEdge]) {
-                    distance[endNodeIdOfTheEdge] = d;
-                    predecessor[endNodeIdOfTheEdge] = nodeChosenId;
-                    nodesExplored.add(new WeightedNode(endNodeIdOfTheEdge, d, (float)
-                            graph.nodePoint(endNodeIdOfTheEdge).distanceTo(graph.nodePoint(endNodeId))));
-                }
-            }
-
-            // since we found the shortest path to the nodeChosen
-            // it will never be necessary to explore its out edges again.
-            distance[nodeChosenId] = Float.NEGATIVE_INFINITY;
+            chooseNextNode(endNodeId);
+            nodesDistanceToOrigin[nodeChosenId] = Float.NEGATIVE_INFINITY;
         }
 
         return null;
@@ -122,78 +62,81 @@ public final class RouteComputer {
     }
 
 
-    public Route bestRouteBetweenOld(int startNodeId, int endNodeId){
-        Preconditions.checkArgument(startNodeId != endNodeId);
-        float[] distance = new float[graph.nodeCount()];
-        int[] predecessor = new int[graph.nodeCount()];
-        Arrays.fill(distance, Float.POSITIVE_INFINITY);
-        Arrays.fill(predecessor, 0);
-        distance[startNodeId] = 0;
-        List<Integer> nodeIdsExplored = new ArrayList<>();
-        nodeIdsExplored.add(startNodeId);
+    private void chooseNextNode(int endNodeId){
+        int currentEdgeId;
+        int edgeEndNodeId;
+        float nodeDistanceToOrigin;
 
-        float minDistanceFirstIdExplored;
-        int id = 0;
-        int idEdge;
-        int endNodeIdEdge;
+        // explorer toutes les edges qui sortent du node
+        for (int i = 0; i < graph.nodeOutDegree(nodeChosenId); i++) {
+            currentEdgeId = graph.nodeOutEdgeId(nodeChosenId, i);
+            edgeEndNodeId = graph.edgeTargetNodeId(currentEdgeId);
 
-        float d;
+            nodeDistanceToOrigin = nodesDistanceToOrigin[nodeChosenId] + (float) (graph.edgeLength(currentEdgeId)
+                    * costFunction.costFactor(nodeChosenId, currentEdgeId));
 
-        while (!nodeIdsExplored.isEmpty()) {
-            minDistanceFirstIdExplored = Float.POSITIVE_INFINITY;
-            for (int idExplored : nodeIdsExplored) {
-                if (distance[idExplored] < minDistanceFirstIdExplored) {
-                    id = idExplored;
-                    minDistanceFirstIdExplored = distance[id];
-                }
-            }
-           // nodeIdsExplored.remove(new Integer(id));
-
-            if (id == endNodeId) {
-                break;
-            }
-
-            for (int i = 0; i < graph.nodeOutDegree(id); i++) {
-                idEdge = graph.nodeOutEdgeId(id, i);
-                endNodeIdEdge = graph.edgeTargetNodeId(idEdge);
-                d = distance[id] + (float) (graph.edgeLength(idEdge) * costFunction.costFactor(id, idEdge));
-
-                if (d < distance[endNodeIdEdge]) {
-                    distance[endNodeIdEdge] = d;
-                    predecessor[endNodeIdEdge] = id;
-                    nodeIdsExplored.add(endNodeIdEdge);
-                }
+            if (nodeDistanceToOrigin < nodesDistanceToOrigin[edgeEndNodeId]) {
+                nodesDistanceToOrigin[edgeEndNodeId] = nodeDistanceToOrigin;
+                predecessor[edgeEndNodeId] = nodeChosenId;
+                nodesExplored.add(new WeightedNode(edgeEndNodeId, nodeDistanceToOrigin, (float)
+                        graph.nodePoint(edgeEndNodeId).distanceTo(graph.nodePoint(endNodeId))));
             }
         }
 
+    }
+
+
+    private WeightedNode removeExplored(){
+        //skip negative infinities
+        WeightedNode nodeChosen;
+        do {
+            nodeChosen = nodesExplored.remove();
+        } while (nodesDistanceToOrigin[nodeChosen.nodeId] == Float.NEGATIVE_INFINITY);
+
+        return nodeChosen;
+    }
+
+
+    private List<Edge> reconstructRoute(int startNodeId, int endNodeId){
+        // getting all the nodes which we find along
+        // the path from the startNode to the end Node
         List<Integer> finalIds = new ArrayList<>();
         int i = endNodeId;
-        while (i != startNodeId){
+        while (i != startNodeId) {
             finalIds.add(i);
             i = predecessor[i];
         }
+
+
+        //reconstruction
         finalIds.add(startNodeId);
         Collections.reverse(finalIds);
-
         List<Edge> edges = new ArrayList<>();
-
         int s;
         int e;
-        for (int k = 0; k < finalIds.size() - 1; k++){
+        // getting all the corresponding edges
+        for (int k = 0; k < finalIds.size() - 1; k++) {
             s = finalIds.get(k);
-            e = finalIds.get(k+1);
-            for (int l = 0; l < graph.nodeOutDegree(s); l++){
-                if (graph.edgeTargetNodeId(graph.nodeOutEdgeId(s,l)) == e){
-                    edges.add(Edge.of(graph,graph.nodeOutEdgeId(s,l),s,e));
+            e = finalIds.get(k + 1);
+            for (int l = 0; l < graph.nodeOutDegree(s); l++) {
+                if (graph.edgeTargetNodeId(graph.nodeOutEdgeId(s, l)) == e) {
+                    edges.add(Edge.of(graph, graph.nodeOutEdgeId(s, l), s, e));
                     break;
                 }
             }
-
         }
-
-        return new SingleRoute(edges);
+        return edges;
     }
 
+
+    // inner record to represent a node, implementing the comparable interface to let the
+    // PriorityQueue remove method know which element is lowest  in the queue.
+    private record WeightedNode(int nodeId, float distance, float distanceStraightLine) implements Comparable<WeightedNode> {
+        @Override
+        public int compareTo(WeightedNode that) {
+            return Float.compare(this.distance + this.distanceStraightLine, that.distance + that.distanceStraightLine);
+        }
+    }
 
 
 }

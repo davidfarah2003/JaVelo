@@ -35,7 +35,7 @@ class MultiRouteTest {
 
         MultiRoute multiRouteFinal = new MultiRoute(List.of(multiRoute1,multiRoute2));
 
-         multiRouteFinal.points();
+        assertEquals(7, multiRouteFinal.points().size());
         assertEquals(List.of(point1, point2, point3, point4, point5, point6, point7), multiRouteFinal.points());
 
     }
@@ -196,9 +196,6 @@ class MultiRouteTest {
         MultiRoute multiRouteFinal2 = new MultiRoute(List.of(multiRoute1, singleRoute4, multiRoute3));
         assertEquals(new RoutePoint(new PointCh(SwissBounds.MIN_E + 8600,SwissBounds.MIN_N + 5000), 3600, 1000),
                 multiRouteFinal2.pointClosestTo(new PointCh(SwissBounds.MIN_E + 8600,SwissBounds.MIN_N + 6000)));
-
-
-
 
 
     }
