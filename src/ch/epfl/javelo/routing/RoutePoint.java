@@ -5,6 +5,11 @@ import ch.epfl.javelo.projection.PointCh;
 import static java.lang.Double.NaN;
 import static java.lang.Double.POSITIVE_INFINITY;
 
+
+/**
+ * @author David Farah (341017)
+ * @author Wesley Nana Davies(344592)
+ */
 public record RoutePoint(PointCh point, double position, double distanceToReference) {
 
     public static final RoutePoint NONE = new RoutePoint(null, NaN, POSITIVE_INFINITY);

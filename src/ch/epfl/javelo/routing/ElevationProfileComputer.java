@@ -5,6 +5,11 @@ import ch.epfl.javelo.Preconditions;
 
 import java.util.Arrays;
 
+
+/**
+ * @author David Farah (341017)
+ * @author Wesley Nana Davies(344592)
+ */
 public final class ElevationProfileComputer {
     private static float[] profile;
     private static double intervalLength;

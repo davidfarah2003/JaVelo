@@ -19,9 +19,8 @@ import java.util.function.DoubleUnaryOperator;
  * A Graph (immutable class)
  *
  * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
+ * @author David Farah (341017)
  */
-
 public final class Graph {
     private final GraphNodes nodes;
     private final GraphSectors sectors;

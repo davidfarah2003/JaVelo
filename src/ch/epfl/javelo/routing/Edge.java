@@ -7,6 +7,9 @@ import java.util.function.DoubleUnaryOperator;
 
 /**
  * The purpose of this record is to represent all the edges that belong to a specific itinerary
+ *
+ * @author David Farah (341017)
+ * @author Wesley Nana Davies(344592)
  */
 public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPoint,
                    double length, DoubleUnaryOperator profile){
@@ -33,6 +36,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
     }
 
     /**
+     * Returns the point at the given position on the edge.
      * @param position on the edge
      * @return the point at the given position on the edge, expressed in meters.
      */

@@ -5,6 +5,10 @@ import ch.epfl.javelo.Preconditions;
 import java.util.DoubleSummaryStatistics;
 import java.util.function.DoubleUnaryOperator;
 
+/**
+ * @author David Farah (341017)
+ * @author Wesley Nana Davies(344592)
+ */
 public final class ElevationProfile {
     private final double length;
     private final double ascent;

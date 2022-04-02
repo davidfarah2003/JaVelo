@@ -13,7 +13,6 @@ import java.util.*;
    * @author Wesley Nana Davies(344592)
    * @author David Farah (????)
    */
-
 public final class MultiRoute implements Route {
     private final List<Route> segments;
     private final double routeLength;

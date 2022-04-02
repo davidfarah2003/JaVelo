@@ -4,6 +4,11 @@ import ch.epfl.javelo.projection.PointCh;
 
 import java.util.List;
 
+
+/**
+ * @author David Farah (341017)
+ * @author Wesley Nana Davies(344592)
+ */
 public interface Route {
     /**
      * @param position given position (in meters)

@@ -5,6 +5,10 @@ import ch.epfl.javelo.data.Graph;
 import java.util.*;
 
 
+/**
+ * @author David Farah (341017)
+ * @author Wesley Nana Davies(344592)
+ */
 public final class RouteComputer {
     private final Graph graph;
     private final CostFunction costFunction;
