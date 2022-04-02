@@ -8,19 +8,22 @@ import java.util.*;
 
 
 /**
- * Class that represents a Multi-Route, which is formed from other routes (type Route)
- * A segment is considered to be SingleRoute
- * (but is the class attribute <code>segments</code> there could be any object of type Route).
- */
+   * A MultiRoute
+   *
+   * @author Wesley Nana Davies(344592)
+   * @author David Farah (????)
+   */
+
 public final class MultiRoute implements Route {
     private final List<Route> segments;
     private final double routeLength;
 
 
-    /** Constructor of the class
-     * Builds a multi-route consisting of the given segments,
-     * or throws IllegalArgumentException if the list of segments is empty
-     * @param segments forming the multi-route
+    /** Constructor of the class which builds a MultiRoute consisting of the given segments,
+     * @param segments
+                    list of segments forming the MultiRoute
+     * @throws IllegalArgumentException
+                     if the list of segments is empty
      */
     public MultiRoute(List<Route> segments){
         Preconditions.checkArgument(!segments.isEmpty());
@@ -30,8 +33,8 @@ public final class MultiRoute implements Route {
 
 
 
-    /**
-     * @return length of the multi-route
+    /** Returns the length of the MultiRoute
+     * @return length of the MultiRoute
      */
     private double calculateLength(){
         double length = 0;
@@ -43,7 +46,10 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * @param position given position (in meters)
+     * Returns the index of the segment of the MultiRoute at the given position
+     * (considering SingleRoute segments)
+     * @param position
+            position from the start of the itinerary (in meters)
      * @return the index of the segment at the given position of the route (the route)
      */
     @Override
@@ -66,11 +72,12 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * @param position given position (in meters)
+     * Returns the index of the segment of the MultiRoute at the given position
+     * @param position
+                 position from the start of the itinerary (in meters)
      * @return the global index of the segment at the given position of the route (first layer)
      */
     private int globalIndexOfSegmentAt(double position) {
-      //  position = Math2.clamp(0, position, routeLength);
         if(position == routeLength) return segments.size()-1;
 
         int segmentIndex = 0;
@@ -86,7 +93,8 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * @return the length of the route, in meters
+     * Returns the length  of the MultiRoute
+     * @return the length of the route (meters)
      */
     @Override
     public double length() {
@@ -95,7 +103,8 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * @return List containing all the edges of the route
+     * Returns all the edges that constitute the MultiRoute
+     * @return a list containing all the edges of the route
      */
     @Override
     public List<Edge> edges() {
@@ -108,7 +117,8 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * @return List containing all the points located at the extremities of the edges of the route
+     * Returns a list containing all the points located at the extremities of the edges of the route
+     * @return a list containing all the points of interest
      */
     @Override
     public List<PointCh> points() {
@@ -132,11 +142,12 @@ public final class MultiRoute implements Route {
     }
 
     /**
-     * @param index of the route to know the distance before
-     * @return the length of the route up until the specified route index (exclusive)
+     * Returns the length of the route up until the specified route index (exclusive)
+     * @param index
+                index of the route to know the distance before
+     * @return the length of the route up until the given index (exclusive)
      */
     private double lengthBeforeRoute(int index){
-        //   Preconditions.checkArgument(index < segments.size() && index >= 0);
         double length = 0;
         for(Route route : segments.subList(0, index)){
             length += route.length();
@@ -147,7 +158,9 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * @param position (Double)
+     * Returns the point at the given position along the route
+     * @param position
+                    position from the start of the itinerary (in meters)
      * @return the point at the given position along the route
      */
     @Override
@@ -159,7 +172,9 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * @param position (Double)
+     * Returns the elevation at the given position along the route
+     * @param position
+                    position from the start of the itinerary (in meters)
      * @return the elevation at a given point along the itinerary, NaN if the edge has no profile
      */
     @Override
@@ -171,8 +186,10 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * @param position (Double)
-     * @return the identity of the node belonging to the multi-route and located closest to the given position
+     * Returns the node closest to the point at the given position along the route
+     * @param position
+                position from the start of the itinerary (in meters)
+     * @return a node ID
      */
     @Override
     public int nodeClosestTo(double position) {
@@ -183,8 +200,10 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * @param point (PointCh)
-     * @return the point on the route that is closest to the given reference point (RoutePoint)
+     * Returns the RoutePoint closest to the point given as a parameter
+     * @param point
+                point of interest (PointCh)
+     * @return the RoutePoint closest to the given point
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {

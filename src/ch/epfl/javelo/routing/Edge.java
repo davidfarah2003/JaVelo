@@ -3,11 +3,6 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
-
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -57,35 +52,3 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
         return profile.applyAsDouble(position);
     }
 }
-
-/*
- public int numberSegments(){
-        int size = 0;
-        for (Route segment : segments){
-            if (segment instanceof MultiRoute){
-                size += ((MultiRoute) segment).numberSegments();
-            }
-            else{
-                size+=1;
-            }
-        }
-
-        return size;
-
-    }
-
-
-
-
-private double calculateLength(){
-    double length = 0;
-    for(Route segment: segments){
-        length += segment.length();
-    }
-    return length;
-}
-
-    /**
-     * @param position given position (in meters)
-     * @return the index of the segment at the given position of the route (the route)
-     */
