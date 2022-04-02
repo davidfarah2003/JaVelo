@@ -12,13 +12,6 @@ import java.util.Collections;
 import java.util.List;
 
 
-/**
- * GraphEdges
- *
- * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
- */
-
 
 /**
  * GraphEdges record
@@ -28,10 +21,12 @@ import java.util.List;
             length, elevation, attributes)
 
  * @param profileIds
-            IntBuffer which contains for each edge,
-            the type of the profile and the index of the first sample
+ * IntBuffer which contains for each edge, the type of the profile and the index of the first sample
  * @param elevations
     ShortBuffer containing all the samples of the profiles, compressed or not.
+
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (341017)
  */
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
     private static final int OFFSET_EDGE_DIRECTION_AND_ID = 0;
@@ -155,10 +150,10 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     /**
      * Returns a float array containing the same elements as the list
      * @param list
-                an ArrayList
+     * a List containing variables of type Float
      * @return float array containing the same elements
      */
-    private float[] toArray(ArrayList<Float> list){
+    private float[] toArray(List<Float> list){
         float[] toArray = new float[list.size()];
         for (int z = 0; z < list.size(); z++){
             toArray[z] = list.get(z);
