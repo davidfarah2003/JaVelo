@@ -1,5 +1,12 @@
 package ch.epfl.javelo.projection;
 
+/**
+ * SwissBounds
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
+ */
+
 public final class SwissBounds {
     private SwissBounds(){}
 
@@ -11,9 +18,11 @@ public final class SwissBounds {
     public final static double HEIGHT = MAX_N - MIN_N;
 
     /**
-     * checks the if the point is within Switzerland
-     * @param e east coordinate
-     * @param n north coordinate
+     * Returns a boolean value: true if the point is within the limits or false otherwise.
+     * @param e
+            east coordinate
+     * @param n
+            north coordinate
      * @return true if it is within, false otherwise
      */
     public static boolean containsEN(double e, double n){

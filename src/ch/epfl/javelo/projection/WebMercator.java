@@ -4,12 +4,19 @@ import ch.epfl.javelo.Math2;
 
 import static java.lang.Math.*;
 
-
+/**
+ * WebMercator
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
+ */
 public final class WebMercator {
     private WebMercator(){}
 
     /**
-     * @param lon (in radians)
+     * Returns the x-coordinate (WebMercator system) with the longitude of the point
+     * @param lon
+                longitude (in radians)
      * @return the x-coordinate (in the Web Mercator system) of the projection of the point of interest (WGS84 -> WebMercator)
      */
     public static double x(double lon){
@@ -17,7 +24,9 @@ public final class WebMercator {
     }
 
     /**
-     * @param lat (in radians)
+     *  Returns the y-coordinate (WebMercator system) with the latitude of the point
+     * @param lat
+                latitude (in radians)
      * @return the y-coordinate (in the Web Mercator system) of the projection of the point of interest (WGS84 -> WebMercator)
      */
     public static double y(double lat){//?
@@ -25,7 +34,9 @@ public final class WebMercator {
     }
 
     /**
-     * @param x coordinate in the Web Mercator system
+     * Returns the longitude in radians of the point
+     * @param x
+            x-coordinate in the Web Mercator system
      * @return the longitude in radians of the point of interest
      */
     public static double lon(double x){
@@ -33,7 +44,9 @@ public final class WebMercator {
     }
 
     /**
-     * @param y coordinate in the Web Mercator system
+     * Returns the latitude of the point
+     * @param y
+            y-coordinate in the Web Mercator system
      * @return the latitude in radians of the point of interest
      */
     public static double lat(double y){

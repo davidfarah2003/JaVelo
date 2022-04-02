@@ -5,19 +5,35 @@ import ch.epfl.javelo.Preconditions;
 import java.util.Objects;
 import static java.lang.Math.*;
 
+/**
+ * PointCh
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
+ */
 
+/**
+ * PointCh record
+ * @param e
+        east coordinate (meters)
+ * @param n
+        north coordinate (meters)
+ */
 public record PointCh(double e, double n) {
+
     /**
-     * Constructor
-     * @param e coordinates east (meters)
-     * @param n coordinates north (meters)
+     * @throws IllegalArgumentException
+                if the point with the given coordinates
+                is not contained within the Swiss bounds
      */
     public PointCh{
         Preconditions.checkArgument(SwissBounds.containsEN(e,n));
     }
 
     /**
-     * @param that the object to get distance to
+     * Returns the squared distance between two points (PointCh)
+     * @param that
+                 point of interest
      * @return the square of the distance
      */
     public double squaredDistanceTo(PointCh that){
@@ -28,8 +44,10 @@ public record PointCh(double e, double n) {
     }
 
     /**
-     * @param that the object to get distance to
-     * @return The distance between this and that
+     * Returns the distance between two points (PointCh)
+     * @param that
+                point of interest
+     * @return the distance between the two points
      */
     public double distanceTo(PointCh that){
         double distanceE = abs(this.e - that.e);
@@ -39,6 +57,7 @@ public record PointCh(double e, double n) {
 
 
     /**
+     * Returns the longitude in radians of the point (PointCH)
      * @return longitude in rad W... system (RAD)
      */
     public double lon(){
@@ -46,6 +65,7 @@ public record PointCh(double e, double n) {
     }
 
     /**
+     * Returns the latitude in radians of the point (PointCH)
      * @return latitude in rad W... system (RAD)
      */
     public double lat(){

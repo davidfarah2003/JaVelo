@@ -12,6 +12,12 @@ import java.nio.IntBuffer;
  * @author Wesley Nana Davies(344592)
  * @author David Farah (????)
  */
+
+/**
+ * GraphNodes record
+ * @param buffer
+            buffer containing all the information about the nodes
+ */
 public record GraphNodes(IntBuffer buffer) {
     private static final int OFFSET_E = 0;
     private static final int OFFSET_N = OFFSET_E + 1;

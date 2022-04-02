@@ -2,20 +2,40 @@ package ch.epfl.javelo.projection;
 
 import ch.epfl.javelo.Preconditions;
 
+/**
+ * PointWebMercator
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
+ */
+
+/**
+ * PointWebMercator record
+ * @param x (Web Mercator system)
+            x-coordinate (between 0 and 1)
+ * @param y (Web Mercator system)
+           y-coordinate (between 0 and 1)
+
+ */
 public record PointWebMercator(double x, double y) {
+
     /**
-     * Constructor
-     * @param x-coordinate (Web Mercator system)
-     * @param y-coordinate (Web Mercator system
+     * @throws IllegalArgumentException
+                if the point coordinates are not contained in [0,1]
      */
+
     public PointWebMercator {
         Preconditions.checkArgument(x >= 0 && x <= 1 && y >= 0 && y <= 1);
     }
 
     /**
-     * @param zoomLevel current zoom level
-     * @param x input coordinate with applied zoom (Web Mercator)
-     * @param y input coordinate with applied zoom (Web Mercator)
+     * Returns a PointWebMercator with corresponding coordinates at zoom level = 0
+     * @param zoomLevel
+                current zoom level
+     * @param x
+            x-coordinate with applied zoom (Web Mercator)
+     * @param y
+            y-coordinate with applied zoom (Web Mercator)
      * @return new PointWebMercator with corresponding coordinates at zoom 0
      */
     public static PointWebMercator of(int zoomLevel, double x, double y) {
@@ -23,9 +43,10 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     * PointCh -> WGS84 -> WebMercator
-     * @param pointCh input coordinate in CH format
-     * @return PointWebMercator with same coordinates as input pointCh
+     * Returns a PointWebMercator with coordinates converted
+     * @param pointCh
+                point of interest (PointCh)
+     * @return the point of interest as a PointCh
      */
     public static PointWebMercator ofPointCh(PointCh pointCh) {
         return new PointWebMercator(WebMercator.x(pointCh.lon()), WebMercator.y(pointCh.lat()));
@@ -33,6 +54,7 @@ public record PointWebMercator(double x, double y) {
 
 
     /**
+     * Returns the x-coordinate at a certain zoom level
      * @param zoomLevel current zoom level
      * @return the x-coordinate for a certain zoom level
      */
@@ -42,6 +64,7 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
+     * Returns the y-coordinate at a certain zoom level
      * @param zoomLevel current zoom level
      * @return the y-coordinate for a certain zoom level
      */
@@ -51,6 +74,7 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
+     * Returns the longitude of a given PointWebMercator
      * @return the longitude of the point
      */
     public double lon(){
@@ -58,6 +82,7 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
+     * Returns the longitude of a given PointWebMercator
      * @return the latitude of the point
      */
     public double lat(){
@@ -65,7 +90,9 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     * @return a point in the Swiss coordinates system if it exists
+     * Returns the PointWebMercator as a PointCH (conversion)
+     * @return <code>null</code> if it does not exist
+     * @return a point in the Swiss coordinates system
      */
     public PointCh toPointCh() {
         double e = Ch1903.e(lon(), lat());

@@ -2,13 +2,24 @@ package ch.epfl.javelo.projection;
 
 import static java.lang.Math.*;
 
+
+
+/**
+ * Ch1903
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
+ */
+
 public final class Ch1903 {
     private Ch1903() {}
 
     /**
-     *
-     * @param lon input longitude to convert (RAD)
-     * @param lat input latitude to convert (RAD)
+     * Returns the east coordinate of a point in the Swiss Coordinate system
+     * @param lon
+                longitude to convert (RAD)
+     * @param lat
+                latitude to convert (RAD)
      * @return the east coordinate of a point in the Swiss system (RAD)
      */
     public static double e(double lon, double lat) {
@@ -29,8 +40,11 @@ public final class Ch1903 {
     }
 
     /**
-     * @param lon input longitude to convert (RAD)
-     * @param lat input latitude to convert (RAD)
+     * Returns the north coordinate of a point in the Swiss coordinate system
+     * @param lon
+                longitude to convert (RAD)
+     * @param lat
+                latitude to convert (RAD)
      * @return north coordinate of a point in the Swiss system (RAD)
      */
     public static double n(double lon, double lat) {
@@ -51,6 +65,7 @@ public final class Ch1903 {
     }
 
     /**
+     * Returns the longitude in radians of a given point (PointCh)
      * @param e east coordinates
      * @param n north coordinates
      * @return longitude in the WGS84 system (RAD)
@@ -69,6 +84,7 @@ public final class Ch1903 {
     }
 
     /**
+     * Returns the latitude in radians of a given point (PointCh)
      * @param e east coordinates
      * @param n north coordinates
      * @return latitude in the WGS84 system (RAD)
