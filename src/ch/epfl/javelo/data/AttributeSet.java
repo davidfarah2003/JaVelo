@@ -1,13 +1,19 @@
 package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Preconditions;
-
 import java.util.StringJoiner;
 
+/**
+ * An AttributeSet
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
+ */
 public record AttributeSet(long bits) {
-    /** Constructor
-     * Raises IllegalArgumentException if any bit with index larger than the number of attributes is 1
-     * @param bits input bit string representing attributes
+
+    /**
+     * @throws IllegalArgumentException
+                if the AttributeSet is invalid (if some bits should not be equal to 1)
      */
     public AttributeSet{
         //check if any bit with index larger than the number of attributes is 1
@@ -16,8 +22,11 @@ public record AttributeSet(long bits) {
 
 
     /**
-     * @param attributes attributes to add to attributeSet
-     * @return a new AttributeSet with elements
+     * Another constructor of the class which creates an AttributeSet
+     with the collection of attributes given as parameters.
+     * @param attributes
+                collection of attributes to be added to the attributeSet
+     * @return an AttributeSet
      */
     public static AttributeSet of(Attribute... attributes){
         long bits = 0;
@@ -30,6 +39,7 @@ public record AttributeSet(long bits) {
 
 
     /**
+     * Returns true if the AttributeSet contains the attribute given as a parameter.
      * @param attribute to check in the set
      * @return a boolean value <code>true</code> if the Attribute set contains a specific attribute or
      * <code>false</code> if not
@@ -38,16 +48,21 @@ public record AttributeSet(long bits) {
         return (bits & (1L << attribute.ordinal())) != 0;
     }
 
+
     /**
-     * @param that other attribute set to compare with this
+     * Returns true if the two AttributeSets intersect or false otherwise.
+     * @param that
+                other AttributeSet to be compared with <code>this</code>
      * @return <code>true</code> if the two Attribute sets have common elements and <code>false</code> otherwise
      */
     public boolean intersects(AttributeSet that){
         return (this.bits & that.bits) != 0;
     }
 
+
     /**
-     * @return a textual representation of an Attribute Set.
+     * Returns a String which is a textual representation of an AttributeSet.
+     * @return a textual representation of an AttributeSet.
      */
     @Override
     public String toString(){

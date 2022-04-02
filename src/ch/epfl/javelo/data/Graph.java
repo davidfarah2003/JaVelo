@@ -14,6 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 
+
+/**
+ * A Graph (immutable class)
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
+ */
+
 public final class Graph {
     private final GraphNodes nodes;
     private final GraphSectors sectors;
@@ -22,9 +30,10 @@ public final class Graph {
 
 
     /**
-     * @param basePath the path to the directory of the stored files
-     * @return returns the JaVelo graph obtained from the files located in basePath
+     * Returns the JaVelo graph obtained from the files located in basePath
+     * @param basePath the path to the directory of the stored file
      * @throws IOException in the event of an input/output error
+     * @return returns the JaVelo graph obtained from the files located in basePath
      */
     public static Graph loadFrom(Path basePath) throws IOException{
         ByteBuffer sectorsBuffer, edgesBuffer;
@@ -52,9 +61,11 @@ public final class Graph {
     }
 
     /**
+     * Returns the extracted buffer from the file
      * @param pathFile path to the binary file we want ti extract from (Path)
-     * @return extracted buffer from file
      * @throws IOException in the event of an input/output error
+     * @return extracted buffer from the file
+
      */
     private static ByteBuffer extractBuffer(Path pathFile) throws IOException{
         try (FileChannel channel = FileChannel.open(pathFile)) {
@@ -64,11 +75,16 @@ public final class Graph {
 
 
     /**
-     * Constructor of the class
-     * @param nodes graph nodes
-     * @param sectors graph sectors
-     * @param edges graph edges
-     * @param attributeSets attributeSets List
+     * Constructor of the class which creates a graph
+     * from nodes, sectors, edges,and a list of AttributeSets.
+     * @param nodes
+                graph nodes
+     * @param sectors
+                graph sectors
+     * @param edges
+                graph edges
+     * @param attributeSets
+                list of AttributeSets
      */
     public Graph(GraphNodes nodes, GraphSectors sectors, GraphEdges edges, List<AttributeSet> attributeSets){
         this.nodes = nodes;
@@ -78,6 +94,7 @@ public final class Graph {
     }
 
     /**
+     * Returns the total number of nodes in the graph
      * @return the total number of nodes in the graph
      */
     public int nodeCount(){
@@ -85,15 +102,19 @@ public final class Graph {
     }
 
     /**
-     * @param nodeId the id of the node
-     * @return the position of the given identity node
+     * Returns the point at the given node (ID)
+     * @param nodeId
+                   ID of the node
+     * @return the point (PointCh) at the given node (ID)
      */
     public PointCh nodePoint(int nodeId){
         return new PointCh(nodes.nodeE(nodeId), nodes.nodeN(nodeId));
     }
 
     /**
-     * @param nodeId the id of the node
+     * Returns the number the edges leaving the given node
+     * @param nodeId
+                    ID of the node
      * @return the number of edges leaving the given identity node
      */
     public int nodeOutDegree(int nodeId){
@@ -101,19 +122,21 @@ public final class Graph {
     }
 
     /**
+     * Returns the identity of the edgeIndex-th edge going out from the given node
      * @param nodeId the id of the node
      * @param edgeIndex index of the edge
-     * @return the identity of the edgeIndex-th edge outgoing from the identity node nodeId
+     * @return the identity of the edgeIndex-th edge going out from the given node
      */
     public int nodeOutEdgeId(int nodeId, int edgeIndex){
         return nodes.edgeId(nodeId, edgeIndex);
     }
 
     /**
+     * Returns the identity of the node closest to the given point.
      * @param point coordinate point
      * @param searchDistance distance (radius) of the search
-     * @return the identity of the node closest to the given point, at the given maximum distance (in meters),
-     * or -1 if no node matches these criteria
+     * @return the identity of the node closest to the given point,
+     * at the given maximum searchDistance (in meters), or -1 if no node matches these criteria
      */
     public int nodeClosestTo(PointCh point, double searchDistance){
         double closestDistance = Math.pow(searchDistance, 2);
@@ -133,6 +156,7 @@ public final class Graph {
     }
 
     /**
+     * Returns the node ID connected to the end of the given edge
      * @param edgeId the id of the edge
      * @return the identity of the destination node of the given identity edge
      */
@@ -141,7 +165,9 @@ public final class Graph {
     }
 
     /**
-     * @param edgeId the id of the edge
+     * Returns true iff the given edge goes in the opposite direction of the OSM channel it comes from
+     * @param edgeId
+                ID of the edge
      * @return true iff the given identity edge goes in the opposite direction of the OSM channel it comes from
      */
     public boolean edgeIsInverted(int edgeId){
@@ -149,15 +175,18 @@ public final class Graph {
     }
 
     /**
+     * Returns the AttributeSet of OSM attributes which belong to the edge.
      * @param edgeId the id of the edge
-     * @return the set of OSM attributes attached to the given identity edge
+     * @return the AttributeSet of OSM attributes attached to the given identity edge
      */
     public AttributeSet edgeAttributes(int edgeId){
         return attributeSets.get(edges.attributesIndex(edgeId));
     }
 
     /**
-     * @param edgeId the id of the edge
+     * Returns the length of the given edge.
+     * @param edgeId
+                ID of the edge
      * @return the length, in meters, of the given identity edge
      */
     public double edgeLength(int edgeId){
@@ -165,7 +194,9 @@ public final class Graph {
     }
 
     /**
-     * @param edgeId the id of the edge
+     * Returns the total elevation of the given edge.
+     * @param edgeId
+                    ID of the edge
      * @return the total elevation gain of the given identity edge
      */
     public double edgeElevationGain(int edgeId){
@@ -173,15 +204,16 @@ public final class Graph {
     }
 
     /**
-     * @param edgeId the id of the edge
+     * Returns the elevation profile of the given edge.
+     * @param edgeId
+                    ID of the edge
      * @return the longitudinal profile of the given identity edge, as a function,
      * and Double.NaN if the edge has no profile
      */
     public DoubleUnaryOperator edgeProfile(int edgeId){
-        if (edges.hasProfile(edgeId)) {
-            return Functions.sampled(edges.profileSamples(edgeId), edgeLength(edgeId));
-        }
-        return Functions.constant(Double.NaN);
+        return (edges.hasProfile(edgeId)?
+                Functions.sampled(edges.profileSamples(edgeId), edgeLength(edgeId)) :
+                Functions.constant(Double.NaN));
     }
 
 }

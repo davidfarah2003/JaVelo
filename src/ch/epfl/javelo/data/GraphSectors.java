@@ -8,8 +8,12 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * This record represents models the 16_384 sectors wh
+ * GraphSectors
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
  */
 public record GraphSectors (ByteBuffer buffer){
     private static final int OFFSET_NODE_ID = 0;
@@ -20,19 +24,22 @@ public record GraphSectors (ByteBuffer buffer){
     private static final double SECTOR_HEIGHT = SwissBounds.HEIGHT / SUBDIVISIONS_PER_SIDE;
 
     /**
-     * @param center point of interest (PointCh, east-north coordinates)
-     * @param distance (meters) from which a sector is considered in the area of the point of interest
-     * @return a list of sectors in area of the point entered as in input
+     * Returns a list of sectors which are within the given distance from the point.
+     * @param center
+                    point of interest (PointCh)
+     * @param distance
+                    distance (meters) from which a sector is considered
+                    in the area of the point of interest
+     * @return a list of sectors in area
      */
     public List<Sector> sectorsInArea(PointCh center, double distance){
+
         Preconditions.checkArgument(distance >= 0);
         // getting the coordinates of the summits of the square which defines the range
         double upper_left_x =   center.e() - SwissBounds.MIN_E - distance;
         double upper_left_y =   center.n() - SwissBounds.MIN_N + distance;
         double lower_right_x =  center.e() - SwissBounds.MIN_E + distance;
         double lower_right_y =  center.n() - SwissBounds.MIN_N - distance;
-
-
 
         // if the bounds are exceeded, taking into the account the extremes of the Swiss Coordinates
 
@@ -48,9 +55,6 @@ public record GraphSectors (ByteBuffer buffer){
         if (lower_right_x >= SwissBounds.WIDTH){
             lower_right_x = SwissBounds.WIDTH - 0.1;
         }
-
-
-
 
         // defining some indexes along the horizontal and vertical axes which will be
         // needed to compute the actual index of every sector
@@ -78,6 +82,10 @@ public record GraphSectors (ByteBuffer buffer){
 
     /**
      * This nested record represents a sector
+     * @param startNodeId
+                ID of the first node of the sector
+     * @param endNodeId
+     *          ID of the end node of the sector (does not belong to the sector)
      */
     public record Sector(int startNodeId, int endNodeId){}
 }

@@ -6,6 +6,7 @@ public final class Ch1903 {
     private Ch1903() {}
 
     /**
+     *
      * @param lon input longitude to convert (RAD)
      * @param lat input latitude to convert (RAD)
      * @return the east coordinate of a point in the Swiss system (RAD)
