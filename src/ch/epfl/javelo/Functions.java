@@ -25,10 +25,8 @@ public final class Functions {
     /**
      * Returns a function obtained by linear interpolation between samples,
      * regularly spaced and covering the range from 0 to xMax
-     * @param samples
-                array of samples to make the function out of it
-     * @param xMax
-                end of the range
+     * @param samples array of samples to make the function out of it
+     * @param xMax end of the range
      * @throws IllegalArgumentException if the size of the samples array is not
      * greater or equal to 2 or if xMax is negative
      * @return the function

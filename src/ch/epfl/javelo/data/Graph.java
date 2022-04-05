@@ -76,14 +76,10 @@ public final class Graph {
     /**
      * Constructor of the class which creates a graph
      * from nodes, sectors, edges,and a list of AttributeSets.
-     * @param nodes
-                graph nodes
-     * @param sectors
-                graph sectors
-     * @param edges
-                graph edges
-     * @param attributeSets
-                list of AttributeSets
+     * @param nodes graph nodes
+     * @param sectors graph sectors
+     * @param edges graph edges
+     * @param attributeSets list of AttributeSets
      */
     public Graph(GraphNodes nodes, GraphSectors sectors, GraphEdges edges, List<AttributeSet> attributeSets){
         this.nodes = nodes;
@@ -102,8 +98,7 @@ public final class Graph {
 
     /**
      * Returns the point at the given node (ID)
-     * @param nodeId
-                   ID of the node
+     * @param nodeId ID of the node
      * @return the point (PointCh)
      */
     public PointCh nodePoint(int nodeId){
@@ -112,8 +107,7 @@ public final class Graph {
 
     /**
      * Returns the number the edges leaving the given node
-     * @param nodeId
-                    ID of the node
+     * @param nodeId ID of the node
      * @return the number of edges
      */
     public int nodeOutDegree(int nodeId){
@@ -167,8 +161,7 @@ public final class Graph {
 
     /**
      * Returns true iff the given edge goes in the opposite direction of the OSM channel it comes from
-     * @param edgeId
-                ID of the edge
+     * @param edgeId ID of the edge
      * @return a boolean value
      */
     public boolean edgeIsInverted(int edgeId){
@@ -186,8 +179,7 @@ public final class Graph {
 
     /**
      * Returns the length in meters of the given edge.
-     * @param edgeId
-                ID of the edge
+     * @param edgeId ID of the edge
      * @return the length of the edge
      */
     public double edgeLength(int edgeId){
@@ -196,8 +188,7 @@ public final class Graph {
 
     /**
      * Returns the total elevation of the given edge.
-     * @param edgeId
-                    ID of the edge
+     * @param edgeId ID of the edge
      * @return the total elevation gain
      */
     public double edgeElevationGain(int edgeId){
@@ -207,8 +198,7 @@ public final class Graph {
     /**
      * Returns the longitudinal profile of the given identity edge,
      * as a function, and Double.NaN if the edge has no profile
-     * @param edgeId
-                    ID of the edge
+     * @param edgeId ID of the edge
      * @return the longitudinal profile of the given identity edge
      */
     public DoubleUnaryOperator edgeProfile(int edgeId){

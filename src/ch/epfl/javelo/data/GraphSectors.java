@@ -29,11 +29,9 @@ public record GraphSectors (ByteBuffer buffer){
 
     /**
      * Returns a list of sectors which are within the given distance from the point.
-     * @param center
-                    point of interest (PointCh)
-     * @param distance
-                    distance (meters) from which a sector is considered
-                    in the area of the point of interest
+     * @param center point of interest (PointCh)
+     * @param distance distance in meters from
+     which a sector is considered in the area of the point of interest
      * @throws IllegalArgumentException if the distance is negative
      * @return a list of sectors in area
      */
@@ -87,10 +85,8 @@ public record GraphSectors (ByteBuffer buffer){
 
     /**
      * This nested record represents a sector
-     * @param startNodeId
-                ID of the first node of the sector
-     * @param endNodeId
-     *          ID of the end node of the sector (does not belong to the sector)
+     * @param startNodeId ID of the first node of the sector
+     * @param endNodeId of the end node of the sector (does not belong to the sector)
      */
     public record Sector(int startNodeId, int endNodeId){}
 }

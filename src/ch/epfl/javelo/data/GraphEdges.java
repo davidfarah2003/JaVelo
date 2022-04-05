@@ -100,7 +100,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     /**
      * Returns the array of samples of the profile of the edge with the given identity, which is empty if the edge does
      * not have a profile
-     *
      * @param edgeId ID of the edge
      * @return the float array
      */

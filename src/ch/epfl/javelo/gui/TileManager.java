@@ -40,8 +40,8 @@ public final class TileManager {
 
         } else if (Files.exists(Path.of(""))) {
             // comment la charger?
-            map.put(tile, ...)
-            return ...
+         //   map.put(tile, ...)
+        //    return ...
         }
         else {
 
@@ -57,16 +57,16 @@ public final class TileManager {
 
             try (InputStream i = c.getInputStream()) {
                 i.transferTo(o);
-                map.put(tile, ...);
+           //     map.put(tile, ...);
                 return new Image(i);
             }
-
 
             //  ImageInputStream stream = ImageIO.createImageInputStream(o);
             // return stream;
 
 
         }
+        return null;
     }
 
      record TileId(int zoomLevel, int xIndex, int yIndex) {

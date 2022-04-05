@@ -42,8 +42,7 @@ public record GraphNodes(IntBuffer buffer) {
 
     /**
      * Returns the north coordinate of the node
-     * @param nodeId
-                ID of the node
+     * @param nodeId ID of the node
      * @return the north coordinate
      */
     public double nodeN(int nodeId){
@@ -53,8 +52,7 @@ public record GraphNodes(IntBuffer buffer) {
 
     /**
      * Returns the number of edges going out from the given node
-     * @param nodeId
-                    ID of the node
+     * @param nodeId ID of the node
      * @return the number of edges
      */
     public int outDegree(int nodeId){
@@ -64,10 +62,8 @@ public record GraphNodes(IntBuffer buffer) {
 
     /**
      * Returns the identity of the edgeIndex-th edge going out from the given node
-     * @param nodeId
-                    ID of the node
-     * @param edgeIndex
-                    index of the edge for the given node
+     * @param nodeId ID of the node
+     * @param edgeIndex index of the edge for the given node
      * @return the identity of the edgeIndex-th edge
      */
     public int edgeId(int nodeId, int edgeIndex){

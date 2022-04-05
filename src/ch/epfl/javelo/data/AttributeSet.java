@@ -24,8 +24,7 @@ public record AttributeSet(long bits) {
     /**
      * Another constructor of the class which creates an AttributeSet
      with the collection of attributes given as parameters.
-     * @param attributes
-                collection of attributes to be added to the attributeSet
+     * @param attributes collection of attributes to be added to the attributeSet
      * @return an AttributeSet
      */
     public static AttributeSet of(Attribute... attributes){
@@ -51,8 +50,7 @@ public record AttributeSet(long bits) {
 
     /**
      * Returns true if the two AttributeSets intersect or false otherwise.
-     * @param that
-                other AttributeSet to be compared with <code>this</code>
+     * @param that other AttributeSet to be compared with <code>this</code>
      * @return <code>true</code> if the two Attribute sets have common elements and <code>false</code> otherwise
      */
     public boolean intersects(AttributeSet that){
