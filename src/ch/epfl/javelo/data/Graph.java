@@ -32,7 +32,7 @@ public final class Graph {
      * Returns the JaVelo graph obtained from the files located in basePath
      * @param basePath the path to the directory of the stored file
      * @throws IOException in the event of an input/output error
-     * @return returns the JaVelo graph obtained from the files located in basePath
+     * @return the JaVelo graph
      */
     public static Graph loadFrom(Path basePath) throws IOException{
         ByteBuffer sectorsBuffer, edgesBuffer;

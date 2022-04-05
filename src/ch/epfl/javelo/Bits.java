@@ -1,22 +1,23 @@
 package ch.epfl.javelo;
 
 /**
- * Class that provides bit Extraction methods
- * @author David Farah (341017)
+ * Bits
+ *
  * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
+ *
+ * This class offers methods which help to manipulate bit strings
  */
+
 public final class Bits {
     private Bits(){}
 
     /**
-     * Extract bit String from <code>value</code> from <code>start</code> bit index with a length of <code>length</code>
-     * (from LSB to MSB, to the left), interpreted as a signed integer
-     *
+     * Returns the bit string extracted signed
      * @param value initial integer value
      * @param start start bit index (right)
      * @param length length of the extracted bit string
      * @return (int) the resulting signed bit string
-     * @throws IllegalArgumentException if start < 0 or length is invalid (out of bounds or <= 0)
      */
     public static int extractSigned(int value, int start, int length){
         Preconditions.checkArgument(start>= 0 && start <= 31 && length <= (31-start)+1 && length > 0);
@@ -27,14 +28,11 @@ public final class Bits {
     }
 
     /**
-     * Extract bit String from <code>value</code> from <code>start</code> bit index with a length of <code>length</code>
-     * (from LSB to MSB, to the left), interpreted as an unsigned integer
-     *
+     * Returns the bit string extracted unsigned
      * @param value initial integer value
      * @param start start bit index (right)
      * @param length length of the extracted bit string
      * @return (int) the resulting unsigned bit string
-     * @throws IllegalArgumentException if start < 0 or length is invalid (out of bounds or <= 0)
      */
     public static int extractUnsigned(int value, int start, int length){
         Preconditions.checkArgument(start >= 0 && start <= 31 && length <= (31-start)+1 && length < 32 && length > 0);

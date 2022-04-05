@@ -3,6 +3,7 @@ package ch.epfl.javelo.data;
 import ch.epfl.javelo.Bits;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Q28_4;
+import ch.epfl.javelo.gui.TileManager;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -61,6 +62,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         int edgeIndex = NUMBER_OF_INTS_PER_EDGE * edgeId + OFFSET_EDGE_DIRECTION_AND_ID;
         int edgeInt = edgesBuffer.getInt(edgeIndex);
         return (edgeInt >= 0) ? edgeInt: ~edgeInt ;
+
+
     }
 
     /**

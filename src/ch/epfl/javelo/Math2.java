@@ -1,20 +1,24 @@
 package ch.epfl.javelo;
 
+
 /**
- * Class that implements mathematical operations
- * @author David Farah (341017)
+ * Math2
+ *
  * @author Wesley Nana Davies(344592)
+ * @author David Farah (????)
+ * This class offers mathematical tools
+ * which are used in different classes
  */
+
 public final class Math2 {
 
-    private Math2(){}
+    private Math2() {
+    }
 
     /**
-     * Calculate the integer part by excess of the division of x by y
-     * @param x integer to be divided
-     * @param y integer to be divided by
-     * @throws IllegalArgumentException if x<0 or y<=0
-     * @return result (int)
+     * @param x : integer to be divided
+     * @param y : integer to be divided by
+     * @return the integer part by excess of the division of x by y
      */
     public static int ceilDiv(int x, int y) {
         Preconditions.checkArgument(x >= 0 && y > 0);
@@ -22,42 +26,42 @@ public final class Math2 {
     }
 
     /**
-     * Returns the y-coordinate of the point of interest that belongs to the line passing through the points
-     * (0,y0) and (1,y1)
-     *
-     * @param y0 y-coordinate of the first point belonging to the line
-     * @param y1 y-coordinate of the second point belonging to the line
-     * @param x x-coordinate of the point of interest
-     * @return a double
+     * @param y0 : y-coordinate of the first point belonging to the line
+     * @param y1 : y-coordinate of the second point belonging to the line
+     * @param x  : x-coordinate of the point of interest
+     * @return the y-coordinate of the point of interest that belongs to the line
+     * passing through the points (0,y0) and (1,y1)
      */
-    public static double interpolate(double y0, double y1, double x){
+    public static double interpolate(double y0, double y1, double x) {
         double slope = y1 - y0;
         return Math.fma(slope, x, y0);
     }
 
 
     /**
-     * @param min lower bound
-     * @param v value of interest
-     * @param max upper bound
-     * @throws IllegalArgumentException if min > max
+     * @param min : lower bound
+     * @param v   : value of interest
+     * @param max : upper bound
      * @return the value of v restricted to the interval [min, max]
      */
     public static int clamp(int min, int v, int max) {
         Preconditions.checkArgument(min <= max);
-        v = Math.max(v, min);
-        v = Math.min(v, max);
-        return v;
+        if (v <= min) {
+            return min;
+        } else if (v >= max) {
+            return max;
+        } else {
+            return v;
+        }
     }
 
     /**
-     * @param min lower bound
-     * @param v value of interest
-     * @param max upper bound
-     * @throws IllegalArgumentException if min > max
+     * @param min :lower bound
+     * @param v   : value of interest
+     * @param max : upper bound
      * @return the value of v restricted to the interval [min, max]
      */
-    public static double clamp(double min, double v, double max){
+    public static double clamp(double min, double v, double max) {
         Preconditions.checkArgument(min <= max);
         v = Math.max(v, min);
         v = Math.min(v, max);
@@ -65,62 +69,58 @@ public final class Math2 {
     }
 
     /**
-     * Returns the Inverse hyperbolic sine (asinh) applied to x
-     * @param x double value (input)
-     * @return a double
+     * @param x : double value (input)
+     * @return the value of the function asinh evaluated at the point of coordinate x
      */
-     public static double asinh(double x){
-         return Math.log(x + Math.sqrt(1 + Math.pow(x,2)));
+    public static double asinh(double x) {
+        return Math.log(x + Math.sqrt(1 + Math.pow(x, 2)));
     }
 
     /**
-     * Returns the dot product between two vectors
-     * @param uX x-coordinate of the first vector
-     * @param uY y-coordinate of the first vector
-     * @param vX x-coordinate of the second vector
-     * @param vY y-coordinate of the second vector
-     * @return the dot product
+     * @param uX : x-coordinate of the first vector
+     * @param uY : y-coordinate of the first vector
+     * @param vX : x-coordinate of the second vector
+     * @param vY : y-coordinate of the second vector
+     * @return the dot product between two vectors
      */
-    public static double dotProduct(double uX, double uY, double vX, double vY){
+    public static double dotProduct(double uX, double uY, double vX, double vY) {
         return uX * vX + uY * vY;
     }
 
     /**
-     * Returns the norm squared of the vector of interest
-     * @param uX x-coordinate of the vector
-     * @param uY y-coordinate of the vector
-     * @return the norm
+     * @param uX : x-coordinate of the vector
+     * @param uY : y-coordinate of the vector
+     * @return the norm to the square of the vector of interest
      */
-    public static double squaredNorm(double uX, double uY){
-        return dotProduct(uX,uY,uX,uY);
+    public static double squaredNorm(double uX, double uY) {
+        return dotProduct(uX, uY, uX, uY);
     }
 
     /**
-     * Returns the norm of a vector
-     * @param uX x-coordinate of the vector
-     * @param uY y-coordinate of the vector
-     * @return the norm
+     * @param uX : x-coordinate of the vector
+     * @param uY : y-coordinate of the vector
+     * @return the norm of a vector
      */
-    public static double norm(double uX, double uY){
-        return Math.sqrt(squaredNorm(uX,uY));
+    public static double norm(double uX, double uY) {
+        return Math.sqrt(squaredNorm(uX, uY));
     }
 
     /**
-     * Returns the length of the projection of the vector from point A to point P on the vector from point A to point B
-     * @param aX x-coordinate of the point A
-     * @param aY y-coordinate of the point A
-     * @param bX x-coordinate of the point B
-     * @param bY y-coordinate of the point B
-     * @param pX x-coordinate of the point P
-     * @param pY y-coordinate of the point P
-     * @return the length
+     * @param aX : x-coordinate of the point A
+     * @param aY : y-coordinate of the point A
+     * @param bX : x-coordinate of the point B
+     * @param bY : y-coordinate of the point B
+     * @param pX : x-coordinate of the point P
+     * @param pY : y-coordinate of the point P
+     * @return which returns the length of the projection of the vector
+     * from point A to point P on the vector from point A to point B
      */
-    public static double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY){
+    public static double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY) {
         double apX = pX - aX;
         double apY = pY - aY;
         double abX = bX - aX;
-        double abY = bY- aY;
-        return dotProduct(apX, apY, abX, abY)/norm(abX,abY);
+        double abY = bY - aY;
+        return dotProduct(apX, apY, abX, abY) / norm(abX, abY);
     }
 
 }
