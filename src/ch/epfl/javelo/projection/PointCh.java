@@ -72,25 +72,4 @@ public record PointCh(double e, double n) {
         return Ch1903.lat(e, n);
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PointCh pointCh = (PointCh) o;
-        return Double.compare(pointCh.e, e) == 0 && Double.compare(pointCh.n, n) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(e, n);
-    }
-
-    @Override
-    public String toString() {
-        return "PointCh{" +
-                "e=" + e +
-                ", n=" + n +
-                '}';
-    }
 }
