@@ -6,7 +6,7 @@ import ch.epfl.javelo.Preconditions;
  * PointWebMercator
  *
  * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
+ * @author David Farah (341017)
  */
 
 /**

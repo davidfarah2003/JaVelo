@@ -7,7 +7,7 @@ import java.util.StringJoiner;
  * An AttributeSet
  *
  * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
+ * @author David Farah (341017)
  */
 public record AttributeSet(long bits) {
 

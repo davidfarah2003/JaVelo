@@ -8,7 +8,7 @@ import static java.lang.Math.*;
  * WebMercator
  *
  * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
+ * @author David Farah (341017)
  */
 public final class WebMercator {
     private WebMercator(){}

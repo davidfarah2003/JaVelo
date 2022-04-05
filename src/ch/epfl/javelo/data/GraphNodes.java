@@ -5,18 +5,11 @@ import ch.epfl.javelo.Q28_4;
 import java.nio.IntBuffer;
 
 
-
-/**
- * GraphNodes
- *
- * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
- */
-
 /**
  * GraphNodes record
- * @param buffer
-            buffer containing all the information about the nodes
+ * @param buffer buffer containing all the information about the nodes
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (341017)
  */
 public record GraphNodes(IntBuffer buffer) {
     private static final int OFFSET_E = 0;
@@ -35,9 +28,8 @@ public record GraphNodes(IntBuffer buffer) {
 
     /**
      * Returns the east coordinate of the node
-     * @param nodeId
-                ID of the node
-     * @return the east coordinate of the node (
+     * @param nodeId ID of the node
+     * @return the east coordinate of the node
      */
     public double nodeE(int nodeId){
         int nodeIndex = nodeId * NUMBER_OF_INTS_PER_NODE + OFFSET_E;

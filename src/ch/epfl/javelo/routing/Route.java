@@ -6,13 +6,16 @@ import java.util.List;
 
 
 /**
+ * Interface that represents a Javelo Route
+ * 
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)
  */
 public interface Route {
     /**
+     * Returns the index of the segment at the given position (in meters)
      * @param position given position (in meters)
-     * @return the index of the segment at the given position (in meters)
+     * @return the index
      */
     int indexOfSegmentAt(double position);
 
@@ -44,14 +47,16 @@ public interface Route {
     double elevationAt(double position);
 
     /**
+     * Returns the identity of the node belonging to the route and located closest to the given position
      * @param position (Double)
-     * @return the identity of the node belonging to the route and located closest to the given position
+     * @return the index
      */
     int nodeClosestTo(double position);
 
     /**
+     * Returns the point on the route that is closest to the given reference point
      * @param point (PointCh)
-     * @return the point on the route that is closest to the given reference point
+     * @return the point
      */
     RoutePoint pointClosestTo(PointCh point);
 }

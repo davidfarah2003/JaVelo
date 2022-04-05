@@ -9,7 +9,7 @@ import static java.lang.Math.*;
  * PointCh
  *
  * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
+ * @author David Farah (341017)
  */
 
 /**

@@ -28,17 +28,20 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
     }
 
     /**
+     * Returns the position along the edge, in meters, that is closest to the given point (projection)
+     * (could be outside the edge)
+     *
      * @param point (PointCh)
-     * @return the position along the edge, in meters, that is closest to the given point (projection) (could be outside the edge)
+     * @return the position
      */
     public double positionClosestTo(PointCh point){
         return Math2.projectionLength(fromPoint.e(), fromPoint.n(), toPoint.e(), toPoint.n(), point.e(), point.n());
     }
 
     /**
-     * Returns the point at the given position on the edge.
+     * Returns the point at the given position on the edge, expressed in meters.
      * @param position on the edge
-     * @return the point at the given position on the edge, expressed in meters.
+     * @return the position
      */
     public PointCh pointAt(double position){
         double proportion = position/length;
@@ -47,10 +50,10 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
         return new PointCh(east, north);
     }
 
-
     /**
+     * Returns the altitude, in meters, at the given position on the edge.
      * @param position on the edge
-     * @return the altitude, in meters, at the given position on the edge.
+     * @return elevation at <code>position</code>
      */
     public double elevationAt(double position){
         return profile.applyAsDouble(position);

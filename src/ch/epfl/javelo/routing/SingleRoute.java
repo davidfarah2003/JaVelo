@@ -10,6 +10,7 @@ import java.util.List;
 
 
 /**
+ * Class that represents a SingleRoute (formed from or multiple edges)
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)
  */
@@ -21,8 +22,9 @@ public final class SingleRoute implements Route {
 
 
     /**
+     * Constructs the simple route composed of the given edges
+     * @throws IllegalArgumentException if the list of edges is empty
      * @param edges given edges that form the route
-     * constructs the simple route composed of the given edges, or throws IllegalArgumentException if the list of edges is empty
      */
     public SingleRoute(List<Edge> edges) {
         Preconditions.checkArgument(!edges.isEmpty());
@@ -77,9 +79,10 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @param position given position (in meters)
-     * @return the index of the segment at the given position of the route (in meters), which is always 0 in
+     * Returns the index of the segment at the given position of the route (in meters), which is always 0 in
      * the case of a simple route
+     * @param position given position (in meters)
+     * @return the index
      */
     @Override
     public int indexOfSegmentAt(double position) {
@@ -115,8 +118,9 @@ public final class SingleRoute implements Route {
 
 
     /**
+     * Returns the point at the given position along the route
      * @param position (Double)
-     * @return the point at the given position along the route
+     * @return PointCh
      */
     @Override
     public PointCh pointAt(double position) {
@@ -134,8 +138,9 @@ public final class SingleRoute implements Route {
 
 
     /**
+     * Returns the elevation at a given point along the itinerary, NaN if the edge has no profile
      * @param position (Double)
-     * @return the elevation at a given point along the itinerary, NaN if the edge has no profile
+     * @return the elevation or NaN
      */
     @Override
     public double elevationAt(double position) {
@@ -156,8 +161,9 @@ public final class SingleRoute implements Route {
 
 
     /**
+     * Returns the identity of the node belonging to the route and located closest to the given position
      * @param position (Double)
-     * @return the identity of the node belonging to the route and located closest to the given position
+     * @return the id
      */
     @Override
     public int nodeClosestTo(double position) {
@@ -179,8 +185,9 @@ public final class SingleRoute implements Route {
 
 
     /**
+     * Returns the point on the route that is closest to the given reference point
      * @param point (PointCh)
-     * @return the point on the route that is closest to the given reference point
+     * @return a RoutePoint
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {

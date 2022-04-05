@@ -1,14 +1,17 @@
 package ch.epfl.javelo;
 
 /**
- * Convert numbers between Q28.4 representation and other
+ * Class that is responsible to convert numbers between Q28.4 representation and other
+ * @author David Farah (341017)
+ * @author Wesley Nana Davies(344592)
  */
 public final class Q28_4 {
     private Q28_4(){}
 
     /**
+     * Convert the bit String of i to Q28.4 representation (shifted by 4 decimal places left) as an int
      * @param i input integer
-     * @return (int) value in Q28.4 representation for i (shifted by 4 decimal places left)
+     * @return (int) value represented in Q28.4
      */
     public static int ofInt(int i){
         i = i << 4;
@@ -16,18 +19,17 @@ public final class Q28_4 {
     }
 
     /**
-     * Converts the integer to Q28.4 representation as double
+     * Interprets the Bit String in Q28.4 representation as a double
      * @param q28_4 integer input
      * @return (double) Q28.4 representation
      */
     public static double asDouble(int q28_4){
-        //divide by 2^4 to obtain the decimal number representation in Q28_4 (decimal point before 4th bit)
         return Math.scalb((double)q28_4, -4);
     }
 
     /**
-     * Converts the integer to Q28.4 representation as float
-     * @param q28_4 integer input
+     * Interprets the Bit String (int) in Q28.4 representation as a float
+     * @param q28_4 integer input (Bit String)
      * @return (float) Q28.4 representation
      */
     public static float asFloat(int q28_4){

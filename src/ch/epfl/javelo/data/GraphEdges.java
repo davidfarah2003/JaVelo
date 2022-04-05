@@ -14,17 +14,13 @@ import java.util.List;
 
 
 /**
- * GraphEdges record
- * @param edgesBuffer
-            ByteBuffer containing information about all edges
-            (direction, identity of the destination node,
+ * GraphEdges record (edges of a graph)
+ *
+ * @param edgesBuffer ByteBuffer containing information about all edges (direction, identity of the destination node,
             length, elevation, attributes)
-
- * @param profileIds
- * IntBuffer which contains for each edge, the type of the profile and the index of the first sample
- * @param elevations
-    ShortBuffer containing all the samples of the profiles, compressed or not.
-
+ * @param profileIds IntBuffer which contains for each edge, the type of the profile and the index of the first sample
+ * @param elevations ShortBuffer containing all the samples of the profiles, compressed or not.
+ *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
  */
@@ -47,10 +43,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      */
 
     /**
-     * Returns true iff the edge goes in the opposite direction to the OSM road it comes from
-     * @param edgeId
-                ID of the edge
-     * @return true iff the edge with the given identity goes in the opposite direction to the OSM road it comes from
+     * Returns true iff the edge goes in the opposite direction to the OSM road it belongs to
+     * @param edgeId ID of the edge
+     * @return boolean value
      */
     public boolean isInverted(int edgeId){
         int edgeIndex = NUMBER_OF_INTS_PER_EDGE * edgeId + OFFSET_EDGE_DIRECTION_AND_ID;
@@ -58,10 +53,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Returns the node ID connected to the end of the edge
-     * @param edgeId
-                ID of the edge
-     * @return the identity of the destination node of the given identity edge
+     * Returns the identity of the destination node of the given identity edge
+     * @param edgeId ID of the edge
+     * @return the id
      */
     public int targetNodeId(int edgeId){
         int edgeIndex = NUMBER_OF_INTS_PER_EDGE * edgeId + OFFSET_EDGE_DIRECTION_AND_ID;
@@ -70,10 +64,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Returns the length of the edge
-     * @param edgeId
-                    ID of the edge
-     * @return the length, in meters, of the given identity edge
+     * Returns the length, in meters, of the given identity edge
+     * @param edgeId ID of the edge
+     * @return the length
      */
     public double length(int edgeId){
         int lengthIndex = NUMBER_OF_INTS_PER_EDGE * edgeId + OFFSET_LENGTH;
@@ -81,10 +74,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Returns the positive elevation of the given edge.
-     * @param edgeId
-                ID of the edge
-     * @return the positive elevation, in meters, of the edge with the given identity
+     * Returns the positive elevation, in meters, of the edge with the given identity
+     * @param edgeId ID of the edge
+     * @return the positive elevation
      */
     public double elevationGain(int edgeId){
         int elevationIndex = NUMBER_OF_INTS_PER_EDGE * edgeId + OFFSET_ELEVATION_GAIN;
@@ -93,9 +85,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
     /**
      * Returns true iff the given edge has a profile.
-     * @param edgeId
-                    ID of the edge
-     * @return true iff the given identity edge has a profile
+     * @param edgeId ID of the edge
+     * @return boolean value
      */
     public boolean hasProfile(int edgeId){
         int profileId = profileIds.get(edgeId);
@@ -103,11 +94,11 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Returns an array of the elevations that constitute the profile of the given edge
-     * @param edgeId
-                ID of the edge
-     * @return the array of samples of the profile of the edge with the given identity,
-     * which is empty if the edge does not have a profile
+     * Returns the array of samples of the profile of the edge with the given identity, which is empty if the edge does
+     * not have a profile
+     *
+     * @param edgeId ID of the edge
+     * @return the float array
      */
     public float[] profileSamples(int edgeId){
         if(!hasProfile(edgeId)) {
@@ -149,9 +140,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
     /**
      * Returns a float array containing the same elements as the list
-     * @param list
-     * a List containing variables of type Float
-     * @return float array containing the same elements
+     * @param list a List containing variables of type Float
+     * @return float array
      */
     private float[] toArray(List<Float> list){
         float[] toArray = new float[list.size()];
@@ -163,14 +153,10 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
     /**
      * Updates the profile samples list
-     * @param bitsPerValue
-                    bits per value in the compressed format
-     * @param nbSamples
-                    total number of samples on the edge
-     * @param idFirstSample
-                    ID of the first sample
-     * @param profileSamples
-                    List that stores the samples (already contains the first one)
+     * @param bitsPerValue bits per value in the compressed format
+     * @param nbSamples total number of samples on the edge
+     * @param idFirstSample ID of the first sample
+     * @param profileSamples List that stores the samples (already contains the first one)
      */
     private void updateArrayFromCompressed(int bitsPerValue, int nbSamples, int idFirstSample, List<Float> profileSamples){
         int i = 1;
@@ -192,7 +178,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     /**
      * Returns the index of the AttributeSet of the given edge.
      * @param edgeId id of the edge
-     * @return the index of the AttributeSet attached to the edge with the given identity
+     * @return the index
      */
     public int attributesIndex(int edgeId){
         int attributeSetIndex = NUMBER_OF_INTS_PER_EDGE * edgeId + OFFSET_IDS_OSM;

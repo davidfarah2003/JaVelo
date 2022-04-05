@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 
 /**
+ * Class that is used to compute an ElevationProfile of a Route
+ *
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)
  */
@@ -17,9 +19,10 @@ public final class ElevationProfileComputer {
     private ElevationProfileComputer() {}
 
     /**
-     *
+     * Computes an elevationProfile for a route with maxStepLength
      * @param route a route (implementing the interface) representing the itinerary
      * @param maxStepLength maximal distance between two samples from the profile
+     * @throws IllegalArgumentException if maxStepLength <= 0
      * @return a new Elevation Profile
      */
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) {
@@ -55,7 +58,8 @@ public final class ElevationProfileComputer {
 
 
     /**
-     * @return the index of the first real number
+     * returns the index of the first real number
+     * @return index
      */
     private static int firstNumberIndex(){
         int indexFirstNumber = 0;
@@ -67,7 +71,8 @@ public final class ElevationProfileComputer {
 
 
     /**
-     * @return the index of the first real number starting from the end of the array
+     * Returns the index of the first real number starting from the end of the array
+     * @return the index
      */
     private static int fillNanEnd(){
         int indexFirstNumberEnd = profile.length - 1;

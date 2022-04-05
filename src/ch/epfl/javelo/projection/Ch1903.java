@@ -8,7 +8,7 @@ import static java.lang.Math.*;
  * Ch1903
  *
  * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
+ * @author David Farah (341017)
  */
 
 public final class Ch1903 {

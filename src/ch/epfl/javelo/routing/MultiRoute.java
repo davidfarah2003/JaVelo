@@ -19,10 +19,8 @@ public final class MultiRoute implements Route {
 
 
     /** Constructor of the class which builds a MultiRoute consisting of the given segments,
-     * @param segments
-                    list of segments forming the MultiRoute
-     * @throws IllegalArgumentException
-                     if the list of segments is empty
+     * @param segments list of segments forming the MultiRoute
+     * @throws IllegalArgumentException if the list of segments is empty
      */
     public MultiRoute(List<Route> segments){
         Preconditions.checkArgument(!segments.isEmpty());

@@ -13,7 +13,7 @@ import java.util.List;
  * GraphSectors
  *
  * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
+ * @author David Farah (341017)
  */
 public record GraphSectors (ByteBuffer buffer){
     private static final int OFFSET_NODE_ID = 0;

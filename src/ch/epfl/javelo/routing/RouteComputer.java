@@ -6,6 +6,8 @@ import java.util.*;
 
 
 /**
+ * Class that computes the best Itinerary between 2 nodes (Route)
+ *
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)
  */
@@ -19,12 +21,9 @@ public final class RouteComputer {
 
 
     /**
-     * Constructor of the class which creates a RouteComputer
-     * with the given graph and cost function.
-     * @param graph
-                graph used for the route
-     * @param costFunction
-              cost function of the route
+     * Constructor of the class which creates a RouteComputer with the given graph and cost function.
+     * @param graph graph used for the route
+     * @param costFunction cost function of the route
      */
     public RouteComputer(Graph graph, CostFunction costFunction) {
         this.graph = graph;
@@ -38,10 +37,8 @@ public final class RouteComputer {
     /**
      * This method computes the shortest route between the nodes given as parameters
      *
-     * @param startNodeId
-                ID of the initial node
-     * @param endNodeId
-                ID of the final node
+     * @param startNodeId ID of the initial node
+     * @param endNodeId ID of the final node
      * @return a Route
      */
     public Route bestRouteBetween(int startNodeId, int endNodeId) {
@@ -69,8 +66,7 @@ public final class RouteComputer {
 
 
     /**
-     * This method adds weighted nodes that are connected
-     * to the nodeChosen to the ToExplore list (if the distance
+     * This method adds weighted nodes that are connected to the nodeChosen to the ToExplore list (if the distance
      * computed is smaller than the actual one stored in the array).
      *
      * @param endNodeId id of the node at the end of the route
@@ -110,8 +106,8 @@ public final class RouteComputer {
 
     /**
      * Returns the weighted node which distance from the start node and end node is smallest
-     * @return the weighted node which is closest to the start node ID and
-     * closest to the end node ID (ignores weighted nodes already explored)
+     * (ignores weighted nodes already explored)
+     * @return the weighted node
      */
     private WeightedNode chooseNode(){
         WeightedNode nodeChosen;
@@ -124,10 +120,10 @@ public final class RouteComputer {
 
 
     /**
-     * Returns the list of edges which are along the route.
-     * @param startNodeId   id of the node at the start of the route
-     * @param endNodeId     id of the node at the end of the route
-     * @return the list of edges which compose the path/itinerary.
+     * Returns the list of edges which compose the path/itinerary.
+     * @param startNodeId id of the node at the start of the route
+     * @param endNodeId id of the node at the end of the route
+     * @return a List
      */
     private List<Edge> reconstructRoute(int startNodeId, int endNodeId){
         LinkedList<Edge> edges = new LinkedList<>();

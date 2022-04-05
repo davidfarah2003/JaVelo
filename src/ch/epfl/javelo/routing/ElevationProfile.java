@@ -6,6 +6,7 @@ import java.util.DoubleSummaryStatistics;
 import java.util.function.DoubleUnaryOperator;
 
 /**
+ * Elevation Profile of a Route
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)
  */
@@ -21,6 +22,7 @@ public final class ElevationProfile {
      * Constructor of the class
      * @param length length of the edge
      * @param elevationSamples y coordinates of the samples
+     * @throws IllegalArgumentException if the length <= 0 or elevationSamples < 2
      */
     public ElevationProfile(double length, float[] elevationSamples) {
         Preconditions.checkArgument(length > 0 && elevationSamples.length >= 2);
@@ -51,7 +53,8 @@ public final class ElevationProfile {
 
 
     /**
-     * @return the length of the profile (meters)
+     * Returns the length of the profile (meters)
+     * @return the length
      */
     public double length(){
         return length;
@@ -59,36 +62,41 @@ public final class ElevationProfile {
 
 
     /**
-     * @return the minimum value among the altitudes
+     * returns the minimum value among the altitudes
+     * @return min value
      */
     public double minElevation(){
        return statistics.getMin();
     }
 
     /**
-     * @return the maximum value among the altitudes
+     * returns the maximum value among the altitudes
+     * @return max value
      */
     public double maxElevation(){
         return statistics.getMax();
     }
 
     /**
-     * @return the sum of all positive differences between a sample and its predecessor.
+     * Returns the sum of all positive differences between a sample and its predecessor.
+     * @return totalAscent
      */
     public double totalAscent(){
         return ascent;
     }
 
     /**
-     * @return the positive value of the sum of all negative differences between a sample and its predecessor.
+     * Returns the positive value of the sum of all negative differences between a sample and its predecessor.
+     * @return totalDescent (positive)
      */
     public double totalDescent(){
         return Math.abs(descent);
     }
 
     /**
+     * Returns the value of the function sampled (class Function) applied for the x-input position.
      * @param position (in meters)
-     * @return the value of the function sampled (class Function) applied for the x-input position.
+     * @return elevation at <code>position</code>
      */
     public double elevationAt(double position){
         return profile.applyAsDouble(position);

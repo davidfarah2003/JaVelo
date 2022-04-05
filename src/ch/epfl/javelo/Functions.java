@@ -4,6 +4,9 @@ import java.util.function.DoubleUnaryOperator;
 
 /**
  * This class implements multiple mathematical functions
+ *
+ * @author David Farah (341017)
+ * @author Wesley Nana Davies(344592)
  */
 public final class Functions {
     private Functions() {}
