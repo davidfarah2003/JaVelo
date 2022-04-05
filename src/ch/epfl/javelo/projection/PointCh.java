@@ -14,10 +14,8 @@ import static java.lang.Math.*;
 
 /**
  * PointCh record
- * @param e
-        east coordinate (meters)
- * @param n
-        north coordinate (meters)
+ * @param e east coordinate (meters)
+ * @param n north coordinate (meters)
  */
 public record PointCh(double e, double n) {
 
@@ -32,8 +30,7 @@ public record PointCh(double e, double n) {
 
     /**
      * Returns the squared distance between two points (PointCh)
-     * @param that
-                 point of interest
+     * @param that point of interest
      * @return the square of the distance
      */
     public double squaredDistanceTo(PointCh that){
@@ -45,8 +42,7 @@ public record PointCh(double e, double n) {
 
     /**
      * Returns the distance between two points (PointCh)
-     * @param that
-                point of interest
+     * @param that point of interest
      * @return the distance between the two points
      */
     public double distanceTo(PointCh that){

@@ -90,9 +90,9 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     * Returns the PointWebMercator as a PointCH (conversion)
-     * @return <code>null</code> if it does not exist
-     * @return a point in the Swiss coordinates system
+     * Returns the PointWebMercator as a PointCh (conversion)
+     * @return a point in the Swiss coordinates system,
+     * or null if it does not exist
      */
     public PointCh toPointCh() {
         double e = Ch1903.e(lon(), lat());
