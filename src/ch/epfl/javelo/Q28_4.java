@@ -2,9 +2,10 @@ package ch.epfl.javelo;
 
 /**
  * Q28_4
- * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
  * Convert numbers between Q28.4 representation and other ones.
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (341017)
+
  */
 public final class Q28_4 {
     private Q28_4(){}

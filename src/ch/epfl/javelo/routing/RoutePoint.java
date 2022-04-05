@@ -7,6 +7,7 @@ import static java.lang.Double.POSITIVE_INFINITY;
 
 
 /**
+ * RoutePoint
  * Record that represents a RoutePoint (Point on a route)
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)

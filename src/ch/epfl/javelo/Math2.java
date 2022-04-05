@@ -3,11 +3,12 @@ package ch.epfl.javelo;
 
 /**
  * Math2
+ *   This class offers mathematical tools
+ *   which are used in different classes
  *
  * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
- * This class offers mathematical tools
- * which are used in different classes
+ * @author David Farah (341017)
+
  */
 
 public final class Math2 {

@@ -3,6 +3,7 @@ package ch.epfl.javelo;
 import java.util.function.DoubleUnaryOperator;
 
 /**
+ * Functions
  * This class implements multiple mathematical functions
  *
  * @author David Farah (341017)

@@ -20,7 +20,7 @@ public record GraphNodes(IntBuffer buffer) {
 
     /**
      * Returns the total number of nodes
-     * @return total number of nodes
+     * @return the number of nodes
      */
     public int count() {
         return buffer.capacity()/ NUMBER_OF_INTS_PER_NODE;
@@ -29,7 +29,7 @@ public record GraphNodes(IntBuffer buffer) {
     /**
      * Returns the east coordinate of the node
      * @param nodeId ID of the node
-     * @return the east coordinate of the node
+     * @return the east coordinate
      */
     public double nodeE(int nodeId){
         int nodeIndex = nodeId * NUMBER_OF_INTS_PER_NODE + OFFSET_E;
@@ -40,7 +40,7 @@ public record GraphNodes(IntBuffer buffer) {
      * Returns the north coordinate of the node
      * @param nodeId
                 ID of the node
-     * @return the north coordinate of the node
+     * @return the north coordinate
      */
     public double nodeN(int nodeId){
         int nodeIndex = nodeId * NUMBER_OF_INTS_PER_NODE;
@@ -51,7 +51,7 @@ public record GraphNodes(IntBuffer buffer) {
      * Returns the number of edges going out from the given node
      * @param nodeId
                     ID of the node
-     * @return the number of edges exiting the node with the given identity
+     * @return the number of edges
      */
     public int outDegree(int nodeId){
         int nodeIndex = nodeId * NUMBER_OF_INTS_PER_NODE;
@@ -64,7 +64,7 @@ public record GraphNodes(IntBuffer buffer) {
                     ID of the node
      * @param edgeIndex
                     index of the edge for the given node
-     * @return the identity of the edgeIndex-th edge going out from the given node
+     * @return the identity of the edgeIndex-th edge
      */
     public int edgeId(int nodeId, int edgeIndex){
         assert 0 <= edgeIndex && edgeIndex < outDegree(nodeId);

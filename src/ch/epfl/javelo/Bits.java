@@ -2,11 +2,12 @@ package ch.epfl.javelo;
 
 /**
  * Bits
+ * This class offers methods which help to manipulate bit strings
  *
  * @author Wesley Nana Davies(344592)
- * @author David Farah (????)
+ * @author David Farah (341017)
  *
- * This class offers methods which help to manipulate bit strings
+
  */
 
 public final class Bits {

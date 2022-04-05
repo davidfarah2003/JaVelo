@@ -6,10 +6,25 @@ import ch.epfl.javelo.projection.PointCh;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * The purpose of this record is to represent all the edges that belong to a specific itinerary
+ * Edge
+ * The purpose of this record is to represent
+ * an edge that belongs to an itinerary
  *
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)
+
+ */
+
+
+/**
+ * Constructor for Edge
+ * @param fromNodeId : ID of the starting node
+ * @param toNodeId : ID of the ending node
+ * @param fromPoint :  point (PointCh) form which the edge starts
+ * @param toPoint:  point (PointCh) to which the edge goes
+ * @param length : length of an edge
+ * @param profile : elevation profile of the edge
+ * @return an edge Edge
  */
 public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPoint,
                    double length, DoubleUnaryOperator profile){

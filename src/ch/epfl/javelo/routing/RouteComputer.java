@@ -6,6 +6,7 @@ import java.util.*;
 
 
 /**
+ * RouteComputer
  * Class that computes the best Itinerary between 2 nodes (Route)
  *
  * @author David Farah (341017)

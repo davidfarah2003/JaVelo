@@ -63,7 +63,7 @@ public final class Graph {
      * Returns the extracted buffer from the file
      * @param pathFile path to the binary file we want ti extract from (Path)
      * @throws IOException in the event of an input/output error
-     * @return extracted buffer from the file
+     * @return the extracted buffer
 
      */
     private static ByteBuffer extractBuffer(Path pathFile) throws IOException{
@@ -94,7 +94,7 @@ public final class Graph {
 
     /**
      * Returns the total number of nodes in the graph
-     * @return the total number of nodes in the graph
+     * @return the number of nodes
      */
     public int nodeCount(){
         return nodes.count();
@@ -104,7 +104,7 @@ public final class Graph {
      * Returns the point at the given node (ID)
      * @param nodeId
                    ID of the node
-     * @return the point (PointCh) at the given node (ID)
+     * @return the point (PointCh)
      */
     public PointCh nodePoint(int nodeId){
         return new PointCh(nodes.nodeE(nodeId), nodes.nodeN(nodeId));
@@ -114,7 +114,7 @@ public final class Graph {
      * Returns the number the edges leaving the given node
      * @param nodeId
                     ID of the node
-     * @return the number of edges leaving the given identity node
+     * @return the number of edges
      */
     public int nodeOutDegree(int nodeId){
         return nodes.outDegree(nodeId);
@@ -124,18 +124,20 @@ public final class Graph {
      * Returns the identity of the edgeIndex-th edge going out from the given node
      * @param nodeId the id of the node
      * @param edgeIndex index of the edge
-     * @return the identity of the edgeIndex-th edge going out from the given node
+     * @return the identity of the edgeIndex-th edge
      */
     public int nodeOutEdgeId(int nodeId, int edgeIndex){
         return nodes.edgeId(nodeId, edgeIndex);
     }
 
     /**
-     * Returns the identity of the node closest to the given point.
+     * Returns the identity of the node closest to the given point
+     * at the given maximum searchDistance (in meters),
+     * or -1 if no node matches these criteria
      * @param point coordinate point
      * @param searchDistance distance (radius) of the search
-     * @return the identity of the node closest to the given point,
-     * at the given maximum searchDistance (in meters), or -1 if no node matches these criteria
+     * @return the identity of the node closest to the given point
+     *
      */
     public int nodeClosestTo(PointCh point, double searchDistance){
         double closestDistance = Math.pow(searchDistance, 2);
@@ -157,7 +159,7 @@ public final class Graph {
     /**
      * Returns the node ID connected to the end of the given edge
      * @param edgeId the id of the edge
-     * @return the identity of the destination node of the given identity edge
+     * @return the identity of the destination node
      */
     public int edgeTargetNodeId(int edgeId){
         return edges.targetNodeId(edgeId);
@@ -167,7 +169,7 @@ public final class Graph {
      * Returns true iff the given edge goes in the opposite direction of the OSM channel it comes from
      * @param edgeId
                 ID of the edge
-     * @return true iff the given identity edge goes in the opposite direction of the OSM channel it comes from
+     * @return a boolean value
      */
     public boolean edgeIsInverted(int edgeId){
         return edges.isInverted(edgeId);
@@ -176,17 +178,17 @@ public final class Graph {
     /**
      * Returns the AttributeSet of OSM attributes which belong to the edge.
      * @param edgeId the id of the edge
-     * @return the AttributeSet of OSM attributes attached to the given identity edge
+     * @return the AttributeSet of OSM attributes
      */
     public AttributeSet edgeAttributes(int edgeId){
         return attributeSets.get(edges.attributesIndex(edgeId));
     }
 
     /**
-     * Returns the length of the given edge.
+     * Returns the length in meters of the given edge.
      * @param edgeId
                 ID of the edge
-     * @return the length, in meters, of the given identity edge
+     * @return the length of the edge
      */
     public double edgeLength(int edgeId){
         return edges.length(edgeId);
@@ -196,18 +198,18 @@ public final class Graph {
      * Returns the total elevation of the given edge.
      * @param edgeId
                     ID of the edge
-     * @return the total elevation gain of the given identity edge
+     * @return the total elevation gain
      */
     public double edgeElevationGain(int edgeId){
         return edges.elevationGain(edgeId);
     }
 
     /**
-     * Returns the elevation profile of the given edge.
+     * Returns the longitudinal profile of the given identity edge,
+     * as a function, and Double.NaN if the edge has no profile
      * @param edgeId
                     ID of the edge
-     * @return the longitudinal profile of the given identity edge, as a function,
-     * and Double.NaN if the edge has no profile
+     * @return the longitudinal profile of the given identity edge
      */
     public DoubleUnaryOperator edgeProfile(int edgeId){
         return (edges.hasProfile(edgeId)?
