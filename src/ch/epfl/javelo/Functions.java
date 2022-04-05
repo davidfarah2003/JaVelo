@@ -12,7 +12,7 @@ public final class Functions {
     private Functions() {}
 
     /**
-     *
+     * Returns a constant function
      * @param y : constant which is the output of the function to be returned
      * @return a constant function
      */
@@ -20,12 +20,23 @@ public final class Functions {
         return x-> y;
     }
 
+
+    /**
+     * Returns a function obtained by linear interpolation between samples,
+     * regularly spaced and covering the range from 0 to xMax
+     * @param samples
+                array of samples to make the function out of it
+     * @param xMax
+                end of the range
+     * @throws IllegalArgumentException if the size of the samples array is not
+     * greater or equal to 2 or if xMax is negative
+     * @return the function
+     */
     public static DoubleUnaryOperator sampled(float[] samples, double xMax){
         Preconditions.checkArgument(samples.length >= 2 && xMax > 0);
         return new Sampled(samples, xMax);
     }
 
-    //Make Sampled a record (more concise)
     private static final record Sampled(float[] samples, double xMax) implements DoubleUnaryOperator{
         @Override
         public double applyAsDouble(double operand) {
@@ -46,7 +57,8 @@ public final class Functions {
                 int lower_index = (int) Math.floor(operand_index);
                 int upper_index = (int) Math.ceil(operand_index);
 
-                return Math2.interpolate(samples[lower_index], samples[upper_index], (operand - lower_index * intervalLength)/intervalLength);
+                return Math2.interpolate(samples[lower_index], samples[upper_index],
+                        (operand - lower_index * intervalLength)/intervalLength);
 
             }
 
