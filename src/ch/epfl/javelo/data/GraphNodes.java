@@ -7,9 +7,13 @@ import java.nio.IntBuffer;
 
 /**
  * GraphNodes record
- * @param buffer buffer containing all the information about the nodes
+ *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
+ */
+
+/**
+ * @param buffer containing all the information about the nodes
  */
 public record GraphNodes(IntBuffer buffer) {
     private static final int OFFSET_E = 0;

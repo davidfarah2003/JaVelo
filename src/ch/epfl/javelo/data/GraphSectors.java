@@ -10,10 +10,14 @@ import java.util.List;
 
 
 /**
- * GraphSectors
+ * GraphSectors record
  *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
+ */
+
+/**
+ * @param buffer containing information about all sectors (number of nodes, start node ID)
  */
 public record GraphSectors (ByteBuffer buffer){
     private static final int OFFSET_NODE_ID = 0;
@@ -30,6 +34,7 @@ public record GraphSectors (ByteBuffer buffer){
      * @param distance
                     distance (meters) from which a sector is considered
                     in the area of the point of interest
+     * @throws IllegalArgumentException if the distance is negative
      * @return a list of sectors in area
      */
     public List<Sector> sectorsInArea(PointCh center, double distance){

@@ -16,7 +16,7 @@ import java.util.function.DoubleUnaryOperator;
 
 
 /**
- * A Graph (immutable class)
+ * A Graph
  *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
