@@ -1,132 +1,212 @@
 package ch.epfl.javelo.routing;
 
-import ch.epfl.javelo.Functions;
 import ch.epfl.javelo.projection.PointCh;
-import ch.epfl.javelo.projection.SwissBounds;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.DoubleUnaryOperator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ch.epfl.javelo.routing.ElevationProfileComputer.elevationProfile;
+import static ch.epfl.test.TestRandomizer.RANDOM_ITERATIONS;
+import static ch.epfl.test.TestRandomizer.newRandom;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ElevationProfileComputerTest {
-
     @Test
-    void elevationProfileWorksInAverageProbCases() {
-        List<Edge> edges = new ArrayList<>();
-        PointCh point1 = new PointCh(SwissBounds.MIN_E + 5000, SwissBounds.MIN_N + 5000);
-        PointCh point2 = new PointCh(SwissBounds.MIN_E + 10000, SwissBounds.MIN_N + 10000);
-        PointCh point3 = new PointCh(SwissBounds.MIN_E + 13_000, SwissBounds.MIN_N + 16000);
-
-        edges.add(new Edge(1, 2, point1, point2, 9, Functions.constant(Double.NaN)));
-        edges.add(new Edge(2, 3, point2, point3, 9, Functions.sampled(new float[]{20, 23, 22, 21}, 9)));
-        edges.add(new Edge(2, 3, point2, point3, 9, Functions.constant(Double.NaN)));
-        edges.add(new Edge(2, 3, point2, point3, 9, Functions.sampled(new float[]{19, 20, 23, 22}, 9)));
-
-        SingleRoute route = new SingleRoute(edges);
-
-        //System.out.println(route.elevationAt(10));
-        //System.out.println(route.elevationAt(11));
-
-        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 4);
-        assertEquals(20, profile.elevationAt(0));
-        assertEquals(20, profile.elevationAt(-6));
-        assertEquals(23, profile.elevationAt(8));
-        assertEquals(21.5, profile.elevationAt(7));
-        assertEquals(22, profile.elevationAt(10));
-        assertEquals(21, profile.elevationAt(30));
-        assertEquals(21.5, profile.elevationAt(11));
-        assertEquals(3, profile.totalAscent());
-        assertEquals(2, profile.totalDescent());
-        assertEquals(12, profile.length());
-        assertEquals(23, profile.maxElevation());
-        assertEquals(20, profile.minElevation());
-
+    void elevationProfileComputerThrowsWithZeroMaxStepLength() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            elevationProfile(new FakeRoute(), 0);
+        });
     }
 
     @Test
-    void elevationProfileWorksWIthOnlyNaN() {
-        List<Edge> edges = new ArrayList<>();
-        PointCh point1 = new PointCh(SwissBounds.MIN_E + 5000, SwissBounds.MIN_N + 5000);
-        PointCh point2 = new PointCh(SwissBounds.MIN_E + 10000, SwissBounds.MIN_N + 10000);
-        PointCh point3 = new PointCh(SwissBounds.MIN_E + 15000, SwissBounds.MIN_N + 15000);
+    void elevationProfileComputerWorksWithCompletelyUnknownProfile() {
+        for (int i = 1; i < 10; i += 1) {
+            var route = new FakeRoute(i, x -> Double.NaN);
+            var profile = elevationProfile(route, 500);
 
-
-        edges.add(new Edge(15, 2, point1, point2, 6, Functions.sampled(new float[]{Float.NaN, Float.NaN, Float.NaN, Float.NaN}, 6)));
-        edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{Float.NaN, Float.NaN, Float.NaN, Float.NaN}, 6)));
-
-        SingleRoute route = new SingleRoute(edges);
-        PointCh test1 = route.pointAt(2);
-        //System.out.println(test1);
-        PointCh test2 = route.pointAt(4);
-        //System.out.println(test2);
-
-
-       // System.out.println(route.nodeClosestTo(-6));
-       // System.out.println(route.nodeClosestTo(50));
-       // System.out.println(route.nodeClosestTo(12));
-        //System.out.println(route.nodeClosestTo(6));
-
-        double value = point1.e() + (point2.e() - point1.e())/3;
-        assertEquals(value , test1.e());
-
-        double value2 = point1.n() + (point2.n() - point1.n())/3;
-        assertEquals(value2, test1.n());
-        assertEquals(point1.n() + (point2.n() - point1.n())/1.5, test2.n());
-        assertEquals(point1.e() + (point2.e() - point1.e())/1.5, test2.e());
-
-        System.out.println(route.elevationAt(3));
-        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
-        System.out.println(profile.elevationAt(3));
-
-
-
-
-
-
+            assertEquals(route.length(), profile.length());
+            assertEquals(0, profile.minElevation());
+            assertEquals(0, profile.maxElevation());
+            assertEquals(0, profile.totalAscent());
+            assertEquals(0, profile.totalDescent());
+            assertEquals(0, profile.elevationAt(Math.nextDown(0)));
+            assertEquals(0, profile.elevationAt(500));
+            assertEquals(0, profile.elevationAt(Math.nextUp(route.length())));
+        }
     }
 
     @Test
-    void elevationProfileWorks2() {
-        List<Edge> edges = new ArrayList<>();
-        PointCh point1 = new PointCh(SwissBounds.MIN_E + 5000, SwissBounds.MIN_N + 5000);
-        PointCh point2 = new PointCh(SwissBounds.MIN_E + 10000, SwissBounds.MIN_N + 10000);
-        PointCh point3 = new PointCh(SwissBounds.MIN_E + 15000, SwissBounds.MIN_N + 15000);
-
-
-        edges.add(new Edge(1, 2, point1, point2, 6, Functions.sampled(new float[]{50, Float.NaN, Float.NaN, Float.NaN}, 6)));
-        edges.add(new Edge(2, 3, point2, point3, 6, Functions.sampled(new float[]{Float.NaN, 100, Float.NaN, Float.NaN}, 6)));
-
-        SingleRoute route = new SingleRoute(edges);
-        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
-
-        //System.out.println(profile.totalDescent());
-        //System.out.println(profile.totalAscent());
-        assertEquals(56.25, profile.elevationAt(1));
-        assertEquals(62.5, profile.elevationAt(2));
-        assertEquals(68.75, profile.elevationAt(3));
-        assertEquals(87.5, profile.elevationAt(6));
-
+    void elevationProfileComputerWorksWithHoleAtBeginning() {
+        var elevation = 500d;
+        var route = new FakeRoute(1, x -> x < FakeRoute.EDGE_LENGTH / 2d ? Double.NaN : elevation);
+        var profile = elevationProfile(route, 1);
+        assertEquals(elevation, profile.minElevation());
+        assertEquals(elevation, profile.maxElevation());
+        assertEquals(0, profile.totalAscent());
+        assertEquals(0, profile.totalDescent());
+        for (double p = 0; p < route.length(); p += 1) {
+            assertEquals(elevation, profile.elevationAt(p));
+        }
     }
 
-
+    @Test
+    void elevationProfileComputerWorksWithHoleAtEnd() {
+        var elevation = 500d;
+        var route = new FakeRoute(1, x -> x > FakeRoute.EDGE_LENGTH / 2d ? Double.NaN : elevation);
+        var profile = elevationProfile(route, 1);
+        assertEquals(elevation, profile.minElevation());
+        assertEquals(elevation, profile.maxElevation());
+        assertEquals(0, profile.totalAscent());
+        assertEquals(0, profile.totalDescent());
+        for (double p = 0; p < route.length(); p += 1) {
+            assertEquals(elevation, profile.elevationAt(p));
+        }
     }
-/*
-        ElevationProfile profile = ElevationProfileComputer.elevationProfile(route, 2);
-        System.out.println(profile.length());
-        System.out.println(profile.elevationAt(1));
-        System.out.println(profile.elevationAt(12));
-        System.out.println(profile.elevationAt(8));
-       System.out.println(profile.totalAscent());
-       System.out.println(profile.totalDescent());
-       System.out.println(profile.minElevation());
-       System.out.println(profile.maxElevation());
-        System.out.println(profile.elevationAt(7071));
 
+    @Test
+    void elevationProfileComputerWorksWithMissingValuesInTheMiddle() {
+        var startElevation = 100;
+        var endElevation = startElevation + FakeRoute.EDGE_LENGTH;
+        DoubleUnaryOperator edgeProfile = x -> {
+            if (x < 0.1)
+                return startElevation;
+            else if (x > FakeRoute.EDGE_LENGTH - 0.1)
+                return endElevation;
+            else
+                return Double.NaN;
+        };
+        var route = new FakeRoute(1, edgeProfile);
+        var profile = elevationProfile(route, 1);
+        assertEquals(endElevation - startElevation, profile.totalAscent(), 1);
+        assertEquals(0, profile.totalDescent());
+        assertEquals(startElevation, profile.minElevation());
+        assertEquals(endElevation, profile.maxElevation());
+        for (double p = 0; p < route.length(); p += 1) {
+            var elevation = startElevation + (endElevation - startElevation) * (p / FakeRoute.EDGE_LENGTH);
+            assertEquals(elevation, profile.elevationAt(p), 1e-2);
+        }
+    }
+
+    @Test
+    void elevationProfileComputerWorksWithHolesOfDifferentLengths() {
+        var samples = new double[1001];
+
+        var holeLength = 0;
+        var remainingNaNsToInsert = 0;
+        for (int i = 0; i < samples.length; i += 1) {
+            if (remainingNaNsToInsert == 0) {
+                samples[i] = i;
+                holeLength += 1;
+                remainingNaNsToInsert = holeLength;
+            } else {
+                samples[i] = Double.NaN;
+                remainingNaNsToInsert -= 1;
+            }
+        }
+        samples[samples.length - 1] = samples.length - 1;
+
+        var route = new FakeRoute(1, x -> samples[(int) Math.rint(x)]);
+        var profile = elevationProfile(route, 1);
+        for (int i = 0; i < FakeRoute.EDGE_LENGTH; i += 1)
+            assertEquals(i, profile.elevationAt(i), 1e-4);
+    }
+
+    @Test
+    void elevationProfileComputerWorksWithFullyKnownProfile() {
+        DoubleUnaryOperator edgeProfile =
+                x -> 600d + 500d * Math.sin(2d * Math.PI / FakeRoute.EDGE_LENGTH);
+        var route = new FakeRoute(1, edgeProfile);
+        var profile = elevationProfile(route, 0.1);
+        var rng = newRandom();
+        for (int i = 0; i < RANDOM_ITERATIONS; i += 1) {
+            var p = rng.nextDouble(0, route.length());
+            assertEquals(edgeProfile.applyAsDouble(p), profile.elevationAt(p), 1e-3);
+        }
+    }
+
+    private static final class FakeRoute implements Route {
+        private static final double ORIGIN_E = 2_600_000;
+        private static final double ORIGIN_N = 1_200_000;
+        private static final double EDGE_LENGTH = 1_000;
+
+        private final int edgesCount;
+        private final DoubleUnaryOperator edgeProfile;
+
+        public FakeRoute(int edgesCount, DoubleUnaryOperator edgeProfile) {
+            this.edgesCount = edgesCount;
+            this.edgeProfile = edgeProfile;
+        }
+
+        public FakeRoute() {
+            this(1, x -> Double.NaN);
+        }
+
+        @Override
+        public int indexOfSegmentAt(double position) {
+            return 0;
+        }
+
+        @Override
+        public double length() {
+            return Math.nextDown(edgesCount * EDGE_LENGTH);
+        }
+
+        @Override
+        public List<Edge> edges() {
+            var points = points();
+            var edges = new ArrayList<Edge>(edgesCount);
+            for (int i = 0; i < edgesCount; i += 1) {
+                var p1 = points.get(i);
+                var p2 = points.get(i + 1);
+                edges.add(new Edge(i, i + 1, p1, p2, EDGE_LENGTH, edgeProfile));
+            }
+            return Collections.unmodifiableList(edges);
+        }
+
+        @Override
+        public List<PointCh> points() {
+            var points = new ArrayList<PointCh>(edgesCount + 1);
+            for (int i = 0; i < edgesCount + 1; i += 1)
+                points.add(new PointCh(ORIGIN_E + i * EDGE_LENGTH, ORIGIN_N));
+            return Collections.unmodifiableList(points);
+        }
+
+        @Override
+        public PointCh pointAt(double position) {
+            position = max(0, min(position, length()));
+            return new PointCh(ORIGIN_E + position, ORIGIN_N);
+        }
+
+        @Override
+        public double elevationAt(double position) {
+            position = max(0, min(position, length()));
+            return edgeProfile.applyAsDouble(position % EDGE_LENGTH);
+        }
+
+        @Override
+        public int nodeClosestTo(double position) {
+            position = max(0, min(position, length()));
+            return (int) Math.rint(position / EDGE_LENGTH);
+        }
+
+        @Override
+        public RoutePoint pointClosestTo(PointCh point) {
+            if (point.e() <= ORIGIN_E) {
+                var origin = new PointCh(ORIGIN_E, ORIGIN_N);
+                return new RoutePoint(origin, 0, point.distanceTo(origin));
+            } else if (point.e() >= ORIGIN_E + edgesCount * EDGE_LENGTH) {
+                var lastPoint = new PointCh(ORIGIN_E + edgesCount * EDGE_LENGTH, ORIGIN_N);
+                return new RoutePoint(lastPoint, 0, point.distanceTo(lastPoint));
+            } else {
+                var p = new PointCh(point.e(), ORIGIN_N);
+                return new RoutePoint(p, point.e() - ORIGIN_E, point.n() - ORIGIN_N);
+            }
+        }
     }
 }
-
-
- */
