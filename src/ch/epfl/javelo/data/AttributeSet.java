@@ -31,7 +31,7 @@ public record AttributeSet(long bits) {
         long bits = 0;
         for (Attribute attribute : attributes){
             Preconditions.checkArgument(attribute.ordinal() < 64);
-            bits |= (1L << attribute.ordinal());      // | is the bit-wise OR operator (|= equivalent to += for bits)
+            bits |= (1L << attribute.ordinal());
         }
         return new AttributeSet(bits);
     }

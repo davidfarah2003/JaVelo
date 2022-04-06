@@ -39,9 +39,8 @@ public final class TileManager {
             return map.get(tile);
 
         } else if (Files.exists(Path.of(tile.getPathName()))) {
-
-           map.put(tile, (Image) new File(tile.getPathName()));
-        return ...
+   //        map.put(tile, (Image) new File(tile.getPathName()));
+   //     return ...
         }
         else {
 

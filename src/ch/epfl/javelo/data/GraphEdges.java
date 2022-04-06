@@ -33,17 +33,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int OFFSET_IDS_OSM = OFFSET_ELEVATION_GAIN + 2;
     private static final int NUMBER_OF_INTS_PER_EDGE = OFFSET_IDS_OSM + 2;
 
-    /*
-    edgesBuffer contains in order:    an integer of type int (direction of the edge and identity of the destination node),
-                                      an integer of type short (length of the edge),
-                                      an integer of type short (total positive elevation) and
-                                      an integer of type short (identity of the set of OSM attributes)
-
-    profileIds contains, for each edge of the graph, a single integer of type int (type of the profile and index of the first sample)
-
-    elevations : the buffer memory containing all the samples of the profiles, compressed or not
-     */
-
     /**
      * Returns true iff the edge goes in the opposite direction to the OSM road it belongs to
      * @param edgeId ID of the edge
@@ -98,8 +87,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Returns the array of samples of the profile of the edge with the given identity, which is empty if the edge does
-     * not have a profile
+     * Returns the array of samples of the profile of the edge with the given identity,
+     * which is empty if the edge does not have a profile
      * @param edgeId ID of the edge
      * @return the float array
      */
@@ -161,7 +150,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @param idFirstSample ID of the first sample
      * @param profileSamples List that stores the samples (already contains the first one)
      */
-    private void updateArrayFromCompressed(int bitsPerValue, int nbSamples, int idFirstSample, List<Float> profileSamples){
+    private void updateArrayFromCompressed
+                (int bitsPerValue, int nbSamples, int idFirstSample, List<Float> profileSamples){
         int i = 1;
         int idCounter = 1;
         int bitCounter = 16 - bitsPerValue;
@@ -169,7 +159,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         while(i < nbSamples){
             short elevationShort = elevations.get(idFirstSample+idCounter);
             while(bitCounter >= 0 && i < nbSamples){
-                profileSamples.add(profileSamples.get(i-1)+ Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter, bitsPerValue)));
+                profileSamples.add(profileSamples.get(i-1)+
+                        Q28_4.asFloat(Bits.extractSigned(elevationShort, bitCounter, bitsPerValue)));
                 bitCounter -= bitsPerValue;
                 i+= 1;
             }

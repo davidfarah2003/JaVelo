@@ -67,9 +67,9 @@ public final class RouteComputer {
 
 
     /**
-     * This method adds weighted nodes that are connected to the nodeChosen to the ToExplore list (if the distance
-     * computed is smaller than the actual one stored in the array).
-     *
+     * This method adds weighted nodes that are connected to the nodeChosen
+     * to the ToExplore list (if the distance computed is smaller than
+     * the one stored in the array).
      * @param endNodeId id of the node at the end of the route
      */
     private void addNodesToExplore(int endNodeId){
@@ -159,7 +159,8 @@ public final class RouteComputer {
             implements Comparable<WeightedNode> {
         @Override
         public int compareTo(WeightedNode that) {
-            return Float.compare(this.distance + this.distanceStraightLine, that.distance + that.distanceStraightLine);
+            return Float.compare(this.distance + this.distanceStraightLine,
+                                 that.distance + that.distanceStraightLine);
         }
     }
 }

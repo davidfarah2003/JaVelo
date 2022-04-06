@@ -36,7 +36,15 @@ public final class Functions {
         return new Sampled(samples, xMax);
     }
 
-    private static final record Sampled(float[] samples, double xMax) implements DoubleUnaryOperator{
+    private static final class Sampled implements DoubleUnaryOperator{
+        private float[] samples;
+        private double xMax;
+
+        public Sampled(float[] samples, double xMax){
+            this.samples = samples;
+            this.xMax = xMax;
+        }
+
         @Override
         public double applyAsDouble(double operand) {
 
@@ -45,7 +53,7 @@ public final class Functions {
             } else if (operand < 0) {
                 return samples[0];
             } else {
-                double intervalLength = xMax / (samples.length - 1); // length of an interval (between each sample)
+                double intervalLength = xMax / (samples.length - 1); // length of an interval
                 //if operand is on a sample, return the corresponding sample y value
                 if (operand % intervalLength == 0){
                     return samples[(int)(operand/ intervalLength)];
