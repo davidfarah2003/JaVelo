@@ -31,9 +31,9 @@ public record GraphSectors (ByteBuffer buffer){
      * Returns a list of sectors which are within the given distance from the point.
      * @param center point of interest (PointCh)
      * @param distance distance in meters from
-     which a sector is considered in the area of the point of interest
+      which a sector is considered in the area of the point of interest
      * @throws IllegalArgumentException if the distance is negative
-     * @return a list of sectors in area
+     * @return a list of sectors
      */
     public List<Sector> sectorsInArea(PointCh center, double distance){
 

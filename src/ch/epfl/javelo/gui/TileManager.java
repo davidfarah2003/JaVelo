@@ -38,10 +38,10 @@ public final class TileManager {
         if (map.containsKey(tile)) {
             return map.get(tile);
 
-        } else if (Files.exists(Path.of(""))) {
-            // comment la charger?
-         //   map.put(tile, ...)
-        //    return ...
+        } else if (Files.exists(Path.of(tile.getPathName()))) {
+
+           map.put(tile, (Image) new File(tile.getPathName()));
+        return ...
         }
         else {
 
@@ -49,20 +49,17 @@ public final class TileManager {
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "JaVelo");
 
-            Files.createDirectories(Path.of("zoomLevel/yCoordinate/xCoordinate.png"));
+            Files.createDirectories(Path.of(tile.getPathName()));
 
-            File file = new File("...");
+            File file = new File(tile.getPathName());
 
             OutputStream o = new FileOutputStream(file);
 
             try (InputStream i = c.getInputStream()) {
                 i.transferTo(o);
-           //     map.put(tile, ...);
+                map.put(tile, new Image(i));
                 return new Image(i);
             }
-
-            //  ImageInputStream stream = ImageIO.createImageInputStream(o);
-            // return stream;
 
 
         }
@@ -81,6 +78,10 @@ public final class TileManager {
              String file = "/%d/%d/%d.png".formatted(zoomLevel, xIndex, yIndex);
              return new URL("https", hostName, file);
 
+         }
+
+         String getPathName(){
+             return "%d/%d/%d.png".formatted(zoomLevel, xIndex, yIndex);
          }
      }
 

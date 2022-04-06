@@ -14,11 +14,11 @@ public final class Bits {
     private Bits(){}
 
     /**
-     * Returns the bit string extracted signed
+     * Returns the value of an extracted bit string (signed)
      * @param value initial integer value
      * @param start start bit index (right)
      * @param length length of the extracted bit string
-     * @return (int) the resulting signed bit string
+     * @return the value
      */
     public static int extractSigned(int value, int start, int length){
         Preconditions.checkArgument(start>= 0 && start <= 31 && length <= (31-start)+1 && length > 0);
@@ -29,11 +29,11 @@ public final class Bits {
     }
 
     /**
-     * Returns the bit string extracted unsigned
+     * Returns the value of an extracted bit string (unsigned)
      * @param value initial integer value
      * @param start start bit index (right)
      * @param length length of the extracted bit string
-     * @return (int) the resulting unsigned bit string
+     * @return the value
      */
     public static int extractUnsigned(int value, int start, int length){
         Preconditions.checkArgument(start >= 0 && start <= 31 && length <= (31-start)+1 && length < 32 && length > 0);
