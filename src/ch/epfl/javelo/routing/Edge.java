@@ -59,7 +59,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * @return the position
      */
     public PointCh pointAt(double position){
-        double proportion = position/length;
+        double proportion = position / length;
         double east = Math2.interpolate(fromPoint.e(), toPoint.e(), proportion);
         double north = Math2.interpolate(fromPoint.n(), toPoint.n(), proportion);
         return new PointCh(east, north);

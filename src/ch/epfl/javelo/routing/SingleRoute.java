@@ -32,7 +32,7 @@ public final class SingleRoute implements Route {
         this.edges = List.copyOf(edges);
         this.routeLength = calculateLength();
         this.edgesLength = buildEdgesSearch();
-        this.points = List.copyOf(buildPoints()); //to make it immutable
+        this.points = List.copyOf(buildPoints());
     }
 
 
@@ -138,7 +138,8 @@ public final class SingleRoute implements Route {
 
     /**
      * @param position (Double)
-     * @return the elevation at a given point along the itinerary, NaN if the edge has no profile
+     * @return the elevation at a given point along the itinerary,
+     * NaN if the edge has no profile
      */
     @Override
     public double elevationAt(double position) {
@@ -176,7 +177,8 @@ public final class SingleRoute implements Route {
             double distStartOfEdge = position - edgesLength[edgeIndex];
             double distEndOfEdge = edgesLength[edgeIndex + 1] - position;
 
-            return (distStartOfEdge <= distEndOfEdge)? edges.get(edgeIndex).fromNodeId() : edges.get(edgeIndex).toNodeId();
+            return (distStartOfEdge <= distEndOfEdge)? edges.get(edgeIndex).fromNodeId()
+                                                    : edges.get(edgeIndex).toNodeId();
         }
     }
 
