@@ -1,9 +1,9 @@
 package ch.epfl.javelo.projection;
+
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 
-import java.util.Objects;
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
 
 /**
  * PointCh record

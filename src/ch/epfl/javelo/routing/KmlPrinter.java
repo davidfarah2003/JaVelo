@@ -1,7 +1,6 @@
 package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.projection.PointCh;
-import ch.epfl.javelo.routing.Route;
 
 import java.io.IOException;
 import java.io.PrintWriter;

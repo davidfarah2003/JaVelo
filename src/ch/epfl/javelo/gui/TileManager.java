@@ -2,6 +2,7 @@ package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.LRUCache;
 import ch.epfl.javelo.Preconditions;
+import javafx.scene.image.Image;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -9,9 +10,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import java.util.LinkedHashMap;
-import javafx.scene.image.Image;
 
 
 public final class TileManager {
