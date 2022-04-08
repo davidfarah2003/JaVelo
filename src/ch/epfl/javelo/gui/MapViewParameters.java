@@ -1,29 +1,67 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.projection.PointWebMercator;
-
 import java.awt.geom.Point2D;
 
-public record MapViewParameters(int zoomLevel, int xCoordinate, int yCoordinate) {
+/**
+ * MapViewParameters record
+ * @param zoomLevel
+ * @param xUpperLeftMapView :
+ * @param yUpperLeftMapView
+ *
+ * @author Wesley Nana Davies (344592)
+ * @author David Farah (341017)
+ */
+
+public record MapViewParameters(int zoomLevel, double xUpperLeftMapView, double yUpperLeftMapView) {
+
+    /**
+     *
+     * @return
+     */
     public Point2D topLeft(){
-        return new Point2D.Double(xCoordinate, yCoordinate);
+        return new Point2D.Double(xUpperLeftMapView, yUpperLeftMapView);
     }
 
-    public MapViewParameters withMinXY(int xCoordinate, int yCoordinate){
-        return new MapViewParameters(zoomLevel, xCoordinate, yCoordinate);
+    /**
+     *
+     * @param newXUpperLeftMapView
+     * @param newYUpperLeftMapView
+     * @return
+     */
+
+    public MapViewParameters withMinXY(double newXUpperLeftMapView, double newYUpperLeftMapView){
+        return new MapViewParameters(zoomLevel, newXUpperLeftMapView, newYUpperLeftMapView);
     }
 
-    public PointWebMercator pointAt(int xCoordinate, int yCoordinate){
-        return PointWebMercator.of(zoomLevel, xCoordinate, yCoordinate);
+    /**
+     *
+     * @param xCoordinate
+     * @param yCoordinate
+     * @return
+     */
+    public PointWebMercator pointAt(double xCoordinate, double yCoordinate){
+        return PointWebMercator.of(zoomLevel, xUpperLeftMapView + xCoordinate,
+                yUpperLeftMapView + yCoordinate);
     }
 
-    public int viewX(PointWebMercator point){
+    /**
+     *
+     * @param point
+     * @return
+     */
+    public double viewX(PointWebMercator point){
         double value = point.xAtZoomLevel(zoomLevel);
-        return (int) Math.floor(value / 256);
+        return value - xUpperLeftMapView;
     }
 
-    public int viewY(PointWebMercator point){
+    /**
+     *
+     * @param point
+     * @return
+     */
+    public double viewY(PointWebMercator point){
         double value = point.yAtZoomLevel(zoomLevel);
-        return (int) Math.floor(value / 256);
+        return value - yUpperLeftMapView;
     }
 }
