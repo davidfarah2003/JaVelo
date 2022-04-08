@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import javafx.scene.image.Image;
 
+
 public final class TileManager {
 
     private final Path cachePath;
@@ -22,52 +23,45 @@ public final class TileManager {
     public TileManager(Path cachePath, String hostName){
         this.cachePath = cachePath;
         this.hostName = hostName;
-        memoryCache = new LRUCache<>(16, .75f);
+        memoryCache = new LRUCache<>(100, .75f);
     }
 
     public Image getTileImage(TileId tile) throws IOException {
-        // avec true apres chaque get,
-        // la paire key-value se place a la fin
-        // least-recently acessed -> most recentely acessed
-
-        Image tileImage;
+        String fileName = tile.getFileName();
+        Path filePath = Path.of(cachePath + fileName);
 
         if (memoryCache.containsKey(tile)) {
             return memoryCache.get(tile);
         }
-
-        else if (Files.exists(Path.of(cachePath + tile.getFileName()))) {
-            try (InputStream i = TileManager.class.getResourceAsStream(cachePath + tile.getFileName())){
-                tileImage = new Image(i);
+        else if (Files.exists(filePath)){
+            try (FileInputStream i = new FileInputStream(filePath.toString())){
+                Image tileImage = new Image(i);
                 memoryCache.put(tile, tileImage);
                 return tileImage;
             }
-
-
         }
         else {
             URL u = tile.getURL(hostName);
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "JaVelo");
 
-            Files.createDirectories(Path.of(cachePath + "%d/%d".formatted(tile.zoomLevel, tile.xIndex)));
-            File file = new File(cachePath + tile.getFileName());
+            try (
+                    InputStream i = c.getInputStream();
+                    OutputStream o = new FileOutputStream(filePath.toFile())
+            )
+            {
+                Image tileImage = new Image(i);
 
-            OutputStream o = new FileOutputStream(file);
+                memoryCache.put(tile, tileImage);
 
-            try (InputStream i = c.getInputStream()) {
+                Files.createDirectories(filePath.getParent());
                 i.transferTo(o);
-                memoryCache.put(tile, new Image(i));
-                return new Image(i);
+
+                return tileImage;
             }
-
-           // try (InputStream i = new FileInputStream(file)){
-           //     map.put(tile, new Image(i));
-           //     return new Image(i);
-          //  }
-
         }
     }
+
 
     record TileId(int zoomLevel, int xIndex, int yIndex) {
          public static boolean isValid(int zoomLevel, int xIndex, int yIndex) {
@@ -77,7 +71,7 @@ public final class TileManager {
          }
 
          String getFileName(){
-             return "%d/%d/%d.png".formatted(zoomLevel, xIndex, yIndex);
+             return "%d%s%d%s%d.png".formatted(zoomLevel, File.separator, xIndex, File.separator, yIndex);
          }
 
          URL getURL(String hostName) throws MalformedURLException {
