@@ -25,8 +25,8 @@ public final class Functions {
     /**
      * Returns a function obtained by linear interpolation between samples,
      * regularly spaced and covering the range from 0 to xMax
-     * @param samples array of samples to make the function out of it
-     * @param xMax end of the range
+     * @param samples : array of samples to make the function out of it
+     * @param xMax : end of the range
      * @throws IllegalArgumentException if the size of the samples array is not
      * greater or equal to 2 or if xMax is negative
      * @return the function
@@ -37,8 +37,8 @@ public final class Functions {
     }
 
     private static final class Sampled implements DoubleUnaryOperator{
-        private float[] samples;
-        private double xMax;
+        private final float[] samples;
+        private final double xMax;
 
         public Sampled(float[] samples, double xMax){
             this.samples = samples;
@@ -53,7 +53,9 @@ public final class Functions {
             } else if (operand < 0) {
                 return samples[0];
             } else {
-                double intervalLength = xMax / (samples.length - 1); // length of an interval
+                // length of an interval
+                double intervalLength = xMax / (samples.length - 1);
+
                 //if operand is on a sample, return the corresponding sample y value
                 if (operand % intervalLength == 0){
                     return samples[(int)(operand/ intervalLength)];
@@ -65,7 +67,7 @@ public final class Functions {
                 int upper_index = (int) Math.ceil(operand_index);
 
                 return Math2.interpolate(samples[lower_index], samples[upper_index],
-                        (operand - lower_index * intervalLength)/intervalLength);
+                        (operand - lower_index * intervalLength) / intervalLength);
 
             }
 

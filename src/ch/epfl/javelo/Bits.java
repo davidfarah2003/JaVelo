@@ -15,13 +15,14 @@ public final class Bits {
 
     /**
      * Returns the value of an extracted bit string (signed)
-     * @param value initial integer value
-     * @param start start bit index (right)
-     * @param length length of the extracted bit string
+     * @param value : initial integer value
+     * @param start : start bit index (right)
+     * @param length : length of the extracted bit string
      * @return the value
      */
     public static int extractSigned(int value, int start, int length){
-        Preconditions.checkArgument(start>= 0 && start <= 31 && length <= (31-start)+1 && length > 0);
+        Preconditions.checkArgument(start >= 0 && start <= 31
+                                    && length <= (32-start) && length > 0);
 
         value =  value << 32 - (start+length);
         value = value >> 32 - length;
@@ -30,15 +31,16 @@ public final class Bits {
 
     /**
      * Returns the value of an extracted bit string (unsigned)
-     * @param value initial integer value
-     * @param start start bit index (right)
-     * @param length length of the extracted bit string
+     * @param value : initial integer value
+     * @param start : start bit index (right)
+     * @param length : length of the extracted bit string
      * @return the value
      */
     public static int extractUnsigned(int value, int start, int length){
-        Preconditions.checkArgument(start >= 0 && start <= 31 &&
-                        length <= (31-start)+1 && length < 32 && length > 0);
-        value =  value << 32-(start+length);
+        Preconditions.checkArgument(start >= 0 && start <= 31
+                    && length <= (32 - start) && length < 32 && length > 0);
+
+        value =  value << 32 - (start+length);
         value = value >>> 32 - length;
         return value;
     }

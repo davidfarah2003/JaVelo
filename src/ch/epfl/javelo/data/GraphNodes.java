@@ -5,15 +5,13 @@ import ch.epfl.javelo.Q28_4;
 import java.nio.IntBuffer;
 
 
-/**
- * GraphNodes record
- *
- * @author Wesley Nana Davies(344592)
- * @author David Farah (341017)
- */
 
 /**
- * @param buffer containing all the information about the nodes
+ * GraphNodes record
+ * @param buffer : containing all the information about the nodes
+ * (coordinates, number of edges going out, ID of a certain edge)
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (341017)
  */
 public record GraphNodes(IntBuffer buffer) {
     private static final int OFFSET_E = 0;
@@ -32,7 +30,7 @@ public record GraphNodes(IntBuffer buffer) {
 
     /**
      * Returns the east coordinate of the node
-     * @param nodeId ID of the node
+     * @param nodeId : ID of the node
      * @return the east coordinate
      */
     public double nodeE(int nodeId){
@@ -52,7 +50,7 @@ public record GraphNodes(IntBuffer buffer) {
 
     /**
      * Returns the number of edges going out from the given node
-     * @param nodeId ID of the node
+     * @param nodeId : ID of the node
      * @return the number of edges
      */
     public int outDegree(int nodeId){
@@ -62,8 +60,8 @@ public record GraphNodes(IntBuffer buffer) {
 
     /**
      * Returns the identity of the edgeIndex-th edge going out from the given node
-     * @param nodeId ID of the node
-     * @param edgeIndex index of the edge for the given node
+     * @param nodeId : ID of the node
+     * @param edgeIndex : index of the edge for the given node
      * @return the identity of the edgeIndex-th edge
      */
     public int edgeId(int nodeId, int edgeIndex){

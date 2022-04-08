@@ -30,7 +30,7 @@ public final class Graph {
 
     /**
      * Returns the JaVelo graph obtained from the files located in basePath
-     * @param basePath the path to the directory of the stored file
+     * @param basePath : the path to the directory of the stored file
      * @throws IOException in the event of an input/output error
      * @return the JaVelo graph
      */
@@ -61,7 +61,7 @@ public final class Graph {
 
     /**
      * Returns the extracted buffer from the file
-     * @param pathFile path to the binary file we want ti extract from (Path)
+     * @param pathFile : path to the binary file we want ti extract from (Path)
      * @throws IOException in the event of an input/output error
      * @return the extracted buffer
 
@@ -76,10 +76,10 @@ public final class Graph {
     /**
      * Constructor of the class which creates a graph
      * from nodes, sectors, edges,and a list of AttributeSets.
-     * @param nodes graph nodes
-     * @param sectors graph sectors
-     * @param edges graph edges
-     * @param attributeSets list of AttributeSets
+     * @param nodes : graph nodes
+     * @param sectors : graph sectors
+     * @param edges : graph edges
+     * @param attributeSets : list of AttributeSets
      */
     public Graph(GraphNodes nodes, GraphSectors sectors, GraphEdges edges, List<AttributeSet> attributeSets){
         this.nodes = nodes;
@@ -98,7 +98,7 @@ public final class Graph {
 
     /**
      * Returns the point at the given node (ID)
-     * @param nodeId ID of the node
+     * @param nodeId : ID of the node
      * @return the point (PointCh)
      */
     public PointCh nodePoint(int nodeId){
@@ -107,7 +107,7 @@ public final class Graph {
 
     /**
      * Returns the number the edges leaving the given node
-     * @param nodeId ID of the node
+     * @param nodeId : ID of the node
      * @return the number of edges
      */
     public int nodeOutDegree(int nodeId){
@@ -116,8 +116,8 @@ public final class Graph {
 
     /**
      * Returns the identity of the edgeIndex-th edge going out from the given node
-     * @param nodeId the id of the node
-     * @param edgeIndex index of the edge
+     * @param nodeId : the id of the node
+     * @param edgeIndex : index of the edge
      * @return the identity of the edgeIndex-th edge
      */
     public int nodeOutEdgeId(int nodeId, int edgeIndex){
@@ -128,8 +128,8 @@ public final class Graph {
      * Returns the identity of the node closest to the given point
      * at the given maximum searchDistance (in meters),
      * or -1 if no node matches these criteria
-     * @param point coordinate point
-     * @param searchDistance distance (radius) of the search
+     * @param point : point of interest
+     * @param searchDistance : distance (radius) of the search
      * @return the identity of the node closest to the given point
      *
      */
@@ -152,7 +152,7 @@ public final class Graph {
 
     /**
      * Returns the node ID connected to the end of the given edge
-     * @param edgeId the id of the edge
+     * @param edgeId : ID of the edge
      * @return the identity of the destination node
      */
     public int edgeTargetNodeId(int edgeId){
@@ -161,7 +161,7 @@ public final class Graph {
 
     /**
      * Returns true iff the given edge goes in the opposite direction of the OSM channel it comes from
-     * @param edgeId ID of the edge
+     * @param edgeId : ID of the edge
      * @return a boolean value
      */
     public boolean edgeIsInverted(int edgeId){
@@ -170,7 +170,7 @@ public final class Graph {
 
     /**
      * Returns the AttributeSet of OSM attributes which belong to the edge.
-     * @param edgeId the id of the edge
+     * @param edgeId : the id of the edge
      * @return the AttributeSet of OSM attributes
      */
     public AttributeSet edgeAttributes(int edgeId){
@@ -179,7 +179,7 @@ public final class Graph {
 
     /**
      * Returns the length in meters of the given edge.
-     * @param edgeId ID of the edge
+     * @param edgeId : ID of the edge
      * @return the length of the edge
      */
     public double edgeLength(int edgeId){
@@ -188,7 +188,7 @@ public final class Graph {
 
     /**
      * Returns the total elevation of the given edge.
-     * @param edgeId ID of the edge
+     * @param edgeId : ID of the edge
      * @return the total elevation gain
      */
     public double edgeElevationGain(int edgeId){
@@ -198,7 +198,7 @@ public final class Graph {
     /**
      * Returns the longitudinal profile of the given identity edge,
      * as a function, and Double.NaN if the edge has no profile
-     * @param edgeId ID of the edge
+     * @param edgeId : ID of the edge
      * @return the longitudinal profile of the given identity edge
      */
     public DoubleUnaryOperator edgeProfile(int edgeId){

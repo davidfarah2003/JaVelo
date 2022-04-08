@@ -13,7 +13,7 @@ public record AttributeSet(long bits) {
 
     /**
      * @throws IllegalArgumentException
-                if the AttributeSet is invalid (if some bits should not be equal to 1)
+                if the AttributeSet is invalid (some bits should not be equal to 1)
      */
     public AttributeSet{
         //check if any bit with index larger than the number of attributes is 1
@@ -23,8 +23,8 @@ public record AttributeSet(long bits) {
 
     /**
      * Another constructor of the class which creates an AttributeSet
-     with the collection of attributes given as parameters.
-     * @param attributes collection of attributes to be added to the attributeSet
+       with the collection of attributes given as parameters.
+     * @param attributes : collection of attributes to be added to the attributeSet
      * @return an AttributeSet
      */
     public static AttributeSet of(Attribute... attributes){
@@ -39,7 +39,7 @@ public record AttributeSet(long bits) {
 
     /**
      * Returns true if the AttributeSet contains the attribute given as a parameter.
-     * @param attribute to check in the set
+     * @param attribute : attribute of interest
      * @return a boolean value <code>true</code> if the Attribute set contains a specific attribute or
      * <code>false</code> if not
      */
@@ -50,7 +50,7 @@ public record AttributeSet(long bits) {
 
     /**
      * Returns true if the two AttributeSets intersect or false otherwise.
-     * @param that other AttributeSet to be compared with <code>this</code>
+     * @param that : another AttributeSet to be compared with <code>this</code>
      * @return <code>true</code> if the two Attribute sets have common elements and <code>false</code> otherwise
      */
     public boolean intersects(AttributeSet that){
@@ -60,7 +60,7 @@ public record AttributeSet(long bits) {
 
     /**
      * Returns a String which is a textual representation of an AttributeSet.
-     * @return a textual representation of an AttributeSet.
+     * @return a String.
      */
     @Override
     public String toString(){
@@ -74,8 +74,3 @@ public record AttributeSet(long bits) {
     }
 }
 
-// bitwise operators:
-// - & (bitwise and): Binary AND Operator copies a bit to the result if it exists in both operands.
-// - | (bitwise or): Binary OR Operator copies a bit if it exists in either operand.
-// - ^ (bitwise XOR): Binary XOR Operator copies the bit if it is set in one operand but not both.
-// - ~ (bitwise compliment): Binary Ones Complement Operator is unary and has the effect of 'flipping' bits.

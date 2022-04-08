@@ -7,7 +7,6 @@ import java.util.*;
 
 /**
  * RouteComputer
- * Class that computes the best Itinerary between 2 nodes (Route)
  *
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)
@@ -23,8 +22,8 @@ public final class RouteComputer {
 
     /**
      * Constructor of the class which creates a RouteComputer with the given graph and cost function.
-     * @param graph graph used for the route
-     * @param costFunction cost function of the route
+     * @param graph : graph used for the route
+     * @param costFunction : cost function of the route
      */
     public RouteComputer(Graph graph, CostFunction costFunction) {
         this.graph = graph;
@@ -38,9 +37,9 @@ public final class RouteComputer {
     /**
      * This method computes the shortest route between the nodes given as parameters
      *
-     * @param startNodeId ID of the initial node
-     * @param endNodeId ID of the final node
-     * @return a Route
+     * @param startNodeId : ID of the initial node
+     * @param endNodeId : ID of the final node
+     * @return a route
      */
     public Route bestRouteBetween(int startNodeId, int endNodeId) {
         Preconditions.checkArgument(startNodeId != endNodeId);
@@ -67,10 +66,9 @@ public final class RouteComputer {
 
 
     /**
-     * This method adds weighted nodes that are connected to the nodeChosen
-     * to the ToExplore list (if the distance computed is smaller than
-     * the one stored in the array).
-     * @param endNodeId id of the node at the end of the route
+     * Adds weighted nodes to the nodesToExplore list which are connected to the nodeChosen
+     *  (if the distance computed is smaller than the one stored in the array).
+     * @param endNodeId : ID of the node at the end of the route
      */
     private void addNodesToExplore(int endNodeId){
         int currentEdgeId;
@@ -122,9 +120,9 @@ public final class RouteComputer {
 
     /**
      * Returns the list of edges which compose the path/itinerary.
-     * @param startNodeId id of the node at the start of the route
-     * @param endNodeId id of the node at the end of the route
-     * @return a List
+     * @param startNodeId : ID of the node at the start of the route
+     * @param endNodeId : ID of the node at the end of the route
+     * @return a list
      */
     private List<Edge> reconstructRoute(int startNodeId, int endNodeId){
         LinkedList<Edge> edges = new LinkedList<>();

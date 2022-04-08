@@ -19,7 +19,7 @@ public final class MultiRoute implements Route {
 
 
     /** Constructor of the class which builds a MultiRoute consisting of the given segments,
-     * @param segments list of segments forming the MultiRoute
+     * @param segments : list of segments forming the MultiRoute
      * @throws IllegalArgumentException if the list of segments is empty
      */
     public MultiRoute(List<Route> segments){
@@ -45,9 +45,8 @@ public final class MultiRoute implements Route {
     /**
      * Returns the index of the segment of the MultiRoute at the given position
      * (considering SingleRoute segments)
-     * @param position
-            position from the start of the itinerary (in meters)
-     * @return the index of the segment at the given position of the route (the route)
+     * @param position : position from the start of the itinerary (in meters)
+     * @return the index of the segment
      */
     @Override
     public int indexOfSegmentAt(double position) {
@@ -69,10 +68,10 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * Returns the index of the segment of the MultiRoute at the given position
-     * @param position
-                 position from the start of the itinerary (in meters)
-     * @return the global index of the segment at the given position of the route (first layer)
+     * Returns the global index of the segment of the MultiRoute
+     * at the given position (first layer)
+     * @param position : position from the start of the itinerary (in meters)
+     * @return the global index at the given position
      */
     private int globalIndexOfSegmentAt(double position) {
         if(position == routeLength) return segments.size()-1;
@@ -90,7 +89,7 @@ public final class MultiRoute implements Route {
 
 
     /**
-     * Returns the length  of the MultiRoute
+     * Returns the length of the MultiRoute
      * @return the length of the route (meters)
      */
     @Override
@@ -101,7 +100,7 @@ public final class MultiRoute implements Route {
 
     /**
      * Returns all the edges that constitute the MultiRoute
-     * @return a list containing all the edges of the route
+     * @return a list containing all the edges
      */
     @Override
     public List<Edge> edges() {

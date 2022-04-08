@@ -16,8 +16,8 @@ public final class Ch1903 {
 
     /**
      * Returns the east coordinate of a point in the Swiss Coordinate system
-     * @param lon longitude to convert (RAD)
-     * @param lat latitude to convert (RAD)
+     * @param lon : longitude to convert (RAD)
+     * @param lat : latitude to convert (RAD)
      * @return the east coordinate
      */
     public static double e(double lon, double lat) {
@@ -38,9 +38,9 @@ public final class Ch1903 {
     }
 
     /**
-     * Returns the north coordinate of a point in the Swiss coordinate system
-     * @param lon longitude to convert (RAD)
-     * @param lat latitude to convert (RAD)
+     * Returns the north coordinate of a point in the Swiss Coordinate system
+     * @param lon : longitude to convert (RAD)
+     * @param lat : latitude to convert (RAD)
      * @return the north coordinate
      */
     public static double n(double lon, double lat) {
@@ -62,8 +62,8 @@ public final class Ch1903 {
 
     /**
      * Returns the longitude in radians of a given point (PointCh)
-     * @param e east coordinates
-     * @param n north coordinates
+     * @param e : east coordinate
+     * @param n : north coordinate
      * @return the longitude
      */
     public static double lon(double e, double n){
@@ -81,8 +81,8 @@ public final class Ch1903 {
 
     /**
      * Returns the latitude in radians of a given point (PointCh)
-     * @param e east coordinates
-     * @param n north coordinates
+     * @param e : east coordinate
+     * @param n : north coordinate
      * @return the latitude
      */
     public static double lat(double e, double n){

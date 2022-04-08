@@ -53,7 +53,7 @@ public final class Math2 {
     }
 
     /**
-     * @param min :lower bound
+     * @param min : lower bound
      * @param v   : value of interest
      * @param max : upper bound
      * @return the value of v restricted to the interval [min, max]

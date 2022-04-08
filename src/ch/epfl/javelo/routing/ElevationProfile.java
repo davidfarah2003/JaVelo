@@ -20,9 +20,10 @@ public final class ElevationProfile {
 
 
     /**
-     * Constructor of the class
-     * @param length length of the edge
-     * @param elevationSamples y coordinates of the samples
+     * Constructor of the class which builds the elevation profile of an edge
+     * using its length and an array of the elevations
+     * @param length : length of the edge
+     * @param elevationSamples : elevations of all the samples
      * @throws IllegalArgumentException if the length <= 0 or elevationSamples < 2
      */
     public ElevationProfile(double length, float[] elevationSamples) {
@@ -64,7 +65,7 @@ public final class ElevationProfile {
 
     /**
      * returns the minimum value among the altitudes
-     * @return min value
+     * @return the min value
      */
     public double minElevation(){
        return statistics.getMin();
@@ -72,7 +73,7 @@ public final class ElevationProfile {
 
     /**
      * returns the maximum value among the altitudes
-     * @return max value
+     * @return the max value
      */
     public double maxElevation(){
         return statistics.getMax();
@@ -80,7 +81,7 @@ public final class ElevationProfile {
 
     /**
      * Returns the sum of all positive differences between a sample and its predecessor.
-     * @return totalAscent
+     * @return the totalAscent
      */
     public double totalAscent(){
         return ascent;
@@ -88,7 +89,7 @@ public final class ElevationProfile {
 
     /**
      * Returns the positive value of the sum of all negative differences between a sample and its predecessor.
-     * @return totalDescent (positive)
+     * @return the totalDescent (positive)
      */
     public double totalDescent(){
         return Math.abs(descent);
@@ -96,8 +97,8 @@ public final class ElevationProfile {
 
     /**
      * Returns the value of the function sampled (class Function) applied for the x-input position.
-     * @param position (in meters)
-     * @return elevation at <code>position</code>
+     * @param position : position of interest (in meters)
+     * @return the elevation at <code>position</code>
      */
     public double elevationAt(double position){
         return profile.applyAsDouble(position);

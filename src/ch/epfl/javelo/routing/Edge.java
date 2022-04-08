@@ -5,26 +5,19 @@ import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import java.util.function.DoubleUnaryOperator;
 
+
 /**
- * Edge
- * The purpose of this record is to represent
- * an edge that belongs to an itinerary
+ * EdgeRecord
  *
- * @author David Farah (341017)
- * @author Wesley Nana Davies(344592)
-
- */
-
-
-/**
- * Constructor for Edge
  * @param fromNodeId : ID of the starting node
  * @param toNodeId : ID of the ending node
  * @param fromPoint :  point (PointCh) form which the edge starts
  * @param toPoint:  point (PointCh) to which the edge goes
  * @param length : length of an edge
  * @param profile : elevation profile of the edge
- * @return an edge Edge
+ *
+ * @author David Farah (341017)
+ * @author Wesley Nana Davies(344592)
  */
 public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPoint,
                    double length, DoubleUnaryOperator profile){
@@ -43,10 +36,9 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
     }
 
     /**
-     * Returns the position along the edge, in meters, that is closest to the given point (projection)
-     * (could be outside the edge)
-     *
-     * @param point (PointCh)
+     * Returns the position along the edge, in meters,
+     * that is closest to the given point (could be outside the edge)
+     * @param point : point of interest (PointCh)
      * @return the position
      */
     public double positionClosestTo(PointCh point){
@@ -55,7 +47,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
 
     /**
      * Returns the point at the given position on the edge, expressed in meters.
-     * @param position on the edge
+     * @param position : position along the edge
      * @return the position
      */
     public PointCh pointAt(double position){
@@ -67,7 +59,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
 
     /**
      * Returns the altitude, in meters, at the given position on the edge.
-     * @param position on the edge
+     * @param position : position along the edge
      * @return elevation at <code>position</code>
      */
     public double elevationAt(double position){

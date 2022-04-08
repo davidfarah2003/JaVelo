@@ -23,7 +23,7 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @param edges given edges that form the route
+     * @param edges :  given edges that form the route
      * constructs the simple route composed of the given edges,
      * @throws IllegalArgumentException if the list of edges is empty
      */
@@ -49,8 +49,8 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @return double array containing the position of the end nodes of each edge used to determine the index
-     * of an edge by dichotomous search
+     * @return the double array containing the position of the end nodes from the start of the route
+     * used to determine the index of an edge by dichotomous search
      */
     private double[] buildEdgesSearch() {
         double[] edgesSearch = new double[edges.size() + 1];
@@ -80,7 +80,7 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @param position given position (in meters)
+     * @param position :  position of interest
      * @return the index of the segment at the given position of the route (in meters), which is always 0 in
      * the case of a simple route
      */
@@ -100,7 +100,7 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @return List containing all the edges of the route
+     * @return a list containing all the edges of the route
      */
     @Override
     public List<Edge> edges() {
@@ -109,7 +109,7 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @return List containing all the points located at the extremities of the edges of the route
+     * @return a list containing all the points located at the extremities of the edges of the route
      */
     @Override
     public List<PointCh> points() {
@@ -118,7 +118,7 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @param position (Double)
+     * @param position : position of interest
      * @return the point at the given position along the route
      */
     @Override
@@ -137,7 +137,7 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @param position (Double)
+     * @param position: position of interest
      * @return the elevation at a given point along the itinerary,
      * NaN if the edge has no profile
      */
@@ -160,7 +160,7 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @param position (Double)
+     * @param position : position of interest
      * @return the identity of the node belonging to the route and located closest to the given position
      */
     @Override
@@ -184,7 +184,7 @@ public final class SingleRoute implements Route {
 
 
     /**
-     * @param point (PointCh)
+     * @param point : point of interest (PointCh)
      * @return the point on the route that is closest to the given reference point
      */
     @Override

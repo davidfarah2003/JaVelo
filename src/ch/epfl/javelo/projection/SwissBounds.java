@@ -19,8 +19,8 @@ public final class SwissBounds {
 
     /**
      * Returns a boolean value: true if the point is within the limits or false otherwise.
-     * @param e east coordinate
-     * @param n north coordinate
+     * @param e : east coordinate
+     * @param n : north coordinate
      * @return true if it is within, false otherwise
      */
     public static boolean containsEN(double e, double n){

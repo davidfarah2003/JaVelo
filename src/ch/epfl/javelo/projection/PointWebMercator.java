@@ -4,8 +4,8 @@ import ch.epfl.javelo.Preconditions;
 
 /**
  * PointWebMercator record
- * @param x (Web Mercator system) x-coordinate (between 0 and 1)
- * @param y (Web Mercator system) y-coordinate (between 0 and 1)
+ * @param x :(Web Mercator system) x-coordinate (between 0 and 1)
+ * @param y :(Web Mercator system) y-coordinate (between 0 and 1)
  *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
@@ -23,12 +23,9 @@ public record PointWebMercator(double x, double y) {
 
     /**
      * Returns a PointWebMercator with corresponding coordinates at zoom level = 0
-     * @param zoomLevel
-                current zoom level
-     * @param x
-            x-coordinate with applied zoom (Web Mercator)
-     * @param y
-            y-coordinate with applied zoom (Web Mercator)
+     * @param zoomLevel : current zoom level
+     * @param x : x-coordinate with applied zoom (Web Mercator)
+     * @param y : y-coordinate with applied zoom (Web Mercator)
      * @return new PointWebMercator with corresponding coordinates at zoom 0
      */
     public static PointWebMercator of(int zoomLevel, double x, double y) {
@@ -37,8 +34,7 @@ public record PointWebMercator(double x, double y) {
 
     /**
      * Returns a PointWebMercator with coordinates converted
-     * @param pointCh
-                point of interest (PointCh)
+     * @param pointCh : point of interest (PointCh)
      * @return the point of interest as a PointCh
      */
     public static PointWebMercator ofPointCh(PointCh pointCh) {

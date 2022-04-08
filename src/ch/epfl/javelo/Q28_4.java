@@ -13,8 +13,8 @@ public final class Q28_4 {
     /**
      * Returns the Q28.4 representation of the given input
      * (shifted by 4 decimal places left)
-     * @param i input integer
-     * @return i (int)
+     * @param i : input integer
+     * @return an integer
      */
     public static int ofInt(int i){
         i = i << 4;
@@ -22,18 +22,18 @@ public final class Q28_4 {
     }
 
     /**
-     * Converts the integer to Q28.4 representation as double
-     * @param q28_4 integer input
-     * @return (double) Q28.4 representation
+     * Converts the Q28_4 representation of a number to a double
+     * @param q28_4 : integer
+     * @return the double value
      */
     public static double asDouble(int q28_4){
         return Math.scalb((double)q28_4, -4);
     }
 
     /**
-     * Converts the integer to Q28.4 representation as float
-     * @param q28_4 integer input
-     * @return (float) Q28.4 representation
+     * Converts the Q28_4 representation of a number to a float
+     * @param q28_4 :  integer
+     * @return the float value
      */
     public static float asFloat(int q28_4){
         return Math.scalb((float)q28_4, -4);

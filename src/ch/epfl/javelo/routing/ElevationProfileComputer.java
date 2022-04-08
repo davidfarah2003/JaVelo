@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 
 /**
- * Class that is used to compute an ElevationProfile of a Route
+ * ElevationProfileComputer
  *
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)
@@ -20,8 +20,8 @@ public final class ElevationProfileComputer {
 
     /**
      * Computes an elevationProfile for a route with maxStepLength
-     * @param route a route (implementing the interface) representing the itinerary
-     * @param maxStepLength maximal distance between two samples from the profile
+     * @param route : a route (implementing the interface) representing the itinerary
+     * @param maxStepLength : maximal distance between two samples from the profile
      * @throws IllegalArgumentException if maxStepLength <= 0
      * @return a new Elevation Profile
      */
@@ -48,7 +48,7 @@ public final class ElevationProfileComputer {
 
     /**
      * Fill the array with the initial values from the route
-     * @param route in question
+     * @param route : route of interest
      */
     private static void fillInitialArray(Route route) {
         for (int sample = 0; sample < profile.length; sample++) {
@@ -59,7 +59,7 @@ public final class ElevationProfileComputer {
 
     /**
      * returns the index of the first real number
-     * @return index
+     * @return the index
      */
     private static int firstNumberIndex(){
         int indexFirstNumber = 0;
@@ -86,8 +86,8 @@ public final class ElevationProfileComputer {
 
     /**
      * Fill the remaining NaN values in the array
-     * @param indexFirstNumber index where we start on the array
-     * @param indexFirstNumberEnd index where we stop on the array
+     * @param indexFirstNumber : index where we start on the array
+     * @param indexFirstNumberEnd : index where we stop on the array
      */
     private static void fillIntermediateNanValues(int indexFirstNumber, int indexFirstNumberEnd){
         int firstNanIndex = indexFirstNumber;
@@ -115,7 +115,8 @@ public final class ElevationProfileComputer {
                 profile[NanIndex] = (float) Math2.interpolate(
                         profile[realNumberBeforeIndex],
                         profile[realNumberAfterIndex],
-                        (double)(NanIndex - realNumberBeforeIndex) / (realNumberAfterIndex - realNumberBeforeIndex)
+                        (double)(NanIndex - realNumberBeforeIndex) /
+                                (realNumberAfterIndex - realNumberBeforeIndex)
                 );
             }
 
