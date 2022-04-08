@@ -1,6 +1,6 @@
 package ch.epfl.javelo.gui;
 
-import ch.epfl.javelo.CacheLinkedHashMap;
+import ch.epfl.javelo.LRUCache;
 import ch.epfl.javelo.Preconditions;
 
 import java.io.*;
@@ -15,30 +15,34 @@ import javafx.scene.image.Image;
 
 public final class TileManager {
 
-    private final Path access;
+    private final Path cachePath;
     private final String hostName;
-    private final LinkedHashMap<TileId, Image> map;
+    private final LinkedHashMap<TileId, Image> memoryCache;
 
-    public TileManager(Path access, String hostName){
-        this.access = access;
+    public TileManager(Path cachePath, String hostName){
+        this.cachePath = cachePath;
         this.hostName = hostName;
-        map = new CacheLinkedHashMap<>(16, .75f, true);
+        memoryCache = new LRUCache<>(16, .75f);
     }
 
-    public Image imageForTileAt(TileId tile) throws IOException {
+    public Image getTileImage(TileId tile) throws IOException {
         // avec true apres chaque get,
         // la paire key-value se place a la fin
         // least-recently acessed -> most recentely acessed
-        if (map.containsKey(tile)) {
-            return map.get(tile);
+
+        Image tileImage;
+
+        if (memoryCache.containsKey(tile)) {
+            return memoryCache.get(tile);
         }
 
-        else if (Files.exists(Path.of(access + tile.getFileName()))) {
-            TileManager.class.getResourceAsStream(access + tile.getFileName());
-            try (InputStream i = TileManager.class.getResourceAsStream(access + tile.getFileName())){
-                map.put(tile, new Image(i));
-                return new Image(i);
+        else if (Files.exists(Path.of(cachePath + tile.getFileName()))) {
+            try (InputStream i = TileManager.class.getResourceAsStream(cachePath + tile.getFileName())){
+                tileImage = new Image(i);
+                memoryCache.put(tile, tileImage);
+                return tileImage;
             }
+
 
         }
         else {
@@ -46,14 +50,14 @@ public final class TileManager {
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "JaVelo");
 
-            Files.createDirectories(Path.of(access + "%d/%d".formatted(tile.zoomLevel, tile.xIndex)));
-            File file = new File(access + tile.getFileName());
+            Files.createDirectories(Path.of(cachePath + "%d/%d".formatted(tile.zoomLevel, tile.xIndex)));
+            File file = new File(cachePath + tile.getFileName());
 
             OutputStream o = new FileOutputStream(file);
 
             try (InputStream i = c.getInputStream()) {
                 i.transferTo(o);
-                map.put(tile, new Image(i));
+                memoryCache.put(tile, new Image(i));
                 return new Image(i);
             }
 
@@ -65,9 +69,9 @@ public final class TileManager {
         }
     }
 
-     record TileId(int zoomLevel, int xIndex, int yIndex) {
+    record TileId(int zoomLevel, int xIndex, int yIndex) {
          public static boolean isValid(int zoomLevel, int xIndex, int yIndex) {
-             Preconditions.checkArgument(zoomLevel >= 0);
+             Preconditions.checkArgument(zoomLevel >= 0 && zoomLevel <= 20);
              int maxIndex = (int) Math.pow(2, zoomLevel) - 1;
              return (xIndex >= 0 && xIndex <= maxIndex && yIndex >= 0 && yIndex <= maxIndex);
          }
@@ -79,8 +83,6 @@ public final class TileManager {
          URL getURL(String hostName) throws MalformedURLException {
              return new URL("https", hostName, getFileName());
          }
-
-     }
-
+    }
 
 }
