@@ -27,8 +27,8 @@ public final class TileManager {
     }
 
     public Image getTileImage(TileId tile) throws IOException {
-        String fileName = tile.getFileName();
-        Path filePath = Path.of(cachePath + fileName);
+        String fileName = tile.getFileNameLocal();
+        Path filePath = combineTwoPaths(cachePath.toString(), fileName).normalize();
 
         if (memoryCache.containsKey(tile)) {
             return memoryCache.get(tile);
@@ -45,21 +45,26 @@ public final class TileManager {
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "JaVelo");
 
+            Files.createDirectories(filePath.getParent());
             try (
                     InputStream i = c.getInputStream();
                     OutputStream o = new FileOutputStream(filePath.toFile())
             )
             {
                 Image tileImage = new Image(i);
-
                 memoryCache.put(tile, tileImage);
-
-                Files.createDirectories(filePath.getParent());
                 i.transferTo(o);
 
                 return tileImage;
             }
         }
+    }
+
+    private Path combineTwoPaths(String path1, String path2)
+    {
+        File file1 = new File(path1);
+        File file2 = new File(file1, path2);
+        return file2.toPath();
     }
 
 
@@ -70,12 +75,16 @@ public final class TileManager {
              return (xIndex >= 0 && xIndex <= maxIndex && yIndex >= 0 && yIndex <= maxIndex);
          }
 
-         String getFileName(){
-             return "%d%s%d%s%d.png".formatted(zoomLevel, File.separator, xIndex, File.separator, yIndex);
-         }
+        String getFileNameURL(){
+            return "%d/%d/%d.png".formatted(zoomLevel, xIndex, yIndex);
+        }
+
+        String getFileNameLocal(){
+            return "%d%s%d%s%d.png".formatted(zoomLevel, File.separator, xIndex, File.separator, yIndex);
+        }
 
          URL getURL(String hostName) throws MalformedURLException {
-             return new URL("https", hostName, getFileName());
+             return new URL("https", hostName, getFileNameURL());
          }
     }
 
