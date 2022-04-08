@@ -15,8 +15,7 @@ public final class WebMercator {
 
     /**
      * Returns the x-coordinate (WebMercator system) of the point
-     * @param lon
-                longitude (in radians)
+     * @param lon longitude (in radians)
      * @return the x-coordinate
      */
     public static double x(double lon){
@@ -25,8 +24,7 @@ public final class WebMercator {
 
     /**
      *  Returns the y-coordinate (WebMercator system) of the point
-     * @param lat
-                latitude (in radians)
+     * @param lat latitude (in radians)
      * @return the y-coordinate
      */
     public static double y(double lat){//?
@@ -35,8 +33,7 @@ public final class WebMercator {
 
     /**
      * Returns the longitude in radians of the point of interest
-     * @param x
-            x-coordinate in the Web Mercator system
+     * @param x x-coordinate in the Web Mercator system
      * @return the longitude
      */
     public static double lon(double x){
@@ -45,8 +42,7 @@ public final class WebMercator {
 
     /**
      * Returns the latitude of the point of interest
-     * @param y
-            y-coordinate in the Web Mercator system
+     * @param y y-coordinate in the Web Mercator system
      * @return the latitude
      */
     public static double lat(double y){

@@ -6,16 +6,12 @@ import java.util.Objects;
 import static java.lang.Math.*;
 
 /**
- * PointCh
- *
- * @author Wesley Nana Davies(344592)
- * @author David Farah (341017)
- */
-
-/**
  * PointCh record
  * @param e east coordinate (meters)
  * @param n north coordinate (meters)
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (341017)
  */
 public record PointCh(double e, double n) {
 

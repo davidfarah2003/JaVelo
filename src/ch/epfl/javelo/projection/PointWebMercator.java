@@ -1,21 +1,14 @@
 package ch.epfl.javelo.projection;
-
 import ch.epfl.javelo.Preconditions;
 
-/**
- * PointWebMercator
- *
- * @author Wesley Nana Davies(344592)
- * @author David Farah (341017)
- */
 
 /**
  * PointWebMercator record
- * @param x (Web Mercator system)
-            x-coordinate (between 0 and 1)
- * @param y (Web Mercator system)
-           y-coordinate (between 0 and 1)
-
+ * @param x (Web Mercator system) x-coordinate (between 0 and 1)
+ * @param y (Web Mercator system) y-coordinate (between 0 and 1)
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (341017)
  */
 public record PointWebMercator(double x, double y) {
 

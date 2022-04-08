@@ -10,14 +10,9 @@ import java.util.List;
 
 
 /**
- * GraphSectors record
- *
+ * @param buffer containing information about all sectors (number of nodes, start node ID)
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
- */
-
-/**
- * @param buffer containing information about all sectors (number of nodes, start node ID)
  */
 public record GraphSectors (ByteBuffer buffer){
     private static final int OFFSET_NODE_ID = 0;
