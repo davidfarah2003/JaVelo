@@ -31,32 +31,40 @@ public final class TileManager {
 
         if (memoryCache.containsKey(tile)) {
             return memoryCache.get(tile);
+
         }
-        else if (Files.exists(filePath)){
-            try (FileInputStream i = new FileInputStream(filePath.toFile())){
-                Image tileImage = new Image(i);
-                memoryCache.put(tile, tileImage);
-                return tileImage;
-            }
-        }
-        else {
+        else if (Files.exists(filePath)) {
+            return getImageFromFile(filePath, tile);
+          //  try (InputStream i = new FileInputStream(filePath.toFile())) {
+         //       Image tileImage = new Image(i);
+         ////       memoryCache.put(tile, tileImage);
+         //       return tileImage;
+          //  }
+        } else {
             URL u = tile.getURL(hostName);
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "JaVelo");
             Files.createDirectories(filePath.getParent());
-            try (
-                    InputStream i = c.getInputStream();
-                    FileOutputStream o = new FileOutputStream(filePath.toFile())
-            )
+            try (InputStream i = c.getInputStream();
+                 FileOutputStream o = new FileOutputStream(filePath.toFile()))
             {
                 i.transferTo(o);
             }
 
-            try(InputStream inStream = new FileInputStream(filePath.toFile())) {
-                Image tileImage = new Image(inStream);
-                memoryCache.put(tile, tileImage);
-                return tileImage;
-            }
+            return getImageFromFile(filePath, tile);
+            // try(InputStream inStream = new FileInputStream(filePath.toFile())) {
+            //    Image tileImage = new Image(inStream);
+            //    memoryCache.put(tile, tileImage);
+            //     return tileImage;
+            // }
+        }
+    }
+
+    private Image getImageFromFile(Path filePath, TileId tile) throws IOException {
+        try (InputStream i = new FileInputStream(filePath.toFile())) {
+            Image tileImage = new Image(i);
+            memoryCache.put(tile, tileImage);
+            return tileImage;
         }
     }
 
