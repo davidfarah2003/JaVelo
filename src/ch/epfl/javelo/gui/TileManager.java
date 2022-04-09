@@ -59,7 +59,6 @@ public final class TileManager {
             }
         }
     }
-
     private Path combineTwoPaths(String path1, String path2)
     {
 
