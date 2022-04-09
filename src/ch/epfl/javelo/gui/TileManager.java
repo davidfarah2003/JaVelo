@@ -39,7 +39,6 @@ public final class TileManager {
                 return tileImage;
             }
         }
-
         else {
             URL u = tile.getURL(hostName);
             URLConnection c = u.openConnection();
