@@ -35,11 +35,7 @@ public final class TileManager {
         }
         else if (Files.exists(filePath)) {
             return getImageFromFile(filePath, tile);
-          //  try (InputStream i = new FileInputStream(filePath.toFile())) {
-         //       Image tileImage = new Image(i);
-         ////       memoryCache.put(tile, tileImage);
-         //       return tileImage;
-          //  }
+
         } else {
             URL u = tile.getURL(hostName);
             URLConnection c = u.openConnection();
@@ -52,11 +48,6 @@ public final class TileManager {
             }
 
             return getImageFromFile(filePath, tile);
-            // try(InputStream inStream = new FileInputStream(filePath.toFile())) {
-            //    Image tileImage = new Image(inStream);
-            //    memoryCache.put(tile, tileImage);
-            //     return tileImage;
-            // }
         }
     }
 
@@ -71,21 +62,26 @@ public final class TileManager {
 
     record TileId(int zoomLevel, int xIndex, int yIndex) {
 
+        TileId{
+            Preconditions.checkArgument(isValid(zoomLevel, xIndex, yIndex));
+        }
+
          public static boolean isValid(int zoomLevel, int xIndex, int yIndex) {
-             Preconditions.checkArgument(zoomLevel >= 0 && zoomLevel <= 20);
              int maxIndex = (int) Math.pow(2, zoomLevel) - 1;
-             return (xIndex >= 0 && xIndex <= maxIndex && yIndex >= 0 && yIndex <= maxIndex);
+             return (zoomLevel >= 0 && zoomLevel <= 20 &&
+                     xIndex >= 0 && xIndex <= maxIndex &&
+                     yIndex >= 0 && yIndex <= maxIndex);
          }
 
-        String getFileNameURL(){
+        private String getFileNameURL(){
             return "/%d/%d/%d.png".formatted(zoomLevel, xIndex, yIndex);
         }
 
-        String getFileNameLocal(){
+        private String getFileNameLocal(){
             return "%d%s%d%s%d.png".formatted(zoomLevel, File.separator, xIndex, File.separator, yIndex);
         }
 
-         URL getURL(String hostName) throws MalformedURLException {
+         private URL getURL(String hostName) throws MalformedURLException {
              return new URL("https", hostName, getFileNameURL());
          }
     }
