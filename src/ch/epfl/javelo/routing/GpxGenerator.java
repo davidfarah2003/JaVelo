@@ -38,19 +38,11 @@ public class GpxGenerator {
         metadata.appendChild(name);
 
 
-        int i = 0;
-        double interval = route.length() / (route.points().size() - 1);
-
         for (PointCh point : route.points()){
             double longitude = point.lon();
             double latitude = point.lat();
-            double elevation = route.elevationAt(i * interval);
-
-
-
 
             i++;
-
         }
 
         return null;
