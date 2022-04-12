@@ -41,8 +41,14 @@ public class GpxGenerator {
         for (PointCh point : route.points()){
             double longitude = point.lon();
             double latitude = point.lat();
-
-            i++;
+            double elevation = route.elevationAt(i * interval);
+            Element rtept = doc.createElement("rtept");
+            rtept.setAttribute("lat", Double.toString(latitude));
+            rtept.setAttribute("lon", Double.toString(longitude));
+            rte.appendChild(rtept);
+            Element ele = doc.createElement("ele");
+            ele.setTextContent(Double.toString(elevation));
+            rte.appendChild(ele);
         }
 
         return null;
