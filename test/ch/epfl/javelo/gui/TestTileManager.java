@@ -14,6 +14,7 @@ public final class TestTileManager extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        System.out.printf("%04d-%02d-%02d", 2019, 4, 3);
         TileManager tm = new TileManager(Path.of("./cache"), "tile.openstreetmap.org");
 
         Image tileImage = tm.getTileImage(new TileManager.TileId(19, 271725, 185422));

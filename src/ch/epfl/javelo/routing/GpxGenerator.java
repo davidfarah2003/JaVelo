@@ -13,28 +13,29 @@ public class GpxGenerator {
     public static Document createGPX(ElevationProfile profile, Route route) {
         Document doc = newDocument(); // voir plus bas
 
-        Element root = doc
-                .createElementNS("http://www.topografix.com/GPX/1/1",
-                        "gpx");
-        doc.appendChild(root);
-
+        Element root = doc.createElementNS(
+                "http://www.topografix.com/GPX/1/1",
+                "gpx"
+        );
         root.setAttributeNS(
                 "http://www.w3.org/2001/XMLSchema-instance",
                 "xsi:schemaLocation",
-                "http://www.topografix.com/GPX/1/1 "
-                        + "http://www.topografix.com/GPX/1/1/gpx.xsd");
+                "http://www.topografix.com/GPX/1/1 " + "http://www.topografix.com/GPX/1/1/gpx.xsd"
+        );
         root.setAttribute("version", "1.1");
         root.setAttribute("creator", "JaVelo");
 
         Element metadata = doc.createElement("metadata");
-        root.appendChild(metadata);
-
         Element name = doc.createElement("name");
-        metadata.appendChild(name);
-        name.setTextContent("Route JaVelo");
-
         Element rte = doc.createElement("rte");
         root.appendChild(rte);
+
+
+
+        doc.appendChild(root);
+        root.appendChild(metadata);
+        name.setTextContent("Route JaVelo");
+        metadata.appendChild(name);
 
 
         int i = 0;
@@ -48,14 +49,11 @@ public class GpxGenerator {
 
 
 
-
-
-
             i++;
 
         }
 
-
+        return null;
     }
 
     private static Document newDocument() {
@@ -68,4 +66,6 @@ public class GpxGenerator {
             throw new Error(e); // Should never happen
         }
     }
+
+
 }
