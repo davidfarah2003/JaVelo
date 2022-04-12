@@ -34,10 +34,24 @@ public class GpxGenerator {
         name.setTextContent("Route JaVelo");
 
         Element rte = doc.createElement("rte");
+        root.appendChild(rte);
 
-        for (PointCh points : route.points()){
+
+        int i = 0;
+        double interval = route.length() / (route.points().size() - 1);
+
+        for (PointCh point : route.points()){
+            double longitude = point.lon();
+            double latitude = point.lat();
+            double elevation = route.elevationAt(i * interval);
 
 
+
+
+
+
+
+            i++;
 
         }
 
