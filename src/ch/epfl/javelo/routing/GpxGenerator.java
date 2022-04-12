@@ -3,8 +3,11 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.projection.PointCh;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.util.ListIterator;
 
 public class GpxGenerator {
     private GpxGenerator() {
@@ -38,20 +41,29 @@ public class GpxGenerator {
         metadata.appendChild(name);
 
 
-        for (PointCh point : route.points()){
-            double longitude = point.lon();
-            double latitude = point.lat();
-            double elevation = route.elevationAt(i * interval);
+        ListIterator<PointCh> pointIterator = route.points().listIterator();
+        PointCh previousPoint  = pointIterator.next();
+        PointCh point;
+        int distance = 0;
+
+        while (pointIterator.hasNext()){
             Element rtept = doc.createElement("rtept");
-            rtept.setAttribute("lat", Double.toString(latitude));
-            rtept.setAttribute("lon", Double.toString(longitude));
-            rte.appendChild(rtept);
             Element ele = doc.createElement("ele");
-            ele.setTextContent(Double.toString(elevation));
-            rte.appendChild(ele);
+
+            rtept.setAttribute("lat", Double.toString(previousPoint.lat()));
+            rtept.setAttribute("lon", Double.toString(previousPoint.lon()));
+            ele.setTextContent(Double.toString(profile.elevationAt(distance)));
+
+            point  = pointIterator.next();
+            distance += point.distanceTo(previousPoint);
+
+            previousPoint = point;
+
+            rte.appendChild(rtept);
+            rtept.appendChild(ele);
         }
 
-        return null;
+        return doc;
     }
 
     private static Document newDocument() {

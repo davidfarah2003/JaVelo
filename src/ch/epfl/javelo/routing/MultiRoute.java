@@ -171,8 +171,7 @@ public final class MultiRoute implements Route {
 
     /**
      * Returns the elevation at the given position along the route
-     * @param position
-                    position from the start of the itinerary (in meters)
+     * @param position position from the start of the itinerary (in meters)
      * @return the elevation at a given point along the itinerary, NaN if the edge has no profile
      */
     @Override
