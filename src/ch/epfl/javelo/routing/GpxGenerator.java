@@ -7,6 +7,13 @@ import org.w3c.dom.Element;
 import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.ListIterator;
 
 public class GpxGenerator {
@@ -33,12 +40,10 @@ public class GpxGenerator {
         Element rte = doc.createElement("rte");
         root.appendChild(rte);
 
-
-
         doc.appendChild(root);
-        root.appendChild(metadata);
         name.setTextContent("Route JaVelo");
         metadata.appendChild(name);
+        root.appendChild(metadata);
 
 
         ListIterator<PointCh> pointIterator = route.points().listIterator();
@@ -50,8 +55,8 @@ public class GpxGenerator {
             Element rtept = doc.createElement("rtept");
             Element ele = doc.createElement("ele");
 
-            rtept.setAttribute("lat", Double.toString(previousPoint.lat()));
-            rtept.setAttribute("lon", Double.toString(previousPoint.lon()));
+            rtept.setAttribute("lat", Double.toString(Math.toDegrees(previousPoint.lat())));
+            rtept.setAttribute("lon", Double.toString(Math.toDegrees(previousPoint.lon())));
             ele.setTextContent(Double.toString(profile.elevationAt(distance)));
 
             point  = pointIterator.next();
@@ -77,5 +82,21 @@ public class GpxGenerator {
         }
     }
 
+    public static void writeGPX(Document doc){
+        try {
+            Writer w = new FileWriter("rendu.gpx");
+
+            Transformer transformer = TransformerFactory
+                    .newDefaultInstance()
+                    .newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(new DOMSource(doc),
+                    new StreamResult(w));
+        }
+        catch{
+
+        }
+
+    }
 
 }
