@@ -7,12 +7,11 @@ import org.w3c.dom.Element;
 import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.ListIterator;
 
@@ -44,6 +43,8 @@ public class GpxGenerator {
         name.setTextContent("Route JaVelo");
         metadata.appendChild(name);
         root.appendChild(metadata);
+
+
 
 
         ListIterator<PointCh> pointIterator = route.points().listIterator();
@@ -82,21 +83,24 @@ public class GpxGenerator {
         }
     }
 
-    public static void writeGPX(Document doc){
-        try {
-            Writer w = new FileWriter("rendu.gpx");
-
-            Transformer transformer = TransformerFactory
-                    .newDefaultInstance()
-                    .newTransformer();
+    public static void writeGPX(Document doc) throws IOException, TransformerException {
+      try (Writer w = new FileWriter("rendu.gpx")){
+            Transformer transformer = newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(new DOMSource(doc),
                     new StreamResult(w));
         }
-        catch{
+    }
 
+    private static Transformer newTransformer(){
+        try{
+            return  TransformerFactory
+                    .newDefaultInstance()
+                    .newTransformer();
+
+        } catch (TransformerConfigurationException e) {
+            throw new Error(e);
         }
-
     }
 
 }
