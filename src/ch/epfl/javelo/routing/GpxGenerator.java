@@ -26,6 +26,8 @@ public class GpxGenerator {
                 "http://www.topografix.com/GPX/1/1",
                 "gpx"
         );
+        doc.appendChild(root);
+
         root.setAttributeNS(
                 "http://www.w3.org/2001/XMLSchema-instance",
                 "xsi:schemaLocation",
@@ -35,17 +37,14 @@ public class GpxGenerator {
         root.setAttribute("creator", "JaVelo");
 
         Element metadata = doc.createElement("metadata");
-        Element name = doc.createElement("name");
-        Element rte = doc.createElement("rte");
-        root.appendChild(rte);
-
-        doc.appendChild(root);
-        name.setTextContent("Route JaVelo");
-        metadata.appendChild(name);
         root.appendChild(metadata);
 
+        Element name = doc.createElement("name");
+        metadata.appendChild(name);
+        name.setTextContent("Route JaVelo");
 
-
+        Element rte = doc.createElement("rte");
+        root.appendChild(rte);
 
         ListIterator<PointCh> pointIterator = route.points().listIterator();
         PointCh previousPoint  = pointIterator.next();
