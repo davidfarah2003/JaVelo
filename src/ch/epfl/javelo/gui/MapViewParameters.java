@@ -1,8 +1,8 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.projection.PointWebMercator;
+import javafx.geometry.Point2D;
 
-import java.awt.geom.Point2D;
 
 /**
  * MapViewParameters record
@@ -21,7 +21,7 @@ public record MapViewParameters(int zoomLevel, double xUpperLeftMapView, double 
      * @return
      */
     public Point2D topLeft(){
-        return new Point2D.Double(xUpperLeftMapView, yUpperLeftMapView);
+        return new Point2D(xUpperLeftMapView, yUpperLeftMapView);
     }
 
     /**
