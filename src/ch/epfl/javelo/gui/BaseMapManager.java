@@ -6,17 +6,16 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
-
-import javax.swing.*;
 import java.io.IOException;
 
 public final class BaseMapManager {
     private final TileManager tileManager;
   //  private final WayPointManager wayPointManager;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
-    private Canvas canvas;
-    private Pane pane;
+    private final Canvas canvas;
+    private final Pane pane;
     private boolean redrawNeeded;
+    private final static int SIZE_TILE = 256;
 // WayPointManager wayPointManager;
 
     public BaseMapManager(TileManager tileManager,
@@ -37,47 +36,144 @@ public final class BaseMapManager {
 
     private void redrawIfNeeded() {
 
-
         if (!redrawNeeded) return;
         redrawNeeded = false;
-        System.out.println("test");
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
+        int xMin = (int) Math.floor(mapViewParametersP.get().xUpperLeftMapView() / SIZE_TILE);
+        int yMin = (int) Math.floor(mapViewParametersP.get().yUpperLeftMapView() / SIZE_TILE);
+        int xMax = (int) Math.floor((mapViewParametersP.get().xUpperLeftMapView() + canvas.getWidth()) / SIZE_TILE);
+        int yMax = (int) Math.floor((mapViewParametersP.get().yUpperLeftMapView() + canvas.getHeight()) / SIZE_TILE);
 
-        canvas.widthProperty().addListener(o -> System.out.printf("New canvas width: %.2f\n", canvas.getWidth()));
-        canvas.heightProperty().addListener(o -> System.out.printf("New canvas height: %.2f\n", canvas.getHeight()));
+        double xValue = mapViewParametersP.get().xUpperLeftMapView() - xMin * SIZE_TILE;
+        double yValue = mapViewParametersP.get().yUpperLeftMapView() - yMin * SIZE_TILE;
+        double sourceWidth = SIZE_TILE - xValue;
+        double sourceHeight = SIZE_TILE - yValue;
+        double xFinal = mapViewParametersP.get().xUpperLeftMapView() + canvas.getWidth() - xMax * SIZE_TILE;
+        double yFinal = mapViewParametersP.get().yUpperLeftMapView() + canvas.getHeight() - yMax * SIZE_TILE;
+
+        double length = 0;
+        double height = 0;
+
+        for (int j = yMin; j <= yMax; j++) {
+            for (int i = xMin; i <= xMax; i++) {
+                if (j == yMin) {
+                    if (i == xMin) {
+                        try {
+                            gc.drawImage(tileManager.getTileImage(
+                                            new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+                                    xValue, yValue, sourceWidth, sourceHeight, 0, 0, sourceWidth, sourceHeight);
+                        } catch (IOException e) {}
+                        length += sourceWidth;
+                    }
+
+                    else if (i == xMax) {
+                        try {
+                            gc.drawImage(tileManager.getTileImage(
+                                            new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+                                    0, yValue, xFinal, sourceHeight, length, 0, xFinal, sourceHeight);
+                        } catch (IOException e) {}
+                    }
+
+                    else {
+                        try {
+                            gc.drawImage(tileManager.getTileImage(
+                                            new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+                                    0, yValue, SIZE_TILE, sourceHeight, length, 0, SIZE_TILE, sourceHeight);
+                        } catch (IOException e) {}
+                        length += SIZE_TILE;
+                    }
+                }
+
+                else if (j == yMax) {
+                    if (i == xMin) {
+                        try {
+                            gc.drawImage(tileManager.getTileImage(
+                                            new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+                                    xValue, 0, sourceWidth, yFinal, 0, height, sourceWidth, yFinal);
+                        } catch (IOException e) {}
+                        length += sourceWidth;
+                    }
+
+                    else if (i == xMax) {
+                        try {
+                            gc.drawImage(tileManager.getTileImage(
+                                            new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+                                    0, 0, xFinal, yFinal, length, height, xFinal, yFinal);
+                        } catch (IOException e) {}
+                    }
+
+                    else{
+                        try {
+                            gc.drawImage(tileManager.getTileImage(
+                                            new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+                                    0, 0, SIZE_TILE, yFinal, length, height, SIZE_TILE, yFinal);
+                        } catch (IOException e) {}
+                        length += SIZE_TILE;
+                    }
+                }
+
+                else{
+                    if (i == xMin){
+                        try {
+                            gc.drawImage(tileManager.getTileImage(
+                                            new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+                                    xValue, 0, sourceWidth, SIZE_TILE, 0, height, sourceWidth, SIZE_TILE);
+                        } catch (IOException e) {}
+                        length += sourceWidth;
+                    }
+
+                    else if (i == xMax){
+                        try {
+                            gc.drawImage(tileManager.getTileImage(
+                                            new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+                                    0, 0, xFinal, SIZE_TILE, length, height, xFinal, SIZE_TILE);
+                        }
+                        catch (IOException e) {}
+                    }
+
+                    else{
+                        try {
+                                gc.drawImage(tileManager.getTileImage(
+                                                new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+                                        0, 0, SIZE_TILE, SIZE_TILE, length, height, SIZE_TILE, SIZE_TILE);
+                        } catch (IOException e) {}
+                        length += SIZE_TILE;
+                    }
+                }
+            }
+
+            length = 0;
+            height += (j == yMin ? sourceHeight : SIZE_TILE);
+
+        }
 
 
-        System.out.println(canvas.getHeight());
-        System.out.println(canvas.getWidth());
-
-        int xMin = (int) Math.floor(mapViewParametersP.get().xUpperLeftMapView() / 256);
-        int yMin = (int) Math.floor(mapViewParametersP.get().yUpperLeftMapView() / 256);
-        int xMax = (int) Math.floor((mapViewParametersP.get().xUpperLeftMapView() + canvas.getWidth()) / 256);
-        int yMax = (int) Math.floor((mapViewParametersP.get().yUpperLeftMapView() + canvas.getHeight()) / 256);
 
 
         // int x = (int) Math.ceil(canvas.getWidth()/ 256);
         // int y =  (int) Math.ceil(canvas.getHeight() / 256);
-        int rememberX = 0;
-        int rememberY = 0;
-        for (int j = yMin; j <= yMax; j++) {
-            for (int i = xMin; i <= xMax; i++) {
-                try {
-                    gc.drawImage(tileManager.getTileImage(
-                                    new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
-                            rememberX * 256, rememberY * 256
-                    );
-                    rememberX++;
 
-                } catch (IOException exception) {
 
-                }
-            }
-            rememberX = 0;
-            rememberY++;
-        }
+   //     for (int j = yMin; j <= yMax; j++) {
+    //        for (int i = xMin; i <= xMax; i++) {
+     //           try {
+     //               gc.drawImage(tileManager.getTileImage(
+     //                               new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
+      //                      rememberX * 256, rememberY * 256
+       //             );
+       //             rememberX++;
+
+        //        } catch (IOException exception) {
+
+        //        }
+        //    }
+      //      rememberX = 0;
+       //     rememberY++;
+      //  }
+
+
     }
        // System.out.println(x);
       //  System.out.println(y);
