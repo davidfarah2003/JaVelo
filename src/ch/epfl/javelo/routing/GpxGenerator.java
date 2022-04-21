@@ -86,8 +86,7 @@ public class GpxGenerator {
       try (Writer w = new FileWriter("rendu.gpx")){
             Transformer transformer = newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.transform(new DOMSource(doc),
-                    new StreamResult(w));
+            transformer.transform(new DOMSource(doc), new StreamResult(w));
         }
     }
 

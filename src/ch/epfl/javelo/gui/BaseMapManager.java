@@ -1,23 +1,16 @@
 package ch.epfl.javelo.gui;
-
-import ch.epfl.javelo.Math2;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.css.StyleableObjectProperty;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
-
 import java.io.IOException;
-import java.util.Map;
 
 public final class BaseMapManager {
+
     private final TileManager tileManager;
   //  private final WayPointManager wayPointManager;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
@@ -26,7 +19,7 @@ public final class BaseMapManager {
     private final Pane pane;
     private boolean redrawNeeded;
     private final static int SIZE_TILE = 256;
-// ;
+
 
     public BaseMapManager(TileManager tileManager,
                     //      WayPointManager wayPointManager,
