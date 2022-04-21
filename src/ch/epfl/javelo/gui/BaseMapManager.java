@@ -1,28 +1,40 @@
 package ch.epfl.javelo.gui;
 
+import ch.epfl.javelo.Math2;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.css.StyleableObjectProperty;
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
+
+
 import java.io.IOException;
+import java.util.Map;
 
 public final class BaseMapManager {
     private final TileManager tileManager;
   //  private final WayPointManager wayPointManager;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
+    private ObjectProperty<Point2D> test;
     private final Canvas canvas;
     private final Pane pane;
     private boolean redrawNeeded;
     private final static int SIZE_TILE = 256;
-// WayPointManager wayPointManager;
+// ;
 
     public BaseMapManager(TileManager tileManager,
+                    //      WayPointManager wayPointManager,
              ObjectProperty<MapViewParameters> mapViewParametersP) {
             this.tileManager = tileManager;
            // this.wayPointManager = wayPointManager;
             this.mapViewParametersP = mapViewParametersP;
+            this.test = new SimpleObjectProperty<>(new Point2D(0,0));
             this.canvas = new Canvas();
             this.pane = new Pane(canvas);
             canvas.widthProperty().bind(pane.widthProperty());
@@ -31,7 +43,38 @@ public final class BaseMapManager {
             assert oldS == null;
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
             });
+            pane.setOnScroll(event -> {
+           //     System.out.println(event.getX() + " " + event.getY());
+             //  mapViewParametersP.setValue(new MapViewParameters(Math2.clamp(8, (int) Math.round(mapViewParametersP.get().zoomLevel()
+               //+ event.getDeltaY()), 19), mapViewParametersP.get().xUpperLeftMapView(), mapViewParametersP.get().yUpperLeftMapView()));
+             //  redrawOnNextPulse();
+            });
+
+            pane.setOnMousePressed(event -> {
+                Point2D point = new Point2D(event.getX(), event.getY());
+                test = new SimpleObjectProperty<>(point);
+                System.out.println(test.get());
+
+                if (event.isStillSincePress()){
+                    // ajout point
+                }
+                else{
+                    pane.setOnMouseDragged(event1 ->{
+                            mapViewParametersP.setValue(
+                                    new MapViewParameters
+                                    (mapViewParametersP.get().zoomLevel(),
+                                            (test.get().getX() - event1.getX())/25 + mapViewParametersP.get().xUpperLeftMapView(),
+                                            (test.get().getY() - event1.getY())/25 + mapViewParametersP.get().yUpperLeftMapView()));
+                            redrawOnNextPulse();
+                });
+                }
+
+               // pane.setOnMouseReleased(event2 -> redrawOnNextPulse());
+            });
+
             redrawOnNextPulse();
+
+
     }
 
     private void redrawIfNeeded() {
@@ -58,6 +101,7 @@ public final class BaseMapManager {
 
         for (int j = yMin; j <= yMax; j++) {
             for (int i = xMin; i <= xMax; i++) {
+               // System.out.println(mapViewParametersP.get().zoomLevel());
                 if (j == yMin) {
                     if (i == xMin) {
                         try {

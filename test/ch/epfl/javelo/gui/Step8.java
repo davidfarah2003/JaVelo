@@ -42,17 +42,17 @@ public class Step8 extends Application{
              //               waypoints,
              //               errorConsumer);
             BaseMapManager baseMapManager =
-                    new BaseMapManager(tileManager,
-                            mapViewParametersP);
+                  new BaseMapManager(tileManager,
+                           mapViewParametersP);
 
            // StackPane mainPane =
             //        new StackPane(baseMapManager.pane());
             Pane pane = baseMapManager.pane();
             pane.getStylesheets().add("map.css");
-            primaryStage.setMinWidth(600);
-            primaryStage.setMinHeight(300);
+            primaryStage.setMinWidth(1500);
+            primaryStage.setMinHeight(800);
             primaryStage.setScene(new Scene(pane));
-            primaryStage.show();
+           primaryStage.show();
         }
 
         private static final class ErrorConsumer

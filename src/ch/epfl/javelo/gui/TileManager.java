@@ -67,6 +67,7 @@ public final class TileManager {
         }
 
          public static boolean isValid(int zoomLevel, int xIndex, int yIndex) {
+
              int maxIndex = (int) Math.pow(2, zoomLevel) - 1;
              return (zoomLevel >= 0 && zoomLevel <= 20 &&
                      xIndex >= 0 && xIndex <= maxIndex &&
