@@ -59,12 +59,10 @@ public final class BaseMapManager {
          //  redrawOnNextPulse();
         });
         pane.setOnMousePressed(event -> {
-                Point2D point = new Point2D(event.getX(), event.getY());
-                test = new SimpleObjectProperty<>(point);
-                System.out.println(test.get());
+                test = new SimpleObjectProperty<>(new Point2D(event.getX(), event.getY()));
 
                 if (event.isStillSincePress()){
-                    // ajout point
+
                 }
                 else{
                     pane.setOnMouseDragged(event1 ->
@@ -82,17 +80,15 @@ public final class BaseMapManager {
                             }
                     );
                 }
-
-               // pane.setOnMouseReleased(event2 -> redrawOnNextPulse());
             });
 
         redrawOnNextPulse();
     }
 
     /**
-     * method that performs a redraw of the map if and only if the attribute redrawNeeded is true
+     * Method that redraws the map if and only if the attribute redrawNeeded is true
      */
-    private boolean redrawIfNeeded() {
+    private void redrawIfNeeded() {
         if (redrawNeeded) {
             redrawNeeded = false;
 
@@ -120,7 +116,6 @@ public final class BaseMapManager {
             double height = 0;
             for (int j = yMin; j <= yMax; j++) {
                 for (int i = xMin; i <= xMax; i++) {
-                    // System.out.println(mapViewParametersP.get().zoomLevel());
                     if (j == yMin) {
                         if (i == xMin) {
                             try {
@@ -209,10 +204,8 @@ public final class BaseMapManager {
                 length = 0;
                 height += (j == yMin ? sourceHeight : SIZE_TILE);
             }
-            return true;
-        }
 
-        return false;
+        }
     }
 
 

@@ -49,8 +49,8 @@ public class Step8 extends Application{
             //        new StackPane(baseMapManager.pane());
             Pane pane = baseMapManager.pane();
             pane.getStylesheets().add("map.css");
-            primaryStage.setMinWidth(1500);
-            primaryStage.setMinHeight(800);
+            primaryStage.setMinWidth(600);
+            primaryStage.setMinHeight(300);
             primaryStage.setScene(new Scene(pane));
            primaryStage.show();
         }

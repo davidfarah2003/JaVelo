@@ -4,6 +4,7 @@ import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 
 import java.util.List;
@@ -18,8 +19,9 @@ import java.util.function.Consumer;
 public final class WayPointsManager {
     Graph graph;
     ObjectProperty<MapViewParameters> mapViewParameters;
-    List<PointCh> wayPoints;
+    ObservableList<Waypoint> wayPoints;
     Consumer<String> signalError;
+    private Pane pane;
 
     private final double SEARCH_DISTANCE = 1000;
     private final String PROXIMITY_ERROR_MSG = "Aucune route à proximité !";
@@ -34,11 +36,25 @@ public final class WayPointsManager {
      * @param signalError an object to report errors (used to display error messages to the user)
      */
     public WayPointsManager(Graph graph, ObjectProperty<MapViewParameters> mapViewParameters,
-                            List<PointCh> wayPoints, Consumer<String> signalError) {
+                            ObservableList<Waypoint> wayPoints, Consumer<String> signalError) {
         this.graph = graph;
         this.mapViewParameters = mapViewParameters;
         this.wayPoints = wayPoints;
         this.signalError = signalError;
+        this.pane = new Pane();
+        pane.setOnMouseClicked(e -> {
+            if (!containsWayPoint(e.getX(), e.getY()))
+             addWaypoint(mapViewParameters.get().xUpperLeftMapView() + e.getX(),
+                    mapViewParameters.get().yUpperLeftMapView() + e.getY());
+            else {
+               removeWaypoint(mapViewParameters.get().xUpperLeftMapView() + e.getX(),
+                       mapViewParameters.get().yUpperLeftMapView() + e.getY());
+            }
+        }
+
+
+
+        );
 
     }
 
@@ -56,10 +72,24 @@ public final class WayPointsManager {
             return false;
         }
 
-        wayPoints.add(graph.nodePoint(closestNodeId));
+        wayPoints.add(new Waypoint(graph.nodePoint(closestNodeId), closestNodeId));
         return true;
     }
 
+    private void removeWaypoint(double x, double y){
+        PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y);
+        int closestNodeId = graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
+        wayPoints.remove(new Waypoint(point.toPointCh(), closestNodeId));
+    }
+
+    private boolean containsWayPoint(double x, double y){
+        PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(),
+                mapViewParameters.get().xUpperLeftMapView() + x,
+                mapViewParameters.get().yUpperLeftMapView() + y);
+        int closestNodeId = graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
+        Waypoint w = new Waypoint(point.toPointCh(), closestNodeId);
+        return wayPoints.contains(w);
+    }
     /**
      * @return the JavaFX panel displaying the basemap.
      */
