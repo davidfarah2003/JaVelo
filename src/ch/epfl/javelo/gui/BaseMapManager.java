@@ -187,52 +187,8 @@ public final class BaseMapManager {
         }
 
 
-
-
-        // int x = (int) Math.ceil(canvas.getWidth()/ 256);
-        // int y =  (int) Math.ceil(canvas.getHeight() / 256);
-
-
-   //     for (int j = yMin; j <= yMax; j++) {
-    //        for (int i = xMin; i <= xMax; i++) {
-     //           try {
-     //               gc.drawImage(tileManager.getTileImage(
-     //                               new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i, j)),
-      //                      rememberX * 256, rememberY * 256
-       //             );
-       //             rememberX++;
-
-        //        } catch (IOException exception) {
-
-        //        }
-        //    }
-      //      rememberX = 0;
-       //     rememberY++;
-      //  }
-
-
-    }
-       // System.out.println(x);
-      //  System.out.println(y);
-
-        /*
-        for (int j = 0; j < y; j++){
-            for (int i = 0; i < x; i++){
-                try {
-                    gc.drawImage(tileManager.getTileImage(
-                            new TileManager.TileId(mapViewParametersP.get().zoomLevel(),
-                                    (int) Math.floor((mapViewParametersP.get().xUpperLeftMapView() + i * 256) / 256),
-                                    (int) Math.floor((mapViewParametersP.get().yUpperLeftMapView() + j * 256) / 256))
-                    ), i * 256, j * 256
-                    , 256, 256);
-                }
-                catch (IOException e){
-                }
-            }
-        }
     }
 
-         */
 
     private void redrawOnNextPulse() {
         redrawNeeded = true;
@@ -248,32 +204,26 @@ public final class BaseMapManager {
        // double yIndexBottomRight = yIndexTopLeft + canvas.getHeight();
 
 
+/*
+    Canvas is an image that can be drawn on using a set of graphics commands provided by a GraphicsContext.
+    A Canvas node is constructed with a width and height that specifies the size of the image into which the canvas drawing commands are rendered. All drawing operations are clipped to the bounds of that image.
 
+    Example:
+        import javafx.scene.*;
+        import javafx.scene.paint.*;
+        import javafx.scene.canvas.*;
 
+        Group root = new Group();
+        Scene s = new Scene(root, 300, 300, Color.BLACK);
 
+        final Canvas canvas = new Canvas(250,250);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        /*
-        Canvas is an image that can be drawn on using a set of graphics commands provided by a GraphicsContext.
-A Canvas node is constructed with a width and height that specifies the size of the image into which the canvas drawing commands are rendered. All drawing operations are clipped to the bounds of that image.
+        gc.setFill(Color.BLUE);
+        gc.fillRect(75,75,100,100);
 
-Example:
-
-import javafx.scene.*;
-import javafx.scene.paint.*;
-import javafx.scene.canvas.*;
-
-Group root = new Group();
-Scene s = new Scene(root, 300, 300, Color.BLACK);
-
-final Canvas canvas = new Canvas(250,250);
-GraphicsContext gc = canvas.getGraphicsContext2D();
-
-gc.setFill(Color.BLUE);
-gc.fillRect(75,75,100,100);
-
-root.getChildren().add(canvas);
-
-         */
+        root.getChildren().add(canvas);
+*/
 
     }
 
