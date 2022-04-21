@@ -2,5 +2,7 @@ package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.projection.PointCh;
 
-public record Waypoint(PointCh point, int nodeID) {
-}
+/**
+ * represents a waypoint
+ */
+public record Waypoint(PointCh point, int nodeID) { }

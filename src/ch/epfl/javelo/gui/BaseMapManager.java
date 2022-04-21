@@ -9,6 +9,9 @@ import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
+/**
+ * Class that manages the display and interaction with the basemap
+ */
 public final class BaseMapManager {
 
     private final TileManager tileManager;
@@ -21,57 +24,67 @@ public final class BaseMapManager {
     private final static int SIZE_TILE = 256;
 
 
-    public BaseMapManager(TileManager tileManager,
-                    //      WayPointManager wayPointManager,
-             ObjectProperty<MapViewParameters> mapViewParametersP) {
-            this.tileManager = tileManager;
-           // this.wayPointManager = wayPointManager;
-            this.mapViewParametersP = mapViewParametersP;
-            this.test = new SimpleObjectProperty<>(new Point2D(0,0));
-            this.canvas = new Canvas();
-            this.pane = new Pane(canvas);
-            canvas.widthProperty().bind(pane.widthProperty());
-            canvas.heightProperty().bind(pane.heightProperty());
-            canvas.sceneProperty().addListener((p, oldS, newS) -> {
-            assert oldS == null;
-            newS.addPreLayoutPulseListener(this::redrawIfNeeded);
-            });
-            pane.setOnScroll(event -> {
-           //     System.out.println(event.getX() + " " + event.getY());
-             //  mapViewParametersP.setValue(new MapViewParameters(Math2.clamp(8, (int) Math.round(mapViewParametersP.get().zoomLevel()
-               //+ event.getDeltaY()), 19), mapViewParametersP.get().xUpperLeftMapView(), mapViewParametersP.get().yUpperLeftMapView()));
-             //  redrawOnNextPulse();
-            });
+    public BaseMapManager(
+            TileManager tileManager //, WayPointManager wayPointManager
+                           , ObjectProperty<MapViewParameters> mapViewParametersP
+    )
+    {
+        this.tileManager = tileManager;
+        this.mapViewParametersP = mapViewParametersP;
 
-            pane.setOnMousePressed(event -> {
-                Point2D point = new Point2D(event.getX(), event.getY());
-                test = new SimpleObjectProperty<>(point);
-                System.out.println(test.get());
+        // this.wayPointManager = wayPointManager;
+        this.test = new SimpleObjectProperty<>(new Point2D(0,0));
+        this.canvas = new Canvas();
+        this.pane = new Pane(canvas);
 
-                if (event.isStillSincePress()){
-                    // ajout point
+        canvas.widthProperty().bind(pane.widthProperty());
+        canvas.heightProperty().bind(pane.heightProperty());
+
+        // JavaFX calls redrawIfNeeded at each beat
+        canvas.sceneProperty().addListener((p, oldS, newS)
+                -> {
+                    assert oldS == null;
+                    newS.addPreLayoutPulseListener(this::redrawIfNeeded);
                 }
-                else{
-                    pane.setOnMouseDragged(event1 ->{
-                            mapViewParametersP.setValue(
-                                    new MapViewParameters
-                                    (mapViewParametersP.get().zoomLevel(),
-                                            (test.get().getX() - event1.getX())/25 + mapViewParametersP.get().xUpperLeftMapView(),
-                                            (test.get().getY() - event1.getY())/25 + mapViewParametersP.get().yUpperLeftMapView()));
-                            redrawOnNextPulse();
-                });
-                }
+        );
 
-               // pane.setOnMouseReleased(event2 -> redrawOnNextPulse());
+        //Event handlers:
+        pane.setOnScroll(event -> {
+       //     System.out.println(event.getX() + " " + event.getY());
+         //  mapViewParametersP.setValue(new MapViewParameters(Math2.clamp(8, (int) Math.round(mapViewParametersP.get().zoomLevel()
+           //+ event.getDeltaY()), 19), mapViewParametersP.get().xUpperLeftMapView(), mapViewParametersP.get().yUpperLeftMapView()));
+         //  redrawOnNextPulse();
+        });
+        pane.setOnMousePressed(event -> {
+            Point2D point = new Point2D(event.getX(), event.getY());
+            test = new SimpleObjectProperty<>(point);
+            System.out.println(test.get());
+
+            if (event.isStillSincePress()){
+                // ajout point
+            }
+            else{
+                pane.setOnMouseDragged(event1 ->{
+                        mapViewParametersP.setValue(
+                                new MapViewParameters
+                                (mapViewParametersP.get().zoomLevel(),
+                                        (test.get().getX() - event1.getX())/25 + mapViewParametersP.get().xUpperLeftMapView(),
+                                        (test.get().getY() - event1.getY())/25 + mapViewParametersP.get().yUpperLeftMapView()));
+                        redrawOnNextPulse();
             });
+            }
 
-            redrawOnNextPulse();
+           // pane.setOnMouseReleased(event2 -> redrawOnNextPulse());
+        });
 
-
+        redrawOnNextPulse();
     }
 
-    private void redrawIfNeeded() {
 
+    /**
+     * method that performs a redraw of the map if and only if the attribute redrawNeeded is true
+     */
+    private void redrawIfNeeded() {
         if (!redrawNeeded) return;
         redrawNeeded = false;
 
@@ -180,33 +193,38 @@ public final class BaseMapManager {
                     }
                 }
             }
-
             length = 0;
             height += (j == yMin ? sourceHeight : SIZE_TILE);
 
         }
-
-
     }
 
 
+    /**
+     * method to request a redraw of the map at the next beat, sets redrawNeeded to true if called
+     */
     private void redrawOnNextPulse() {
         redrawNeeded = true;
         Platform.requestNextPulse();
     }
 
+    /**
+     * @return the JavaFX panel displaying the basemap.
+     */
     public Pane pane() {
         return pane;
     }
-     //   double xIndexTopLeft = mapViewParametersP.get().xUpperLeftMapView();
-      //  double yIndexTopLeft = mapViewParametersP.get().yUpperLeftMapView();
-      //  double xIndexBottomRight = xIndexTopLeft + canvas.getWidth();
-       // double yIndexBottomRight = yIndexTopLeft + canvas.getHeight();
+
+    //   double xIndexTopLeft = mapViewParametersP.get().xUpperLeftMapView();
+    //  double yIndexTopLeft = mapViewParametersP.get().yUpperLeftMapView();
+    //  double xIndexBottomRight = xIndexTopLeft + canvas.getWidth();
+    // double yIndexBottomRight = yIndexTopLeft + canvas.getHeight();
 
 
 /*
     Canvas is an image that can be drawn on using a set of graphics commands provided by a GraphicsContext.
-    A Canvas node is constructed with a width and height that specifies the size of the image into which the canvas drawing commands are rendered. All drawing operations are clipped to the bounds of that image.
+    A Canvas node is constructed with a width and height that specifies the size of the image into which the canvas
+    drawing commands are rendered. All drawing operations are clipped to the bounds of that image.
 
     Example:
         import javafx.scene.*;
