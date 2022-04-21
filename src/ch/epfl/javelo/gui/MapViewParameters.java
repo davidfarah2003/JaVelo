@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 
 /**
  * MapViewParameters record, represents the settings of the basemap presented in the GUI
+ *
  * @param zoomLevel of the map
  * @param xUpperLeftMapView X coordinate of the top-left corner of the map portion displayed on the screen
  * @param yUpperLeftMapView Y coordinate of the top-left corner of the map portion displayed on the screen

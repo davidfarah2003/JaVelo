@@ -42,8 +42,8 @@ public class Step8 extends Application{
              //               waypoints,
              //               errorConsumer);
             BaseMapManager baseMapManager =
-                  new BaseMapManager(tileManager,
-                           mapViewParametersP);
+                  new BaseMapManager(tileManager,new WayPointsManager(),
+                          mapViewParametersP);
 
            // StackPane mainPane =
             //        new StackPane(baseMapManager.pane());
