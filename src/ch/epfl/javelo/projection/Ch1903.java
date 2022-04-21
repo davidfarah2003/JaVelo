@@ -5,12 +5,11 @@ import static java.lang.Math.*;
 
 
 /**
- * Ch1903
+ * Ch1903 convention coordinates
  *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
  */
-
 public final class Ch1903 {
     private Ch1903() {}
 

@@ -92,7 +92,7 @@ public final class BaseMapManager {
     /**
      * method that performs a redraw of the map if and only if the attribute redrawNeeded is true
      */
-    private void redrawIfNeeded() {
+    private boolean redrawIfNeeded() {
         if (redrawNeeded) {
             redrawNeeded = false;
 
@@ -208,10 +208,11 @@ public final class BaseMapManager {
                 }
                 length = 0;
                 height += (j == yMin ? sourceHeight : SIZE_TILE);
-
             }
+            return true;
         }
 
+        return false;
     }
 
 

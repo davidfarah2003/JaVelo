@@ -97,7 +97,7 @@ public final class Graph {
     }
 
     /**
-     * Returns the point at the given node (ID)
+     * Returns the point of the given node ID
      * @param nodeId : ID of the node
      * @return the point (PointCh)
      */
