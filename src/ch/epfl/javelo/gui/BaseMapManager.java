@@ -101,9 +101,6 @@ public final class BaseMapManager {
             redrawOnNextPulse();
         });
 
-
-
-
     }
 
 
