@@ -1,5 +1,6 @@
 package ch.epfl.javelo.gui;
 import ch.epfl.javelo.Math2;
+
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -18,74 +19,107 @@ public final class BaseMapManager {
     private final WayPointsManager wayPointsManager;
     private final TileManager tileManager;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
-    private ObjectProperty<Point2D> coordinatesMouseWhenPressed;
+    private ObjectProperty<Point2D> coordinatesMouse;
     private final Canvas canvas;
     private final Pane pane;
     private boolean redrawNeeded;
     private final static int SIZE_TILE = 256;
+    private static final int ZOOM_LEVEL_MIN = 8;
+    private static final int ZOOM_LEVEL_MAX = 19;
 
 
     /**
      * @param tileManager
      * @param mapViewParameters
      */
-    public BaseMapManager(
-            TileManager tileManager , WayPointsManager wayPointsManager,
-            ObjectProperty<MapViewParameters> mapViewParameters
-    )
-    {
+    public BaseMapManager(TileManager tileManager, WayPointsManager wayPointsManager,
+                          ObjectProperty<MapViewParameters> mapViewParameters) {
+
         this.tileManager = tileManager;
         this.wayPointsManager = wayPointsManager;
         this.mapViewParametersP = mapViewParameters;
 
-        this.coordinatesMouseWhenPressed = new SimpleObjectProperty<>(new Point2D(0,0));
+        this.coordinatesMouse = new SimpleObjectProperty<>(new Point2D(0, 0));
         this.canvas = new Canvas();
         this.pane = new Pane(canvas);
 
+        installCanvasProperties();
+
+        pane.setOnMousePressed(event -> {
+                coordinatesMouse = new SimpleObjectProperty<>(new Point2D(event.getX(), event.getY()));
+                if (event.isStillSincePress())
+                    wayPointsManager.addWaypoint(mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
+                                                 mapViewParametersP.get().yUpperLeftMapView() + event.getY());
+                });
+
+
+        installScrollListener();
+        installDragListener();
+        redrawOnNextPulse();
+    }
+
+    private void installScrollListener() {
+        pane.setOnScroll(event -> {
+
+            int newZoomLevel = Math2.clamp(ZOOM_LEVEL_MIN, (int) Math.rint(mapViewParametersP.get().zoomLevel()
+                    + event.getDeltaY()), ZOOM_LEVEL_MAX);
+
+            int difference = newZoomLevel - mapViewParametersP.get().zoomLevel();
+
+            Point2D topLeftPoint = mapViewParametersP.get().topLeft();
+            topLeftPoint = topLeftPoint.add(event.getX(), event.getY());
+            topLeftPoint = topLeftPoint.multiply(Math.scalb(1, difference));
+            topLeftPoint = topLeftPoint.subtract(event.getX(), event.getY());
+
+            mapViewParametersP.setValue(new MapViewParameters(newZoomLevel, topLeftPoint.getX(), topLeftPoint.getY()));
+            redrawOnNextPulse();
+        });
+    }
+
+
+    private void installCanvasProperties(){
         canvas.widthProperty().bind(pane.widthProperty());
         canvas.heightProperty().bind(pane.heightProperty());
 
         // JavaFX calls redrawIfNeeded at each beat
-        canvas.sceneProperty().addListener((p, oldS, newS)
-                -> {
+        canvas.sceneProperty().addListener((p, oldS, newS) -> {
                     assert oldS == null;
                     newS.addPreLayoutPulseListener(this::redrawIfNeeded);
-                }
-        );
+                });
 
-        //Event handlers:
-        pane.setOnScroll(event -> {
-           mapViewParametersP.setValue(new MapViewParameters(Math2.clamp(8, (int) Math.round(mapViewParametersP.get().zoomLevel()
-           + event.getDeltaY()), 19), mapViewParametersP.get().xUpperLeftMapView(), mapViewParametersP.get().yUpperLeftMapView()));
-           redrawOnNextPulse();
+        pane.widthProperty().addListener((p, oldS, newS) -> {
+            pane.setMinHeight((Double) newS);
+            redrawOnNextPulse();
         });
-        pane.setOnMousePressed(event -> {
-                coordinatesMouseWhenPressed = new SimpleObjectProperty<>(new Point2D(event.getX(), event.getY()));
 
-                if (event.isStillSincePress()){
-                    wayPointsManager.addWaypoint(coordinatesMouseWhenPressed.get().getX(),
-                                                coordinatesMouseWhenPressed.get().getY());
-                }
-                else{
-                    pane.setOnMouseDragged(event1 ->
-                            {
-                                mapViewParameters.setValue
-                                (
-                                    new MapViewParameters(
-                                        mapViewParameters.get().zoomLevel(),
-                                        (coordinatesMouseWhenPressed.get().getX() - event1.getX())/25 + mapViewParameters.get().xUpperLeftMapView(),
-                                        (coordinatesMouseWhenPressed.get().getY() - event1.getY())/25 + mapViewParameters.get().yUpperLeftMapView()
-                                        )
-                                );
+        pane.heightProperty().addListener((p, oldS, newS) -> {
+            pane.setMinHeight((Double) newS);
+            redrawOnNextPulse();
+        });
 
-                                redrawOnNextPulse();
-                            }
-                    );
-                }
-            });
 
-        redrawOnNextPulse();
+
+
     }
+
+
+    private void installDragListener(){
+        pane.setOnMouseDragged(event -> {
+
+            Point2D point = mapViewParametersP.get().topLeft();
+            point = point.add(coordinatesMouse.get());
+            point = point.subtract(event.getX(), event.getY());
+
+            point = new Point2D(Math.max(0, point.getX()), Math.max(0, point.getY()));
+
+            mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
+
+            coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
+            redrawOnNextPulse();
+        });
+    }
+
+
 
 
     private void drawTileInCanvas(GraphicsContext gc, int x, int y, double sourceRectangleX,
@@ -93,8 +127,8 @@ public final class BaseMapManager {
                                   double destinationX, double destinationY) {
         try {
             gc.drawImage(tileManager.getTileImage(new TileManager.TileId(mapViewParametersP.get().zoomLevel(), x, y)),
-                    sourceRectangleX, sourceRectangleY, sourceWidth, sourceHeight, destinationX, destinationY,
-                    sourceWidth, sourceHeight);
+                    sourceRectangleX, sourceRectangleY, sourceWidth, sourceHeight,
+                    destinationX, destinationY, sourceWidth, sourceHeight);
         } catch (IOException e) {}
     }
 
@@ -210,33 +244,5 @@ public final class BaseMapManager {
         return pane;
     }
 
-    //   double xIndexTopLeft = mapViewParametersP.get().xUpperLeftMapView();
-    //  double yIndexTopLeft = mapViewParametersP.get().yUpperLeftMapView();
-    //  double xIndexBottomRight = xIndexTopLeft + canvas.getWidth();
-    // double yIndexBottomRight = yIndexTopLeft + canvas.getHeight();
-
-
-/*
-    Canvas is an image that can be drawn on using a set of graphics commands provided by a GraphicsContext.
-    A Canvas node is constructed with a width and height that specifies the size of the image into which the canvas
-    drawing commands are rendered. All drawing operations are clipped to the bounds of that image.
-
-    Example:
-        import javafx.scene.*;
-        import javafx.scene.paint.*;
-        import javafx.scene.canvas.*;
-
-        Group root = new Group();
-        Scene s = new Scene(root, 300, 300, Color.BLACK);
-
-        final Canvas canvas = new Canvas(250,250);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        gc.setFill(Color.BLUE);
-        gc.fillRect(75,75,100,100);
-
-        root.getChildren().add(canvas);
-*/
-
-    }
+}
 

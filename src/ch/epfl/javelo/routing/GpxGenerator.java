@@ -46,6 +46,7 @@ public class GpxGenerator {
         Element rte = doc.createElement("rte");
         root.appendChild(rte);
 
+
         ListIterator<PointCh> pointIterator = route.points().listIterator();
         PointCh previousPoint  = pointIterator.next();
         PointCh point;
