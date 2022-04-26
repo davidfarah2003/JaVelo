@@ -21,7 +21,7 @@ public class Step8 extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
         Graph graph = Graph.loadFrom(Path.of("lausanne"));
-        Path cacheBasePath = Path.of("/cache");
+        Path cacheBasePath = Path.of("cache");
         String tileServerHost = "tile.openstreetmap.org";
         TileManager tileManager =
                 new TileManager(cacheBasePath, tileServerHost);
