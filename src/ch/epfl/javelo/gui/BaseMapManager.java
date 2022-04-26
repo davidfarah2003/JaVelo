@@ -43,8 +43,9 @@ public final class BaseMapManager {
         this.canvas = new Canvas();
         this.pane = new Pane(canvas);
 
-        installCanvasProperties();
+        addCanvasProperties();
 
+        /*
         pane.setOnMousePressed(event -> {
                 coordinatesMouse = new SimpleObjectProperty<>(new Point2D(event.getX(), event.getY()));
                 if (event.isStillSincePress())
@@ -52,15 +53,17 @@ public final class BaseMapManager {
                                                  mapViewParametersP.get().yUpperLeftMapView() + event.getY());
                 });
 
-
-        installScrollListener();
-        installDragListener();
+        pane.setOnMouseClicked(mouseEvent -> {
+            wayPointsManager.addWaypoint(mouseEvent.getX(), mouseEvent.getY());
+        });
+*/
+        addScrollListener();
+        addDragListener();
         redrawOnNextPulse();
     }
 
-    private void installScrollListener() {
+    private void addScrollListener() {
         pane.setOnScroll(event -> {
-
             int newZoomLevel = Math2.clamp(ZOOM_LEVEL_MIN, (int) Math.rint(mapViewParametersP.get().zoomLevel()
                     + event.getDeltaY()), ZOOM_LEVEL_MAX);
 
@@ -74,10 +77,11 @@ public final class BaseMapManager {
             mapViewParametersP.setValue(new MapViewParameters(newZoomLevel, topLeftPoint.getX(), topLeftPoint.getY()));
             redrawOnNextPulse();
         });
+
     }
 
 
-    private void installCanvasProperties(){
+    private void addCanvasProperties(){
         canvas.widthProperty().bind(pane.widthProperty());
         canvas.heightProperty().bind(pane.heightProperty());
 
@@ -103,9 +107,8 @@ public final class BaseMapManager {
     }
 
 
-    private void installDragListener(){
+    private void addDragListener(){
         pane.setOnMouseDragged(event -> {
-
             Point2D point = mapViewParametersP.get().topLeft();
             point = point.add(coordinatesMouse.get());
             point = point.subtract(event.getX(), event.getY());

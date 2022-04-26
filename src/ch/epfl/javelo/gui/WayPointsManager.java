@@ -3,10 +3,15 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
+import ch.epfl.javelo.projection.WebMercator;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.Group;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.SVGPath;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -17,12 +22,11 @@ import java.util.function.Consumer;
  * @author David Farah (341017)
  */
 public final class WayPointsManager {
-    Graph graph;
-    ObjectProperty<MapViewParameters> mapViewParameters;
-    ObservableList<Waypoint> wayPoints;
-    Consumer<String> signalError;
-    private Pane pane;
-
+    private final Graph graph;
+    private final ObservableList<Waypoint> wayPoints;
+    private final ObjectProperty<MapViewParameters> mapViewParameters;
+    private final Consumer<String> signalError;
+    private final gui gui;
     private final double SEARCH_DISTANCE = 1000;
     private final String PROXIMITY_ERROR_MSG = "Aucune route à proximité !";
 
@@ -41,21 +45,7 @@ public final class WayPointsManager {
         this.mapViewParameters = mapViewParameters;
         this.wayPoints = wayPoints;
         this.signalError = signalError;
-        this.pane = new Pane();
-        pane.setOnMouseClicked(e -> {
-            if (!containsWayPoint(e.getX(), e.getY()))
-             addWaypoint(mapViewParameters.get().xUpperLeftMapView() + e.getX(),
-                    mapViewParameters.get().yUpperLeftMapView() + e.getY());
-            else {
-               removeWaypoint(mapViewParameters.get().xUpperLeftMapView() + e.getX(),
-                       mapViewParameters.get().yUpperLeftMapView() + e.getY());
-            }
-        }
-
-
-
-        );
-
+        this.gui = new gui();
     }
 
     /**
@@ -64,6 +54,7 @@ public final class WayPointsManager {
      * @return true if a WayPoint has been added, false otherwise
      */
     public boolean addWaypoint(double x, double y) {
+        System.out.println("add waypoint");
         PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y);
         int closestNodeId = graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
 
@@ -77,23 +68,86 @@ public final class WayPointsManager {
     }
 
     private void removeWaypoint(double x, double y){
-        PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y);
-        int closestNodeId = graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
-        wayPoints.remove(new Waypoint(point.toPointCh(), closestNodeId));
+        PointCh toRemove = mapViewParameters.get().pointAt(x, y).toPointCh();
+        //get an id
+        int closestNodeId = graph.nodeClosestTo(toRemove, SEARCH_DISTANCE);
+
+        //assuming it's comparing with .equals()
+        wayPoints.remove(new Waypoint(toRemove, closestNodeId));
     }
 
+    /**
+     * @param x coordinate of a point (WebMercator)
+     * @param y coordinate of a point (WebMercator)
+     * @return true iff the WayPoint with coordinates (x, y) is already added
+     */
     private boolean containsWayPoint(double x, double y){
-        PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(),
+        PointWebMercator point = PointWebMercator.of(
+                mapViewParameters.get().zoomLevel(),
                 mapViewParameters.get().xUpperLeftMapView() + x,
                 mapViewParameters.get().yUpperLeftMapView() + y);
         int closestNodeId = graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
+
         Waypoint w = new Waypoint(point.toPointCh(), closestNodeId);
+
         return wayPoints.contains(w);
     }
+
     /**
      * @return the JavaFX panel displaying the basemap.
      */
     public Pane pane() {
-        return null;
+        return gui.pane;
     }
+
+    private final class gui {
+        private final String svgOutside = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
+        private final String svgInside = "M0-23A1 1 0 000-29 1 1 0 000-23";
+        private final Pane pane;
+
+        public gui() {
+            this.pane = new Pane();
+            pane.setPickOnBounds(false);
+            wayPoints.addListener((InvalidationListener) observable -> drawWaypoints());
+        }
+
+        public void drawWaypoints(){
+            List<Group> pins = new ArrayList<>();
+
+            for (Waypoint wayPoint : wayPoints) {
+                PointWebMercator anchorPoint = PointWebMercator.ofPointCh(wayPoint.point());
+                Group pin = createPinGroup();
+                pin.setLayoutX(mapViewParameters.get().viewX(anchorPoint));
+                pin.setLayoutY(mapViewParameters.get().viewY(anchorPoint));
+                pins.add(pin);
+            }
+
+            //pins.get(0).getStyleClass().get()
+            pane.getChildren().setAll(pins);
+
+        }
+
+
+        private Group createPinGroup(){
+            SVGPath outside = new SVGPath();
+            outside.setContent(svgOutside);
+            outside.getStyleClass().add("pin_outside");
+
+            SVGPath inside = new SVGPath();
+            inside.setContent(svgInside);
+            inside.getStyleClass().add("pin_inside");
+
+            Group pin = new Group(outside, inside);
+            pin.getStyleClass().add("pin");
+            pin.getStyleClass().add("pin.middle");
+            return pin;
+        }
+
+        private void addPinListeners(Group pin){
+            pin.setOnMouseClicked(mouseEvent -> removeWaypoint(pin.getLayoutX(), pin.getLayoutY()));
+        }
+    }
+
+
+
 }
