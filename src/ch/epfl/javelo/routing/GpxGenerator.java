@@ -3,8 +3,6 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.projection.PointCh;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
@@ -49,8 +47,9 @@ public class GpxGenerator {
 
         ListIterator<PointCh> pointIterator = route.points().listIterator();
         PointCh previousPoint  = pointIterator.next();
+
         PointCh point;
-        int distance = 0;
+        double distance = 0;
 
         while (pointIterator.hasNext()){
             Element rtept = doc.createElement("rtept");
@@ -68,7 +67,6 @@ public class GpxGenerator {
             rte.appendChild(rtept);
             rtept.appendChild(ele);
         }
-
         return doc;
     }
 

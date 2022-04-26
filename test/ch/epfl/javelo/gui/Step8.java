@@ -40,15 +40,15 @@ public class Step8 extends Application{
                 new WayPointsManager(graph,
                         mapViewParametersP,
                         waypoints,
-                        errorConsumer);
+                       errorConsumer);
         BaseMapManager baseMapManager =
                 new BaseMapManager(tileManager,
                         waypointsManager,
                         mapViewParametersP);
 
         StackPane mainPane =
-                new StackPane(baseMapManager.pane(),
-                        waypointsManager.pane());
+                new StackPane(baseMapManager.pane(), waypointsManager.pane());
+
         mainPane.getStylesheets().add("map.css");
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(300);

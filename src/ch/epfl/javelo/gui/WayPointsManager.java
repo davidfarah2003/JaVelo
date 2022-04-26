@@ -3,7 +3,6 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
-import ch.epfl.javelo.projection.WebMercator;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
@@ -12,7 +11,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -44,8 +45,10 @@ public final class WayPointsManager {
         this.graph = graph;
         this.mapViewParameters = mapViewParameters;
         this.wayPoints = wayPoints;
+
         this.signalError = signalError;
         this.gui = new gui();
+        gui.drawWaypoints();
     }
 
     /**
@@ -67,13 +70,14 @@ public final class WayPointsManager {
         return true;
     }
 
-    private void removeWaypoint(double x, double y){
-        PointCh toRemove = mapViewParameters.get().pointAt(x, y).toPointCh();
+    private void removeWaypoint(Waypoint waypoint){
+        //PointCh toRemove = mapViewParameters.get().pointAt(x, y).toPointCh();
         //get an id
-        int closestNodeId = graph.nodeClosestTo(toRemove, SEARCH_DISTANCE);
+       // int closestNodeId = graph.nodeClosestTo(toRemove, SEARCH_DISTANCE);
 
         //assuming it's comparing with .equals()
-        wayPoints.remove(new Waypoint(toRemove, closestNodeId));
+        wayPoints.remove(waypoint);
+        gui.drawWaypoints();
     }
 
     /**
@@ -104,26 +108,41 @@ public final class WayPointsManager {
         private final String svgOutside = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
         private final String svgInside = "M0-23A1 1 0 000-29 1 1 0 000-23";
         private final Pane pane;
+        private final Map<Group, Waypoint> map;
 
         public gui() {
             this.pane = new Pane();
             pane.setPickOnBounds(false);
             wayPoints.addListener((InvalidationListener) observable -> drawWaypoints());
+            map = new HashMap<>();
         }
 
         public void drawWaypoints(){
-            List<Group> pins = new ArrayList<>();
+            pane.getChildren().clear();
+           
 
+            int i = 0;
             for (Waypoint wayPoint : wayPoints) {
-                PointWebMercator anchorPoint = PointWebMercator.ofPointCh(wayPoint.point());
+                System.out.println(wayPoints.size());
                 Group pin = createPinGroup();
+
+                if (i == 0){
+                    pin.getStyleClass().add("first");
+                }
+                else if (i == wayPoints.size() - 1){
+                    pin.getStyleClass().add("last");
+                }
+                else{
+                    pin.getStyleClass().add("middle");
+                }
+                PointWebMercator anchorPoint = PointWebMercator.ofPointCh(wayPoint.point());
                 pin.setLayoutX(mapViewParameters.get().viewX(anchorPoint));
                 pin.setLayoutY(mapViewParameters.get().viewY(anchorPoint));
-                pins.add(pin);
+                addPinListeners(pin);
+                pane.getChildren().add(pin);
+                map.put(pin, wayPoint);
+                i++;
             }
-
-            //pins.get(0).getStyleClass().get()
-            pane.getChildren().setAll(pins);
 
         }
 
@@ -144,7 +163,7 @@ public final class WayPointsManager {
         }
 
         private void addPinListeners(Group pin){
-            pin.setOnMouseClicked(mouseEvent -> removeWaypoint(pin.getLayoutX(), pin.getLayoutY()));
+            pin.setOnMouseClicked(mouseEvent -> removeWaypoint(map.get(pin)));
         }
     }
 

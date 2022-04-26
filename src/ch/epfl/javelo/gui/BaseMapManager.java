@@ -13,7 +13,8 @@ import java.io.IOException;
 
 
 /**
- * Class that manages the display and interaction with the basemap
+ * BaseMapManager class
+ * @author Wesley Nana Davies(344592)
  */
 public final class BaseMapManager {
     private final WayPointsManager wayPointsManager;
@@ -29,34 +30,31 @@ public final class BaseMapManager {
 
 
     /**
-     * @param tileManager
-     * @param mapViewParameters
+     * Constructor of the class
+     * @param tileManager : a tileManager
+     * @param wayPointsManager : a wayPointsManager
+     * @param mapViewParametersP : a MapViewParameters property
      */
     public BaseMapManager(TileManager tileManager, WayPointsManager wayPointsManager,
-                          ObjectProperty<MapViewParameters> mapViewParameters) {
+                          ObjectProperty<MapViewParameters> mapViewParametersP) {
 
         this.tileManager = tileManager;
         this.wayPointsManager = wayPointsManager;
-        this.mapViewParametersP = mapViewParameters;
+        this.mapViewParametersP = mapViewParametersP;
 
-        this.coordinatesMouse = new SimpleObjectProperty<>(new Point2D(0, 0));
+        this.coordinatesMouse = null;
         this.canvas = new Canvas();
         this.pane = new Pane(canvas);
 
         addCanvasProperties();
 
-        /*
-        pane.setOnMousePressed(event -> {
+        pane.setOnMouseClicked(event -> {
                 coordinatesMouse = new SimpleObjectProperty<>(new Point2D(event.getX(), event.getY()));
                 if (event.isStillSincePress())
-                    wayPointsManager.addWaypoint(mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
+                    this.wayPointsManager.addWaypoint(mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
                                                  mapViewParametersP.get().yUpperLeftMapView() + event.getY());
                 });
 
-        pane.setOnMouseClicked(mouseEvent -> {
-            wayPointsManager.addWaypoint(mouseEvent.getX(), mouseEvent.getY());
-        });
-*/
         addScrollListener();
         addDragListener();
         redrawOnNextPulse();
