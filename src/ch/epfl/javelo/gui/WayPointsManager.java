@@ -119,7 +119,6 @@ public final class WayPointsManager {
 
         public void drawWaypoints(){
             pane.getChildren().clear();
-           
 
             int i = 0;
             for (Waypoint wayPoint : wayPoints) {

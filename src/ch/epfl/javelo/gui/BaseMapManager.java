@@ -42,18 +42,20 @@ public final class BaseMapManager {
         this.wayPointsManager = wayPointsManager;
         this.mapViewParametersP = mapViewParametersP;
 
-        this.coordinatesMouse = null;
+        this.coordinatesMouse = new SimpleObjectProperty<>(new Point2D(0,0));
         this.canvas = new Canvas();
         this.pane = new Pane(canvas);
 
         addCanvasProperties();
 
-        pane.setOnMouseClicked(event -> {
-                coordinatesMouse = new SimpleObjectProperty<>(new Point2D(event.getX(), event.getY()));
+        pane.setOnMousePressed(event -> {
+            coordinatesMouse = new SimpleObjectProperty<>(new Point2D(event.getX(), event.getY()));
                 if (event.isStillSincePress())
-                    this.wayPointsManager.addWaypoint(mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
-                                                 mapViewParametersP.get().yUpperLeftMapView() + event.getY());
-                });
+                    this.wayPointsManager.addWaypoint(this.mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
+                            this.mapViewParametersP.get().yUpperLeftMapView() + event.getY());
+
+
+        });
 
         addScrollListener();
         addDragListener();
@@ -108,12 +110,11 @@ public final class BaseMapManager {
             point = point.add(coordinatesMouse.get());
             point = point.subtract(event.getX(), event.getY());
 
-            point = new Point2D(Math.max(0, point.getX()), Math.max(0, point.getY()));
 
             mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
+            redrawOnNextPulse();
 
             coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
-            redrawOnNextPulse();
         });
     }
 
