@@ -46,7 +46,6 @@ public final class WayPointsManager {
 
         this.signalError = signalError;
         this.gui = new gui();
-        //gui.drawWaypoints();
     }
 
     /**
@@ -55,7 +54,6 @@ public final class WayPointsManager {
      * @return true if a WayPoint has been added, false otherwise
      */
     public boolean addWaypoint(double x, double y) {
-        System.out.println("add waypoint");
         PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y);
         int closestNodeId = graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
 
