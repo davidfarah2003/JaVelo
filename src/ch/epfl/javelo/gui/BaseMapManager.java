@@ -48,12 +48,11 @@ public final class BaseMapManager {
 
         addCanvasProperties();
 
-        pane.setOnMousePressed(event -> {
+        pane.setOnMouseClicked(event -> {
             coordinatesMouse = new SimpleObjectProperty<>(new Point2D(event.getX(), event.getY()));
                 if (event.isStillSincePress())
                     this.wayPointsManager.addWaypoint(this.mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
                             this.mapViewParametersP.get().yUpperLeftMapView() + event.getY());
-
 
         });
 
