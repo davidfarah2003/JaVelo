@@ -109,7 +109,6 @@ public final class WayPointsManager {
                 pane.getChildren().get(0).getStyleClass().clear();
                 pane.getChildren().get(0).getStyleClass().add("pin");
                 pane.getChildren().get(0).getStyleClass().add("first");
-
             }
 
             if(pane.getChildren().size() > 1)

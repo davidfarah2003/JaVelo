@@ -57,7 +57,10 @@ public final class BaseMapManager {
         pane.setOnMouseClicked(event -> {
             coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
                 if (event.isStillSincePress()) {
-                    this.wayPointsManager.addWaypoint( event.getX(), event.getY());
+                    this.wayPointsManager.addWaypoint(
+                            mapViewParametersP.get().topLeft().getX() + event.getX(),
+                            mapViewParametersP.get().topLeft().getY() + event.getY()
+                    );
 
                 }
 
