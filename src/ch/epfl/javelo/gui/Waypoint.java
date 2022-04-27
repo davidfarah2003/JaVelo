@@ -8,6 +8,7 @@ import java.util.Objects;
  * represents a waypoint
  */
 public record Waypoint(PointCh point, int nodeID) {
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof Waypoint){
