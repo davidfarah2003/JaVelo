@@ -120,6 +120,8 @@ public final class BaseMapManager {
             mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
             redrawOnNextPulse();
 
+            //commented due to it being unnecessary and breaking encapsulation
+            /*
             ArrayList<Waypoint> list = new ArrayList<>(wayPointsManager.getWayPoints());
             System.out.println(list.size());
 
@@ -136,6 +138,8 @@ public final class BaseMapManager {
 
             }
             wayPointsManager.drawWayPoints();
+
+             */
             coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
         });
     }
