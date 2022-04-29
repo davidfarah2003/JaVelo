@@ -11,7 +11,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import java.io.IOException;
-import java.util.ArrayList;
+
 
 
 /**
@@ -22,7 +22,7 @@ public final class BaseMapManager {
     private final WayPointsManager wayPointsManager;
     private final TileManager tileManager;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
-    private ObjectProperty<Point2D> coordinatesMouse;
+    private final ObjectProperty<Point2D> coordinatesMouse;
     private final Canvas canvas;
     private final Pane pane;
     private boolean redrawNeeded;
@@ -44,29 +44,30 @@ public final class BaseMapManager {
         this.wayPointsManager = wayPointsManager;
         this.mapViewParametersP = mapViewParametersP;
 
-        this.coordinatesMouse = new SimpleObjectProperty<>(new Point2D(0,0));
+        this.coordinatesMouse = new SimpleObjectProperty<>();
         this.canvas = new Canvas();
         this.pane = new Pane(canvas);
 
+        addPaneListeners();
         addCanvasProperties();
-
-        pane.setOnMousePressed(e -> coordinatesMouse.setValue(new Point2D(e.getX(), e.getY())));
-
-
-        pane.setOnMouseClicked(event -> {
-                if (event.isStillSincePress()) {
-                    this.wayPointsManager.addWaypoint(
-                            mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
-                            mapViewParametersP.get().yUpperLeftMapView() + event.getY()
-                    );
-                }
-
-        });
-
         addScrollListener();
         addDragListener();
         mapViewParametersP.addListener(event -> redrawOnNextPulse());
         redrawOnNextPulse();
+    }
+
+    private void addPaneListeners(){
+        pane.setOnMousePressed(e -> coordinatesMouse.setValue(new Point2D(e.getX(), e.getY())));
+
+        pane.setOnMouseClicked(event -> {
+            if (event.isStillSincePress()) {
+                this.wayPointsManager.addWaypoint(
+                        mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
+                        mapViewParametersP.get().yUpperLeftMapView() + event.getY()
+                );
+            }
+
+        });
     }
 
     private void addScrollListener() {
@@ -100,6 +101,7 @@ public final class BaseMapManager {
     private void addCanvasProperties(){
         canvas.widthProperty().bind(pane.widthProperty());
         canvas.heightProperty().bind(pane.heightProperty());
+
         // JavaFX calls redrawIfNeeded at each beat
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
                     assert oldS == null;
@@ -143,10 +145,10 @@ public final class BaseMapManager {
                 for (int j = 0; j <= yMax; j++) {
                     try {
                         gc.drawImage(tileManager.getTileImage(new TileManager.TileId(mapViewParametersP.get().zoomLevel(),
-                                        i + tileX, j + tileY)), (i + tileX) * SIZE_TILE - mapViewParametersP.get().xUpperLeftMapView(),
+                                        i + tileX, j + tileY)),
+                                (i + tileX) * SIZE_TILE - mapViewParametersP.get().xUpperLeftMapView(),
                                 (j + tileY) * SIZE_TILE - mapViewParametersP.get().yUpperLeftMapView());
-                    } catch (IOException e) {
-                    }
+                    } catch (IOException e) {}
                 }
 
             }
