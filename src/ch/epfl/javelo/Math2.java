@@ -19,6 +19,7 @@ public final class Math2 {
     /**
      * @param x : integer to be divided
      * @param y : integer to be divided by
+     * @throws IllegalArgumentException
      * @return the integer part by excess of the division of x by y
      */
     public static int ceilDiv(int x, int y) {
@@ -30,6 +31,7 @@ public final class Math2 {
      * @param y0 : y-coordinate of the first point belonging to the line
      * @param y1 : y-coordinate of the second point belonging to the line
      * @param x  : x-coordinate of the point of interest
+     * @throws IllegalArgumentException
      * @return the y-coordinate of the point of interest that belongs to the line
      * passing through the points (0,y0) and (1,y1)
      */
@@ -43,6 +45,7 @@ public final class Math2 {
      * @param min : lower bound
      * @param v   : value of interest
      * @param max : upper bound
+     * @throws IllegalArgumentException
      * @return the value of v restricted to the interval [min, max]
      */
     public static int clamp(int min, int v, int max) {
@@ -56,6 +59,7 @@ public final class Math2 {
      * @param min : lower bound
      * @param v   : value of interest
      * @param max : upper bound
+     * @throws IllegalArgumentException
      * @return the value of v restricted to the interval [min, max]
      */
     public static double clamp(double min, double v, double max) {

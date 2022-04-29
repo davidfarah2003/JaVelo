@@ -1,19 +1,15 @@
 package ch.epfl.javelo.gui;
 import ch.epfl.javelo.Math2;
 
-import ch.epfl.javelo.projection.PointCh;
-import ch.epfl.javelo.projection.PointWebMercator;
-import com.sun.javafx.collections.ObservableListWrapper;
+
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
-
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -54,13 +50,10 @@ public final class BaseMapManager {
 
         addCanvasProperties();
 
-        pane.setOnMouseClicked(event -> {
+        pane.setOnMousePressed(event -> {
             coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
                 if (event.isStillSincePress()) {
-                    this.wayPointsManager.addWaypoint(
-                            mapViewParametersP.get().topLeft().getX() + event.getX(),
-                            mapViewParametersP.get().topLeft().getY() + event.getY()
-                    );
+                    this.wayPointsManager.addWaypoint(event.getX(), event.getY());
 
                 }
 
@@ -68,47 +61,49 @@ public final class BaseMapManager {
 
         addScrollListener();
         addDragListener();
+        mapViewParametersP.addListener(event -> redrawOnNextPulse());
         redrawOnNextPulse();
     }
 
     private void addScrollListener() {
-        pane.setOnScroll(event -> {
-            int newZoomLevel = Math2.clamp(ZOOM_LEVEL_MIN, (int) Math.rint(mapViewParametersP.get().zoomLevel()
-                    + (event.getDeltaY())), ZOOM_LEVEL_MAX);
+        SimpleLongProperty minScrollTime = new SimpleLongProperty();
+        pane.setOnScroll(e -> {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime < minScrollTime.get()) return;
+            minScrollTime.set(currentTime + 250);
+            double zoomDelta = Math.signum(e.getDeltaY());
 
-            int difference = newZoomLevel - mapViewParametersP.get().zoomLevel();
+            int currentZoomLevel = mapViewParametersP.get().zoomLevel();
+
+            int newZoomLevel = Math2.clamp(ZOOM_LEVEL_MIN,currentZoomLevel +  (int) zoomDelta, ZOOM_LEVEL_MAX);
+
+            int difference = newZoomLevel - currentZoomLevel;
 
             Point2D topLeftPoint = mapViewParametersP.get().topLeft();
-            topLeftPoint = topLeftPoint.add(event.getX(), event.getY());
+
+            topLeftPoint = topLeftPoint.add(e.getX(), e.getY());
             topLeftPoint = topLeftPoint.multiply(Math.scalb(1, difference));
-            topLeftPoint = topLeftPoint.subtract(event.getX(), event.getY());
+            topLeftPoint = topLeftPoint.subtract(e.getX(), e.getY());
 
             mapViewParametersP.setValue(new MapViewParameters(newZoomLevel, topLeftPoint.getX(), topLeftPoint.getY()));
-            redrawOnNextPulse();
+
         });
 
     }
 
 
+
     private void addCanvasProperties(){
         canvas.widthProperty().bind(pane.widthProperty());
         canvas.heightProperty().bind(pane.heightProperty());
-
         // JavaFX calls redrawIfNeeded at each beat
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
                     assert oldS == null;
                     newS.addPreLayoutPulseListener(this::redrawIfNeeded);
                 });
 
-        pane.widthProperty().addListener((p, oldS, newS) -> {
-            pane.setMinWidth((Double)newS);
-            redrawOnNextPulse();
-        });
-
-        pane.heightProperty().addListener((p, oldS, newS) -> {
-           pane.setMinHeight((Double) newS);
-            redrawOnNextPulse();
-         });
+        pane.widthProperty().addListener((p, oldS, newS) -> redrawOnNextPulse());
+        pane.heightProperty().addListener((p, oldS, newS) -> redrawOnNextPulse());
 
     }
 
@@ -118,32 +113,9 @@ public final class BaseMapManager {
             Point2D point = mapViewParametersP.get().topLeft();
             point = point.add(coordinatesMouse.get());
             point = point.subtract(event.getX(), event.getY());
-
-
             mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
-            redrawOnNextPulse();
-
-            //commented due to it being unnecessary and breaking encapsulation
-            /*
-            ArrayList<Waypoint> list = new ArrayList<>(wayPointsManager.getWayPoints());
-            System.out.println(list.size());
-
-            for (Waypoint w : list){
-                int nodeId = w.nodeID();
-                PointWebMercator p = PointWebMercator.ofPointCh(w.point());
-                double x = p.xAtZoomLevel(mapViewParametersP.get().zoomLevel());
-                double y = p.yAtZoomLevel(mapViewParametersP.get().zoomLevel());
-                double relativeX = x - mapViewParametersP.get().topLeft().getX();
-                double relativeY = y - mapViewParametersP.get().topLeft().getY();
-                PointWebMercator p2 = PointWebMercator.of(mapViewParametersP.get().zoomLevel(), x, y);
-                PointCh p3 = p2.toPointCh();
-                wayPointsManager.removeWaypoint(w);
-
-            }
-            wayPointsManager.drawWayPoints();
-
-             */
             coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
+
         });
     }
 
@@ -169,7 +141,23 @@ public final class BaseMapManager {
             redrawNeeded = false;
 
             GraphicsContext gc = canvas.getGraphicsContext2D();
+            int tileX = (int) Math.floor(mapViewParametersP.get().xUpperLeftMapView() / SIZE_TILE);
+            int tileY = (int) Math.floor(mapViewParametersP.get().yUpperLeftMapView() / SIZE_TILE);
+            int xMax = (int) Math.ceil(canvas.getWidth() / SIZE_TILE);
+            int yMax = (int) Math.ceil(canvas.getHeight() / SIZE_TILE);
 
+
+            for (int i = 0; i <= xMax; i++) {
+                for (int j = 0; j <= yMax; j++) {
+                    try {
+                        gc.drawImage(tileManager.getTileImage(new TileManager.TileId(mapViewParametersP.get().zoomLevel(),
+                                        i + tileX, j + tileY)), (i + tileX) * SIZE_TILE - mapViewParametersP.get().xUpperLeftMapView(),
+                                (j + tileY) * SIZE_TILE - mapViewParametersP.get().yUpperLeftMapView());
+                    } catch (IOException e) {
+                    }
+                }
+
+            /*
             int xMin = (int) Math.floor(mapViewParametersP.get().xUpperLeftMapView() / SIZE_TILE);
             int xMax = (int) Math.floor((mapViewParametersP.get().xUpperLeftMapView() + canvas.getWidth()) / SIZE_TILE);
             int yMin = (int) Math.floor(mapViewParametersP.get().yUpperLeftMapView() / SIZE_TILE);
@@ -253,6 +241,9 @@ public final class BaseMapManager {
                 height += (y == yMin ? sourceHeightFirstTile : SIZE_TILE);
             }
 
+             */
+
+            }
         }
     }
 

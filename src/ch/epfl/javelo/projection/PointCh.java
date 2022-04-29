@@ -32,7 +32,6 @@ public record PointCh(double e, double n) {
     public double squaredDistanceTo(PointCh that){
         double x = that.e() - this.e;
         double y = that.n() - this.n;
-
         return Math2.squaredNorm(x,y);
     }
 

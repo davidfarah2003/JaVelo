@@ -59,6 +59,7 @@ public final class RouteComputer {
 
             if (nodeChosenId == endNodeId) {
                 List<Edge> edges = reconstructRoute(startNodeId, endNodeId);
+                nodesToExplore.clear();
                 return new SingleRoute(edges);
             }
 

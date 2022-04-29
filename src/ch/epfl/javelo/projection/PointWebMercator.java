@@ -11,6 +11,7 @@ import ch.epfl.javelo.Preconditions;
  * @author David Farah (341017)
  */
 public record PointWebMercator(double x, double y) {
+    private static final int VALUE_FORMULA = 8;
 
     /**
      * @throws IllegalArgumentException
@@ -29,7 +30,8 @@ public record PointWebMercator(double x, double y) {
      * @return new PointWebMercator with corresponding coordinates at zoom 0
      */
     public static PointWebMercator of(int zoomLevel, double x, double y) {
-        return new PointWebMercator(Math.scalb(x, -(8 + zoomLevel)), Math.scalb(y, -(8 + zoomLevel)));
+        return new PointWebMercator(Math.scalb(x, -(VALUE_FORMULA + zoomLevel)),
+                Math.scalb(y, -(VALUE_FORMULA + zoomLevel)));
     }
 
     /**
@@ -48,8 +50,7 @@ public record PointWebMercator(double x, double y) {
      * @return the x-coordinate for a certain zoom level
      */
     public double xAtZoomLevel(int zoomLevel){
-        Preconditions.checkArgument(zoomLevel >= 0 && zoomLevel <= 20);
-        return Math.scalb(x, 8 + zoomLevel);
+        return Math.scalb(x, VALUE_FORMULA + zoomLevel);
     }
 
     /**
@@ -58,8 +59,7 @@ public record PointWebMercator(double x, double y) {
      * @return the y-coordinate for a certain zoom level
      */
     public double yAtZoomLevel(int zoomLevel){
-        Preconditions.checkArgument(zoomLevel >= 0 && zoomLevel <= 20);
-        return Math.scalb(y, 8 + zoomLevel);
+        return Math.scalb(y, VALUE_FORMULA + zoomLevel);
     }
 
     /**
@@ -84,8 +84,10 @@ public record PointWebMercator(double x, double y) {
      * or null if it does not exist
      */
     public PointCh toPointCh() {
-        double e = Ch1903.e(lon(), lat());
-        double n = Ch1903.n(lon(), lat());
+        double longitude = lon();
+        double latitude = lat();
+        double e = Ch1903.e(longitude, latitude);
+        double n = Ch1903.n(longitude, latitude);
         return (!SwissBounds.containsEN(e, n) ? null : new PointCh(e, n));
     }
 }

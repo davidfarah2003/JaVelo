@@ -6,6 +6,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 
@@ -88,8 +89,20 @@ public final class WayPointsManager {
             pane.setPickOnBounds(false);
             pinWaypointMap = new HashMap<>();
             wayPoints.addListener((InvalidationListener) observable -> redrawWaypoints());
+            mapViewParameters.addListener(o -> replaceWayPoints());
             redrawWaypoints();
         }
+
+        private void replaceWayPoints() {
+            for (Node g : pane.getChildren()) {
+                g.setLayoutX(mapViewParameters.get().
+                        viewX(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
+                g.setLayoutY(mapViewParameters.get().
+                        viewY(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
+            }
+        }
+
+
 
         public void redrawWaypoints(){
             pane.getChildren().clear();
@@ -138,6 +151,23 @@ public final class WayPointsManager {
 
         private void addPinListeners(Group pin){
             pin.setOnMouseClicked(mouseEvent -> removeWaypoint(pinWaypointMap.get(pin)));
+
+            pin.setOnMouseDragged(event -> {
+
+                double x = event.getSceneX();
+                System.out.println(x);
+                double y = event.getSceneY();
+                System.out.println(y);
+
+                if(addWaypoint(x, y)){
+                    int index = wayPoints.indexOf(pinWaypointMap.get(pin));
+                    Waypoint w = wayPoints.get(wayPoints.size() - 1);
+                    wayPoints.remove(wayPoints.size() - 1);
+                    wayPoints.set(index, w);
+                }
+
+            });
+
         }
     }
 
