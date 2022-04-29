@@ -122,6 +122,7 @@ public final class WayPointsManager {
                 pane.getChildren().get(0).getStyleClass().clear();
                 pane.getChildren().get(0).getStyleClass().add("pin");
                 pane.getChildren().get(0).getStyleClass().add("first");
+
             }
 
             if(pane.getChildren().size() > 1)
@@ -153,7 +154,6 @@ public final class WayPointsManager {
             pin.setOnMouseClicked(mouseEvent -> removeWaypoint(pinWaypointMap.get(pin)));
 
             pin.setOnMouseDragged(event -> {
-
                 double x = event.getSceneX();
                 System.out.println(x);
                 double y = event.getSceneY();
@@ -165,7 +165,6 @@ public final class WayPointsManager {
                     wayPoints.remove(wayPoints.size() - 1);
                     wayPoints.set(index, w);
                 }
-
             });
 
         }

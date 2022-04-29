@@ -53,8 +53,10 @@ public final class BaseMapManager {
         pane.setOnMousePressed(event -> {
             coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
                 if (event.isStillSincePress()) {
-                    this.wayPointsManager.addWaypoint(event.getX(), event.getY());
-
+                    this.wayPointsManager.addWaypoint(
+                            mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
+                            mapViewParametersP.get().yUpperLeftMapView() + event.getY()
+                    );
                 }
 
         });
