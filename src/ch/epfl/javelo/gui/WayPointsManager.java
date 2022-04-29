@@ -54,8 +54,7 @@ public final class WayPointsManager {
      * @return true if a WayPoint has been added, false otherwise
      */
     public boolean addWaypoint(double x, double y) {
-        PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y);
-        int closestNodeId = graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
+        int closestNodeId = getNodeId(x, y);
 
         if (closestNodeId < 0){
             signalError.accept(PROXIMITY_ERROR_MSG);
@@ -69,19 +68,27 @@ public final class WayPointsManager {
     /**
      * @param x coordinate of a point to add (WebMercator)
      * @param y coordinate of a point to add (WebMercator)
-     * @return true if a WayPoint has been added, false otherwise
+     * @return true if a WayPoint has been replaced, false otherwise
      */
     private boolean replaceWaypoint(double x, double y, Waypoint oldWaypoint) {
-        PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y);
-        int closestNodeId = graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
+        int closestNodeId = getNodeId(x, y);
 
         if (closestNodeId < 0){
             signalError.accept(PROXIMITY_ERROR_MSG);
             return false;
         }
+        else if(!wayPoints.contains(oldWaypoint)){
+            return false;
+        }
 
         wayPoints.set(wayPoints.indexOf(oldWaypoint), new Waypoint(graph.nodePoint(closestNodeId), closestNodeId));
         return true;
+    }
+
+
+    private int getNodeId(double x, double y){
+        PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y);
+        return graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
     }
 
 
@@ -125,7 +132,6 @@ public final class WayPointsManager {
                         viewY(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
             }
         }
-
 
 
         public void redrawWaypoints(){
@@ -208,10 +214,6 @@ public final class WayPointsManager {
                         }
                 );
             });
-
-
-
-
         }
     }
 
