@@ -130,8 +130,7 @@ public final class BaseMapManager {
     private void addDragListener(){
         pane.setOnMouseDragged(event -> {
                 Point2D point = mapViewParametersP.get().topLeft();
-                point = point.add(coordinatesMouse.get());
-                point = point.subtract(event.getX(), event.getY());
+                point = point.add(coordinatesMouse.get()).subtract(event.getX(), event.getY());
                 mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
                 coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
         });
@@ -157,7 +156,10 @@ public final class BaseMapManager {
             for (int i = 0; i <= xMax; i++) {
                 for (int j = 0; j <= yMax; j++) {
                     try {
-                        gc.drawImage(tileManager.getTileImage(new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i + tileX, j + tileY)),
+                        gc.drawImage(tileManager
+                                        .getTileImage(new TileManager.TileId(mapViewParametersP.get().zoomLevel(),
+                                                i + tileX,
+                                                j + tileY)),
                                 (i + tileX) * SIZE_TILE - mapViewParametersP.get().xUpperLeftMapView(),
                                 (j + tileY) * SIZE_TILE - mapViewParametersP.get().yUpperLeftMapView());
                     } catch (IOException e) {

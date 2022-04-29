@@ -4,6 +4,7 @@ import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
@@ -42,10 +43,12 @@ public final class WayPointsManager {
         this.graph = graph;
         this.mapViewParameters = mapViewParameters;
         this.wayPoints = wayPoints;
-
+        RouteBean.waypoints = wayPoints;
         this.signalError = signalError;
         this.gui = new gui();
     }
+
+
 
     /**
      * Add a WayPoint to the Navigation
@@ -136,11 +139,25 @@ public final class WayPointsManager {
             pinWaypointMap = new HashMap<>();
             coordsBeforeDrag = new mouseCoordinates(0,0);
 
-            wayPoints.addListener((InvalidationListener) observable -> redrawWaypoints());
+            wayPoints.addListener((InvalidationListener) observable -> {
+                redrawWaypoints();
+            });
             mapViewParameters.addListener(o -> repositionWayPoints());
 
             redrawWaypoints();
         }
+
+/*
+        private void replaceWayPoints() {
+
+            for (Node g : pane.getChildren()) {
+                g.setLayoutX(mapViewParameters.get().
+                        viewX(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
+                g.setLayoutY(mapViewParameters.get().
+                        viewY(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
+            }
+
+ */
 
         /**
          * Repositions waypoints pins to the correct point on the map
@@ -153,6 +170,7 @@ public final class WayPointsManager {
                         pin.setLayoutY(mapViewParameters.get().viewY(waypointMercator));
                     }
             );
+
         }
 
 
