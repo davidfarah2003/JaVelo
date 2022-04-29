@@ -185,7 +185,6 @@ public final class WayPointsManager {
             pin.setOnMouseClicked(
                     mouseEvent -> {
                         if(mouseEvent.isStillSincePress()){
-                            System.out.println("dsfsd");
                             removeWaypoint(pinWaypointMap.get(pin));
                         }
                     }
