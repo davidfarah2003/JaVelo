@@ -55,9 +55,10 @@ public final class BaseMapManager {
 
         pane.setOnMouseClicked(event -> {
                 if (event.isStillSincePress()) {
-                    this.wayPointsManager.addWaypoint(this.mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
-                            this.mapViewParametersP.get().yUpperLeftMapView() + event.getY());
-
+                    this.wayPointsManager.addWaypoint(
+                            mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
+                            mapViewParametersP.get().yUpperLeftMapView() + event.getY()
+                    );
                 }
 
         });
@@ -137,6 +138,7 @@ public final class BaseMapManager {
             int yMax = (int) Math.ceil(canvas.getHeight() / SIZE_TILE);
 
 
+            //Iterate and draw tiles in the canvas
             for (int i = 0; i <= xMax; i++) {
                 for (int j = 0; j <= yMax; j++) {
                     try {
@@ -146,92 +148,6 @@ public final class BaseMapManager {
                     } catch (IOException e) {
                     }
                 }
-
-            /*
-            int xMin = (int) Math.floor(mapViewParametersP.get().xUpperLeftMapView() / SIZE_TILE);
-            int xMax = (int) Math.floor((mapViewParametersP.get().xUpperLeftMapView() + canvas.getWidth()) / SIZE_TILE);
-            int yMin = (int) Math.floor(mapViewParametersP.get().yUpperLeftMapView() / SIZE_TILE);
-            int yMax = (int) Math.floor((mapViewParametersP.get().yUpperLeftMapView() + canvas.getHeight()) / SIZE_TILE);
-
-            double xSourceFirstTile = mapViewParametersP.get().xUpperLeftMapView() - xMin * SIZE_TILE;
-            double ySourceFirstTile = mapViewParametersP.get().yUpperLeftMapView() - yMin * SIZE_TILE;
-            double sourceWidthFirstTile = SIZE_TILE - xSourceFirstTile;
-            double sourceHeightFirstTile = SIZE_TILE - ySourceFirstTile;
-            double widthLastTile = mapViewParametersP.get().xUpperLeftMapView() + canvas.getWidth() - xMax * SIZE_TILE;
-            double heightLastTile = mapViewParametersP.get().yUpperLeftMapView() + canvas.getHeight() - yMax * SIZE_TILE;
-
-            double length = 0;
-            double height = 0;
-            for (int y = yMin; y <= yMax; y++) {
-                for (int x = xMin; x <= xMax; x++) {
-                    if (y == yMin) {
-                        if (x == xMin) {
-                            drawTileInCanvas(gc, x, y, xSourceFirstTile, ySourceFirstTile,
-                                    sourceWidthFirstTile, sourceHeightFirstTile, 0, 0);
-
-                            length += sourceWidthFirstTile;
-                        }
-
-                        else if (x == xMax) {
-                            drawTileInCanvas(gc, x, y, 0, ySourceFirstTile,
-                                    widthLastTile, sourceHeightFirstTile, length, 0);
-                        }
-
-                        else {
-                            drawTileInCanvas(gc, x, y,0, ySourceFirstTile,
-                                    SIZE_TILE, sourceHeightFirstTile, length, 0);
-
-                            length += SIZE_TILE;
-                        }
-                    }
-
-                    else if (y == yMax) {
-                        if (x == xMin) {
-                            drawTileInCanvas(gc, x, y, xSourceFirstTile, 0,
-                                    sourceWidthFirstTile, heightLastTile, 0, height);
-
-                            length += sourceWidthFirstTile;
-                        }
-
-                        else if (x == xMax) {
-                            drawTileInCanvas(gc, x, y,0, 0,
-                                    widthLastTile, heightLastTile, length, height);
-                        }
-
-                        else{
-                            drawTileInCanvas(gc, x, y,0,0,
-                                    SIZE_TILE, heightLastTile, length, height);
-
-                            length += SIZE_TILE;
-                        }
-                    }
-
-                    else{
-                        if (x == xMin){
-                            drawTileInCanvas(gc, x, y, xSourceFirstTile, 0,
-                                    sourceWidthFirstTile, SIZE_TILE, 0, height);
-
-                            length += sourceWidthFirstTile;
-                        }
-
-                        else if (x == xMax){
-                            drawTileInCanvas(gc, x, y, 0,0,
-                                    widthLastTile, SIZE_TILE, length, height);
-                        }
-
-                        else{
-                            drawTileInCanvas(gc, x, y,0, 0,
-                                    SIZE_TILE, SIZE_TILE, length, height);
-
-                            length += SIZE_TILE;
-                        }
-                    }
-                }
-                length = 0;
-                height += (y == yMin ? sourceHeightFirstTile : SIZE_TILE);
-            }
-
-             */
 
             }
         }

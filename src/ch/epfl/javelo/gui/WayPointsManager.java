@@ -4,14 +4,11 @@ import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,6 +66,25 @@ public final class WayPointsManager {
         return true;
     }
 
+    /**
+     * @param x coordinate of a point to add (WebMercator)
+     * @param y coordinate of a point to add (WebMercator)
+     * @return true if a WayPoint has been added, false otherwise
+     */
+    private boolean replaceWaypoint(double x, double y, Waypoint oldWaypoint) {
+        PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y);
+        int closestNodeId = graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
+
+        if (closestNodeId < 0){
+            signalError.accept(PROXIMITY_ERROR_MSG);
+            return false;
+        }
+
+        wayPoints.set(wayPoints.indexOf(oldWaypoint), new Waypoint(graph.nodePoint(closestNodeId), closestNodeId));
+        return true;
+    }
+
+
     private void removeWaypoint(Waypoint waypoint){
         wayPoints.remove(waypoint);
     }
@@ -86,16 +102,19 @@ public final class WayPointsManager {
         private final String svgInside = "M0-23A1 1 0 000-29 1 1 0 000-23";
         private final Pane pane;
         private final Map<Group, Waypoint> pinWaypointMap;
-        private ObjectProperty<Point2D> p;
+        private final mouseCoordinates coordsBeforeDrag;
 
         public gui() {
             this.pane = new Pane();
             pane.setPickOnBounds(false);
+
             pinWaypointMap = new HashMap<>();
+            coordsBeforeDrag = new mouseCoordinates(0,0);
+
             wayPoints.addListener((InvalidationListener) observable -> redrawWaypoints());
             mapViewParameters.addListener(o -> replaceWayPoints());
+
             redrawWaypoints();
-            p = new SimpleObjectProperty<>();
         }
 
         private void replaceWayPoints() {
@@ -108,29 +127,21 @@ public final class WayPointsManager {
         }
 
 
+
         public void redrawWaypoints(){
             pane.getChildren().clear();
+            pinWaypointMap.clear();
 
-            int i = 0;
             for (Waypoint wayPoint : wayPoints) {
                 Group pin = createPinGroup();
-                if (i == 0) {
-                    pin.getStyleClass().add("first");
-                } else if (i == wayPoints.size() - 1) {
-                    pin.getStyleClass().add("last");
-                } else {
-                    pin.getStyleClass().add("middle");
-                }
                 PointWebMercator anchorPoint = PointWebMercator.ofPointCh(wayPoint.point());
                 pin.setLayoutX(mapViewParameters.get().viewX(anchorPoint));
                 pin.setLayoutY(mapViewParameters.get().viewY(anchorPoint));
                 addPinListeners(pin);
                 pane.getChildren().add(pin);
                 pinWaypointMap.put(pin, wayPoint);
-                i++;
             }
 
-            /*
             if(pane.getChildren().size() > 0)
             {
                 pane.getChildren().get(0).getStyleClass().clear();
@@ -146,8 +157,6 @@ public final class WayPointsManager {
                 pane.getChildren().get(wayPoints.size() - 1).getStyleClass().add("last");
             }
 
-             */
-
         }
 
 
@@ -162,20 +171,46 @@ public final class WayPointsManager {
 
             Group pin = new Group(outside, inside);
             pin.getStyleClass().add("pin");
-            pin.getStyleClass().add("pin.middle");
+            pin.getStyleClass().add("middle");
             return pin;
         }
 
         private void addPinListeners(Group pin){
-            pin.setOnMouseClicked(e -> {
-                        if (e.isStillSincePress()) {
+            pin.setOnMouseClicked(
+                    mouseEvent -> {
+                        if(mouseEvent.isStillSincePress()){
+                            System.out.println("dsfsd");
                             removeWaypoint(pinWaypointMap.get(pin));
                         }
-                    });
+                    }
+            );
 
-            pin.setOnMousePressed(e -> {
-                p.setValue(new Point2D(e.getX(), e.getY()));
+            pin.setOnMousePressed(
+                mouseEvent -> {
+                    coordsBeforeDrag.setX(mouseEvent.getX());
+                    coordsBeforeDrag.setY(mouseEvent.getY());
+                }
+            );
+
+            pin.setOnMouseDragged(mouseEvent -> {
+                pin.setLayoutX(pin.getLayoutX() + (mouseEvent.getX() - coordsBeforeDrag.getX()));
+                pin.setLayoutY(pin.getLayoutY() + (mouseEvent.getY() - coordsBeforeDrag.getY()));
+
+                pin.setOnMouseReleased(mouseEvent1 -> {
+                            if(!replaceWaypoint(
+                                    mapViewParameters.get().xUpperLeftMapView() + pin.getLayoutX(),
+                                    mapViewParameters.get().yUpperLeftMapView() + pin.getLayoutY(),
+                                    pinWaypointMap.get(pin))
+                            )
+                            {
+                                redrawWaypoints();
+                            }
+                        }
+                );
             });
+
+
+
 
         }
     }
