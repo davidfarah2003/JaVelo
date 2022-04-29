@@ -125,6 +125,7 @@ public final class WayPointsManager {
         }
 
         private void replaceWayPoints() {
+            po
             for (Node g : pane.getChildren()) {
                 g.setLayoutX(mapViewParameters.get().
                         viewX(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
