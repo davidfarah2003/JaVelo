@@ -43,7 +43,6 @@ public final class BaseMapManager {
         this.tileManager = tileManager;
         this.wayPointsManager = wayPointsManager;
         this.mapViewParametersP = mapViewParametersP;
-
         this.coordinatesMouse = new SimpleObjectProperty<>();
         this.canvas = new Canvas();
         this.pane = new Pane(canvas);
@@ -56,7 +55,11 @@ public final class BaseMapManager {
         redrawOnNextPulse();
     }
 
+    /**
+     * Adds listeners to the pane
+     */
     private void addPaneListeners(){
+        // stores the coordinates of the mouse when pressed
         pane.setOnMousePressed(e -> coordinatesMouse.setValue(new Point2D(e.getX(), e.getY())));
 
         pane.setOnMouseClicked(event -> {
@@ -68,20 +71,44 @@ public final class BaseMapManager {
             }
 
         });
+
+        // redraw the canvas when the dimensions of the pane have changed
+        pane.widthProperty().addListener((p, oldS, newS) -> redrawOnNextPulse());
+        pane.heightProperty().addListener((p, oldS, newS) -> redrawOnNextPulse());
     }
 
+    /**
+     * Adds properties to the canvas
+     */
+    private void addCanvasProperties(){
+        // bind canvas dimensions to pane dimensions
+        canvas.widthProperty().bind(pane.widthProperty());
+        canvas.heightProperty().bind(pane.heightProperty());
+
+        // JavaFX calls redrawIfNeeded at each beat
+        canvas.sceneProperty().addListener((p, oldS, newS) -> {
+            assert oldS == null;
+            newS.addPreLayoutPulseListener(this::redrawIfNeeded);
+        });
+
+
+    }
+
+
+    /**
+     * Adds a scroll listener to the map to manage the zoom level
+     */
     private void addScrollListener() {
         SimpleLongProperty minScrollTime = new SimpleLongProperty();
         pane.setOnScroll(e -> {
+            // minimizing the frequency which enables zoom level changes (4 zoomLevel max per second)
             long currentTime = System.currentTimeMillis();
             if (currentTime < minScrollTime.get()) return;
             minScrollTime.set(currentTime + 250);
             double zoomDelta = Math.signum(e.getDeltaY());
 
             int currentZoomLevel = mapViewParametersP.get().zoomLevel();
-
-            int newZoomLevel = Math2.clamp(ZOOM_LEVEL_MIN,currentZoomLevel +  (int) zoomDelta, ZOOM_LEVEL_MAX);
-
+            int newZoomLevel = Math2.clamp(ZOOM_LEVEL_MIN, currentZoomLevel + (int) zoomDelta, ZOOM_LEVEL_MAX);
             int difference = newZoomLevel - currentZoomLevel;
 
             Point2D topLeftPoint = mapViewParametersP.get().topLeft();
@@ -97,23 +124,9 @@ public final class BaseMapManager {
     }
 
 
-
-    private void addCanvasProperties(){
-        canvas.widthProperty().bind(pane.widthProperty());
-        canvas.heightProperty().bind(pane.heightProperty());
-
-        // JavaFX calls redrawIfNeeded at each beat
-        canvas.sceneProperty().addListener((p, oldS, newS) -> {
-                    assert oldS == null;
-                    newS.addPreLayoutPulseListener(this::redrawIfNeeded);
-                });
-
-        pane.widthProperty().addListener((p, oldS, newS) -> redrawOnNextPulse());
-        pane.heightProperty().addListener((p, oldS, newS) -> redrawOnNextPulse());
-
-    }
-
-
+    /**
+     * Adds a drag listener to the map to manage the displacement of the map
+     */
     private void addDragListener(){
         pane.setOnMouseDragged(event -> {
                 Point2D point = mapViewParametersP.get().topLeft();
@@ -127,7 +140,7 @@ public final class BaseMapManager {
 
 
     /**
-     * Method that redraws the map if and only if the attribute redrawNeeded is true
+     * Redraws the map if and only if redrawNeeded is true
      */
     private void redrawIfNeeded() {
         if (redrawNeeded) {
@@ -144,11 +157,12 @@ public final class BaseMapManager {
             for (int i = 0; i <= xMax; i++) {
                 for (int j = 0; j <= yMax; j++) {
                     try {
-                        gc.drawImage(tileManager.getTileImage(new TileManager.TileId(mapViewParametersP.get().zoomLevel(),
-                                        i + tileX, j + tileY)),
+                        gc.drawImage(tileManager.getTileImage(new TileManager.TileId(mapViewParametersP.get().zoomLevel(), i + tileX, j + tileY)),
                                 (i + tileX) * SIZE_TILE - mapViewParametersP.get().xUpperLeftMapView(),
                                 (j + tileY) * SIZE_TILE - mapViewParametersP.get().yUpperLeftMapView());
-                    } catch (IOException e) {}
+                    } catch (IOException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
 
             }
@@ -157,7 +171,7 @@ public final class BaseMapManager {
 
 
     /**
-     * method to request a redraw of the map at the next beat, sets redrawNeeded to true if called
+     * Redraws the map at the next beat by setting redrawNeeded to true if called
      */
     private void redrawOnNextPulse() {
         redrawNeeded = true;
