@@ -50,13 +50,14 @@ public final class BaseMapManager {
 
         addCanvasProperties();
 
-        pane.setOnMousePressed(event -> {
-            coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
+        pane.setOnMousePressed(e -> coordinatesMouse.setValue(new Point2D(e.getX(), e.getY())));
+
+
+        pane.setOnMouseClicked(event -> {
                 if (event.isStillSincePress()) {
-                    this.wayPointsManager.addWaypoint(
-                            mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
-                            mapViewParametersP.get().yUpperLeftMapView() + event.getY()
-                    );
+                    this.wayPointsManager.addWaypoint(this.mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
+                            this.mapViewParametersP.get().yUpperLeftMapView() + event.getY());
+
                 }
 
         });
@@ -112,27 +113,14 @@ public final class BaseMapManager {
 
     private void addDragListener(){
         pane.setOnMouseDragged(event -> {
-            Point2D point = mapViewParametersP.get().topLeft();
-            point = point.add(coordinatesMouse.get());
-            point = point.subtract(event.getX(), event.getY());
-            mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
-            coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
-
+                Point2D point = mapViewParametersP.get().topLeft();
+                point = point.add(coordinatesMouse.get());
+                point = point.subtract(event.getX(), event.getY());
+                mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
+                coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
         });
     }
 
-
-
-
-    private void drawTileInCanvas(GraphicsContext gc, int x, int y, double sourceRectangleX,
-                                  double sourceRectangleY, double sourceWidth, double sourceHeight,
-                                  double destinationX, double destinationY) {
-        try {
-            gc.drawImage(tileManager.getTileImage(new TileManager.TileId(mapViewParametersP.get().zoomLevel(), x, y)),
-                    sourceRectangleX, sourceRectangleY, sourceWidth, sourceHeight,
-                    destinationX, destinationY, sourceWidth, sourceHeight);
-        } catch (IOException e) {}
-    }
 
 
     /**
