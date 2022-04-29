@@ -6,7 +6,6 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 
@@ -17,7 +16,7 @@ import java.util.function.Consumer;
 /**
  * Manages display and interaction with waypoints
  *
- * @author Wesley Nana Davies(344592)
+ * @author Wesley Nana Davies (344592)
  * @author David Farah (341017)
  */
 public final class WayPointsManager {
@@ -49,12 +48,13 @@ public final class WayPointsManager {
     }
 
     /**
+     * Add a WayPoint to the Navigation
      * @param x coordinate of a point to add (WebMercator)
      * @param y coordinate of a point to add (WebMercator)
      * @return true if a WayPoint has been added, false otherwise
      */
     public boolean addWaypoint(double x, double y) {
-        int closestNodeId = getNodeId(x, y);
+        int closestNodeId = getClosestNodeId(x, y);
 
         if (closestNodeId < 0){
             signalError.accept(PROXIMITY_ERROR_MSG);
@@ -66,12 +66,13 @@ public final class WayPointsManager {
     }
 
     /**
+     * Replace an already existing waypoint by another one (on the same rank)
      * @param x coordinate of a point to add (WebMercator)
      * @param y coordinate of a point to add (WebMercator)
      * @return true if a WayPoint has been replaced, false otherwise
      */
     private boolean replaceWaypoint(double x, double y, Waypoint oldWaypoint) {
-        int closestNodeId = getNodeId(x, y);
+        int closestNodeId = getClosestNodeId(x, y);
 
         if (closestNodeId < 0){
             signalError.accept(PROXIMITY_ERROR_MSG);
@@ -85,25 +86,38 @@ public final class WayPointsManager {
         return true;
     }
 
-
-    private int getNodeId(double x, double y){
+    /**
+     * Obtain the id of the closest Node at a given position withing the Search Distance
+     * @param x coordinate of a point to add (WebMercator)
+     * @param y coordinate of a point to add (WebMercator)
+     * @return the id of the Node
+     */
+    private int getClosestNodeId(double x, double y){
         PointWebMercator point = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y);
         return graph.nodeClosestTo(point.toPointCh(), SEARCH_DISTANCE);
     }
 
 
+    /**
+     * Remove a WayPoint from the Navigation
+     * @param waypoint to be removed
+     */
     private void removeWaypoint(Waypoint waypoint){
         wayPoints.remove(waypoint);
     }
 
 
     /**
-     * @return the JavaFX panel displaying the basemap.
+     * Returns the pane displaying the pins
+     * @return the JavaFX pane displaying the pins.
      */
     public Pane pane() {
         return gui.pane;
     }
 
+    /**
+     * Nested class that is responsible for the graphical interface of WayPoints
+     */
     private final class gui {
         private final String svgOutside = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
         private final String svgInside = "M0-23A1 1 0 000-29 1 1 0 000-23";
@@ -111,6 +125,10 @@ public final class WayPointsManager {
         private final Map<Group, Waypoint> pinWaypointMap;
         private final mouseCoordinates coordsBeforeDrag;
 
+        /**
+         * Constructor of the gui nested class, initialises the attributes and sets listeners on
+         * wayPoints and mapViewParameters
+         */
         public gui() {
             this.pane = new Pane();
             pane.setPickOnBounds(false);
@@ -119,22 +137,28 @@ public final class WayPointsManager {
             coordsBeforeDrag = new mouseCoordinates(0,0);
 
             wayPoints.addListener((InvalidationListener) observable -> redrawWaypoints());
-            mapViewParameters.addListener(o -> replaceWayPoints());
+            mapViewParameters.addListener(o -> repositionWayPoints());
 
             redrawWaypoints();
         }
 
-        private void replaceWayPoints() {
-            po
-            for (Node g : pane.getChildren()) {
-                g.setLayoutX(mapViewParameters.get().
-                        viewX(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
-                g.setLayoutY(mapViewParameters.get().
-                        viewY(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
-            }
+        /**
+         * Repositions waypoints pins to the correct point on the map
+         */
+        private void repositionWayPoints() {
+            pinWaypointMap.forEach(
+                    (pin, waypoint) -> {
+                        PointWebMercator waypointMercator =  PointWebMercator.ofPointCh(waypoint.point());
+                        pin.setLayoutX(mapViewParameters.get().viewX(waypointMercator));
+                        pin.setLayoutY(mapViewParameters.get().viewY(waypointMercator));
+                    }
+            );
         }
 
 
+        /**
+         * Method that redraws WayPoints from the wayPoints List (adds the pin Groups to the pane)
+         */
         public void redrawWaypoints(){
             pane.getChildren().clear();
             pinWaypointMap.clear();
@@ -167,6 +191,10 @@ public final class WayPointsManager {
         }
 
 
+        /**
+         * Create the Group that represents a pin on the map
+         * @return the pin Group created
+         */
         private Group createPinGroup(){
             SVGPath outside = new SVGPath();
             outside.setContent(svgOutside);
@@ -182,6 +210,10 @@ public final class WayPointsManager {
             return pin;
         }
 
+        /**
+         * Add Event Listeners to a waypoint pin
+         * @param pin the waypoint pin Group
+         */
         private void addPinListeners(Group pin){
             pin.setOnMouseClicked(
                     mouseEvent -> {
@@ -214,6 +246,7 @@ public final class WayPointsManager {
                         }
                 );
             });
+
         }
     }
 
