@@ -18,20 +18,31 @@ import java.util.Map;
 public final class RouteBean{
     private final RouteComputer rc;
     public static ObservableList<Waypoint> waypoints;
-    public ReadOnlyObjectProperty<Route> route;
-    public final DoubleProperty highlightedPosition = new SimpleDoubleProperty();
-    public ReadOnlyObjectProperty<ElevationProfile> elevationProfile = new SimpleObjectProperty<>();
+    public ObjectProperty<Route> route;
+    public DoubleProperty highlightedPosition = new SimpleDoubleProperty();
+    public ObjectProperty<ElevationProfile> elevationProfile;
     private final Map<Pair, Route> pairRouteMap = new LRUCache<>(5, 0.75f);
 
     public RouteBean(RouteComputer rc){
         this.rc = rc;
+        waypoints = FXCollections.observableArrayList();
+        route = new SimpleObjectProperty<>();
+        elevationProfile = new SimpleObjectProperty<>();
         waypoints.addListener((InvalidationListener)  e -> initializeAttributes());
-        initializeAttributes();
+
+    }
+
+
+    public static void changeWayPoints(ObservableList<Waypoint> list) {
+        //waypoints.clear();
+        waypoints.addAll(list);
     }
 
     private void initializeAttributes(){
+        System.out.println("Initializing attributes");
         List<Route> sr = new ArrayList<>();
         Iterator<Waypoint> it = waypoints.listIterator();
+        System.out.println(waypoints.size());
         Waypoint previousW = it.next();
         Waypoint currentW;
 
@@ -49,9 +60,11 @@ public final class RouteBean{
             previousW = currentW;
         }
 
-        route = new SimpleObjectProperty<>(new MultiRoute(sr));
-        elevationProfile = new SimpleObjectProperty<>
-                (ElevationProfileComputer.elevationProfile(route.get(), 5));
+        if(waypoints.size() >= 2 && !sr.contains(null)) {
+            System.out.println("setting values");
+            route.setValue(new MultiRoute(sr));
+            elevationProfile.setValue(ElevationProfileComputer.elevationProfile(route.get(), 5));
+        }
 
     }
 
@@ -66,6 +79,19 @@ public final class RouteBean{
     public void setHighlightedPositionProperty(double value){
         highlightedPosition.set(value);
     }
+
+    public ReadOnlyObjectProperty<Route> getRouteProperty() {
+        return route;
+    }
+
+    public ReadOnlyObjectProperty<ElevationProfile> getElevationProfileProperty() {
+        return elevationProfile;
+    }
+
+    public ObservableList<Waypoint> getWaypoints(){
+        return waypoints;
+    }
+
 
     private static class Pair{
         int first;
