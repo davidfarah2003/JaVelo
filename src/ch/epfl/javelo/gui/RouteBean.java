@@ -21,14 +21,17 @@ public final class RouteBean{
     public ObjectProperty<Route> route;
     public DoubleProperty highlightedPosition = new SimpleDoubleProperty();
     public ObjectProperty<ElevationProfile> elevationProfile;
-    private final Map<Pair, Route> pairRouteMap = new LRUCache<>(5, 0.75f);
+    private final Map<String, Route> pairRouteMap = new LRUCache<>(5, 0.75f);
 
     public RouteBean(RouteComputer rc){
         this.rc = rc;
         waypoints = FXCollections.observableArrayList();
         route = new SimpleObjectProperty<>();
         elevationProfile = new SimpleObjectProperty<>();
-        waypoints.addListener((InvalidationListener)  e -> initializeAttributes());
+        waypoints.addListener((InvalidationListener)  e -> {
+            if (!(waypoints.size() == 0))
+                initializeAttributes();
+        });
 
     }
 
@@ -39,29 +42,26 @@ public final class RouteBean{
     }
 
     private void initializeAttributes(){
-        System.out.println("Initializing attributes");
         List<Route> sr = new ArrayList<>();
         Iterator<Waypoint> it = waypoints.listIterator();
-        System.out.println(waypoints.size());
         Waypoint previousW = it.next();
         Waypoint currentW;
 
         while (it.hasNext()){
             currentW = it.next();
-            Pair p = new Pair(previousW.nodeID(), currentW.nodeID());
-            if (pairRouteMap.containsKey(p)){
-                sr.add(pairRouteMap.get(p));
+            String s = Integer.toString(previousW.nodeID()) + Integer.toString(currentW.nodeID());
+            if (pairRouteMap.containsKey(s)){
+                sr.add(pairRouteMap.get(s));
             }
             else{
                 Route singleRoute = rc.bestRouteBetween(previousW.nodeID(), currentW.nodeID());
                 sr.add(singleRoute);
-                pairRouteMap.put(p, singleRoute);
+                pairRouteMap.put(s, singleRoute);
             }
             previousW = currentW;
         }
 
         if(waypoints.size() >= 2 && !sr.contains(null)) {
-            System.out.println("setting values");
             route.setValue(new MultiRoute(sr));
             elevationProfile.setValue(ElevationProfileComputer.elevationProfile(route.get(), 5));
         }
