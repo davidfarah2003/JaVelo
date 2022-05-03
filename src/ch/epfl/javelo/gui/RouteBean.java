@@ -12,9 +12,9 @@ import java.util.*;
 public final class RouteBean{
     private final RouteComputer routeComputer;
     public static ObservableList<Waypoint> waypoints;
-    public ObjectProperty<Route> route;
-    public DoubleProperty highlightedPosition = new SimpleDoubleProperty();
-    public ObjectProperty<ElevationProfile> elevationProfile;
+    private ObjectProperty<Route> route;
+    private DoubleProperty highlightedPosition = new SimpleDoubleProperty();
+    private ObjectProperty<ElevationProfile> elevationProfile;
     private final Map<Integer, Route> hashRouteMap = new LRUCache<>(5, 0.75f);
 
     public RouteBean(RouteComputer routeComputer){

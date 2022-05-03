@@ -42,13 +42,13 @@ public final class RouteManager {
         circle.setOnMouseClicked(e -> {
                 PointWebMercator pt = mapViewParametersP.get().pointAt(circle.getCenterX(), circle.getCenterY());
                 PointCh ptch = pt.toPointCh();
-                int id = routeBean.route.get().nodeClosestTo(routeBean.highlightedPosition());
+                int id = routeBean.getRouteProperty().get().nodeClosestTo(routeBean.highlightedPosition());
                 Waypoint w = new Waypoint(ptch,id);
                 boolean value = routeBean.getWaypoints().stream().map(Waypoint::nodeID).anyMatch(i -> i == id);
                 if (value)
                     signalError.accept(message);
                 else{
-                    routeBean.getWaypoints().add(routeBean.route.get().indexOfSegmentAt(routeBean.highlightedPosition()), w);
+                    routeBean.getWaypoints().add(1, w);
                 }
                 });
 
@@ -60,19 +60,20 @@ public final class RouteManager {
 
 
     private void modifyRoute() {
-        System.out.println("clearing " + polyline.getPoints().size());
         polyline.getPoints().clear();
 
+       // System.out.println(routeBean.getRouteProperty().get().points().size());
+        System.out.println("manager reacts");
 
-        if (routeBean.route.get() != null) {
-            for (PointCh point : routeBean.route.get().points()) {
+        if (routeBean.getRouteProperty().get() != null) {
+            for (PointCh point : routeBean.getRouteProperty().get().points()) {
                 PointWebMercator p = PointWebMercator.ofPointCh(point);
                 double x = mapViewParametersP.get().viewX(p);
                 double y = mapViewParametersP.get().viewY(p);
                 polyline.getPoints().addAll(x, y);
             }
 
-            PointCh pt = routeBean.route.get().pointAt(routeBean.highlightedPosition());
+            PointCh pt = routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition());
             PointWebMercator pw = PointWebMercator.ofPointCh(pt);
             circle.setCenterX(mapViewParametersP.get().viewX(pw));
             circle.setCenterY(mapViewParametersP.get().viewY(pw));
@@ -85,11 +86,11 @@ public final class RouteManager {
 
     private void repositionRoutePoints() {
 
-        /*
+
         List<Double> coords = new ArrayList<>();
         int i = 0;
-        if (routeBean.route.get() != null) {
-            for (PointCh pointCh : routeBean.route.get().points()) {
+        if (routeBean.getRouteProperty().get() != null) {
+            for (PointCh pointCh : routeBean.getRouteProperty().get().points()) {
                 PointWebMercator pointWM = PointWebMercator.ofPointCh(pointCh);
                 if (i == 0) {
                     double viewX = mapViewParametersP.get().viewX(pointWM);
@@ -103,8 +104,7 @@ public final class RouteManager {
             }
 
             polyline.getPoints().setAll(coords);
-
-            PointCh pt = routeBean.route.get().pointAt(routeBean.highlightedPosition());
+            PointCh pt = routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition());
             PointWebMercator pw = PointWebMercator.ofPointCh(pt);
             circle.setCenterX(mapViewParametersP.get().viewX(pw));
             circle.setCenterY(mapViewParametersP.get().viewY(pw));
@@ -112,7 +112,7 @@ public final class RouteManager {
 
 
 
-         */
+
     }
 
     public Pane pane() {
