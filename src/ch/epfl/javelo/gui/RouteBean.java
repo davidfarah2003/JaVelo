@@ -35,12 +35,6 @@ public final class RouteBean{
 
     }
 
-
-    public static void changeWayPoints(ObservableList<Waypoint> list) {
-        //waypoints.clear();
-        waypoints.addAll(list);
-    }
-
     private void initializeAttributes(){
         List<Route> sr = new ArrayList<>();
         Iterator<Waypoint> it = waypoints.listIterator();
@@ -68,16 +62,16 @@ public final class RouteBean{
 
     }
 
-    public DoubleProperty highlightedPositionProperty(){
-        return highlightedPosition;
-    }
-
     public double highlightedPosition(){
         return highlightedPosition.get();
     }
 
     public void setHighlightedPositionProperty(double value){
         highlightedPosition.set(value);
+    }
+
+    public ObservableList<Waypoint> getWaypoints(){
+        return waypoints;
     }
 
     public ReadOnlyObjectProperty<Route> getRouteProperty() {
@@ -87,11 +81,6 @@ public final class RouteBean{
     public ReadOnlyObjectProperty<ElevationProfile> getElevationProfileProperty() {
         return elevationProfile;
     }
-
-    public ObservableList<Waypoint> getWaypoints(){
-        return waypoints;
-    }
-
 
     private static class Pair{
         int first;
