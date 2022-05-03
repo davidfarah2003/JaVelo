@@ -26,7 +26,14 @@ public final class RouteManager {
         this.routeBean = routeBean;
         this.mapViewParametersP = mapViewParametersP;
 
-        this.mapViewParametersP.addListener( e -> repositionRoutePoints() );
+        this.mapViewParametersP.addListener((p, oldV, newV) -> {
+                if (oldV.zoomLevel() == newV.zoomLevel()) {
+                    repositionRoutePoints();
+                }
+                else{
+                    modifyRoute();
+                }
+        });
 
 
         this.signalError = signalError;
@@ -59,7 +66,7 @@ public final class RouteManager {
                 });
 
 
-        //routeBean.route.addListener(e ->{ polyline.setVisible(routeBean.route.get() != null);});
+        routeBean.getRouteProperty().addListener(e ->{ polyline.setVisible(routeBean.getRouteProperty().get() != null);});
 
         pane.getChildren().addAll(polyline, circle);
     }
@@ -68,6 +75,7 @@ public final class RouteManager {
 
     private void modifyRoute() {
         polyline.getPoints().clear();
+        System.out.println("polyline cleared");
 
        // System.out.println(routeBean.getRouteProperty().get().points().size());
         //System.out.println("manager reacts");
@@ -80,10 +88,12 @@ public final class RouteManager {
                 polyline.getPoints().addAll(x, y);
             }
 
+
             PointCh pt = routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition());
             PointWebMercator pw = PointWebMercator.ofPointCh(pt);
             circle.setCenterX(mapViewParametersP.get().viewX(pw));
             circle.setCenterY(mapViewParametersP.get().viewY(pw));
+
             if (routeBean.getWaypoints().size() > 1) {
                 circle.setVisible(true);
             }

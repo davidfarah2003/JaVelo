@@ -34,7 +34,13 @@ public final class RouteBean {
 
 
     private void recalculateRouteAndProfile(){
-        System.out.println("rec");
+
+        if (waypoints.size() == 1){
+            route.setValue(null);
+            elevationProfile.setValue(null);
+            return;
+        }
+
         List<Route> singleRoutes = new ArrayList<>();
         Iterator<Waypoint> it = waypoints.listIterator();
         Waypoint oldWaypoint = it.next();
@@ -58,16 +64,18 @@ public final class RouteBean {
             oldWaypoint = currentWaypoint;
         }
 
-        if(waypoints.size() >= 2 && !singleRoutes.contains(null)) {
-            route.setValue(new MultiRoute(singleRoutes));
-            elevationProfile.setValue(ElevationProfileComputer.elevationProfile(route.get(), 5));
-        }
-        else{
-            route.setValue(null);
-            elevationProfile.setValue(null);
+            if (!singleRoutes.contains(null)) {
+                route.setValue(new MultiRoute(singleRoutes));
+                elevationProfile.setValue(ElevationProfileComputer.elevationProfile(route.get(), 5));
+            } else {
+                System.out.println("No route found");
+                route.setValue(null);
+                elevationProfile.setValue(null);
+            }
 
         }
-    }
+
+
 
 
     public double highlightedPosition(){
