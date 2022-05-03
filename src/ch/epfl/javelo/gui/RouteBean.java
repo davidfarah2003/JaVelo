@@ -26,6 +26,12 @@ public final class RouteBean{
         waypoints.addListener((InvalidationListener)  e -> recalculateRouteAndProfile());
     }
 
+
+    public static void changeWayPoints(ObservableList<Waypoint> list) {
+        //waypoints.clear();
+        waypoints.addAll(list);
+    }
+
     private void recalculateRouteAndProfile(){
         List<Route> singleRoutes = new ArrayList<>();
         Iterator<Waypoint> it = waypoints.listIterator();

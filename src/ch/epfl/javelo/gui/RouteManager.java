@@ -39,11 +39,25 @@ public final class RouteManager {
         circle = new Circle(5);
         circle.setId("highlight");
         circle.setVisible(false);
+        circle.setOnMouseClicked(e -> {
+                PointWebMercator pt = mapViewParametersP.get().pointAt(circle.getCenterX(), circle.getCenterY());
+                PointCh ptch = pt.toPointCh();
+                int id = routeBean.route.get().nodeClosestTo(routeBean.highlightedPosition());
+                Waypoint w = new Waypoint(ptch,id);
+                boolean value = routeBean.getWaypoints().stream().map(Waypoint::nodeID).anyMatch(i -> i == id);
+                if (value)
+                    signalError.accept(message);
+                else{
+                    routeBean.getWaypoints().add(routeBean.route.get().indexOfSegmentAt(routeBean.highlightedPosition()), w);
+                }
+                });
 
         //routeBean.route.addListener(e ->{ polyline.setVisible(routeBean.route.get() != null);});
 
         pane.getChildren().addAll(polyline, circle);
     }
+
+
 
     private void modifyRoute() {
         System.out.println("clearing " + polyline.getPoints().size());
