@@ -48,9 +48,6 @@ public final class WayPointsManager {
     }
 
 
-
-
-
     /**
      * Add a WayPoint to the Navigation
      *
@@ -143,27 +140,12 @@ public final class WayPointsManager {
 
             pinWaypointMap = new HashMap<>();
             coordsBeforeDrag = new mouseCoordinates(0, 0);
-            wayPoints.addListener((InvalidationListener) observable -> {
-                redrawWaypoints();
-                RouteBean.waypoints = wayPoints;
-
-            });
+            wayPoints.addListener((InvalidationListener) observable -> redrawWaypoints());
             mapViewParameters.addListener(o -> repositionWayPoints());
 
             redrawWaypoints();
         }
 
-/*
-        private void replaceWayPoints() {
-
-            for (Node g : pane.getChildren()) {
-                g.setLayoutX(mapViewParameters.get().
-                        viewX(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
-                g.setLayoutY(mapViewParameters.get().
-                        viewY(PointWebMercator.ofPointCh(pinWaypointMap.get((Group) g).point())));
-            }
-
- */
 
         /**
          * Repositions waypoints pins to the correct point on the map

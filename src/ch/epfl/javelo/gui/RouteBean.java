@@ -6,61 +6,60 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableListBase;
-import javafx.util.Pair;
 
-import java.beans.Beans;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class RouteBean{
-    private final RouteComputer rc;
+    private final RouteComputer routeComputer;
     public static ObservableList<Waypoint> waypoints;
     public ObjectProperty<Route> route;
     public DoubleProperty highlightedPosition = new SimpleDoubleProperty();
     public ObjectProperty<ElevationProfile> elevationProfile;
-    private final Map<String, Route> pairRouteMap = new LRUCache<>(5, 0.75f);
+    private final Map<Integer, Route> hashRouteMap = new LRUCache<>(5, 0.75f);
 
-    public RouteBean(RouteComputer rc){
-        this.rc = rc;
+    public RouteBean(RouteComputer routeComputer){
+        this.routeComputer = routeComputer;
         waypoints = FXCollections.observableArrayList();
         route = new SimpleObjectProperty<>();
         elevationProfile = new SimpleObjectProperty<>();
-        waypoints.addListener((InvalidationListener)  e -> {
-            if (!(waypoints.size() == 0))
-                initializeAttributes();
-        });
 
+        waypoints.addListener((InvalidationListener)  e -> recalculateRouteAndProfile());
     }
 
-    private void initializeAttributes(){
-        List<Route> sr = new ArrayList<>();
+    private void recalculateRouteAndProfile(){
+        List<Route> singleRoutes = new ArrayList<>();
         Iterator<Waypoint> it = waypoints.listIterator();
-        Waypoint previousW = it.next();
-        Waypoint currentW;
+        Waypoint oldWaypoint = it.next();
+        Waypoint currentWaypoint;
 
         while (it.hasNext()){
-            currentW = it.next();
-            String s = Integer.toString(previousW.nodeID()) + Integer.toString(currentW.nodeID());
-            if (pairRouteMap.containsKey(s)){
-                sr.add(pairRouteMap.get(s));
+            currentWaypoint = it.next();
+
+            int hash = Objects.hash(oldWaypoint.nodeID(), currentWaypoint.nodeID());
+
+            if (hashRouteMap.containsKey(hash)){
+                singleRoutes.add(hashRouteMap.get(hash));
             }
+
             else{
-                Route singleRoute = rc.bestRouteBetween(previousW.nodeID(), currentW.nodeID());
-                sr.add(singleRoute);
-                pairRouteMap.put(s, singleRoute);
+                Route singleRoute = routeComputer.bestRouteBetween(oldWaypoint.nodeID(), currentWaypoint.nodeID());
+                singleRoutes.add(singleRoute);
+                hashRouteMap.put(hash, singleRoute);
             }
-            previousW = currentW;
+
+            oldWaypoint = currentWaypoint;
         }
 
-        if(waypoints.size() >= 2 && !sr.contains(null)) {
-            route.setValue(new MultiRoute(sr));
+        if(waypoints.size() >= 2 && !singleRoutes.contains(null)) {
+            route.setValue(new MultiRoute(singleRoutes));
             elevationProfile.setValue(ElevationProfileComputer.elevationProfile(route.get(), 5));
         }
-
+        else{
+            route.setValue(null);
+            elevationProfile.setValue(null);
+        }
     }
+
 
     public double highlightedPosition(){
         return highlightedPosition.get();
