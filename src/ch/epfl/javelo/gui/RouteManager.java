@@ -27,7 +27,7 @@ public final class RouteManager {
         this.mapViewParametersP = mapViewParametersP;
 
         this.mapViewParametersP.addListener( e -> repositionRoutePoints() );
-        routeBean.getWaypoints().addListener((InvalidationListener) e -> modifyRoute());
+
 
         this.signalError = signalError;
         pane = new Pane();
@@ -39,6 +39,12 @@ public final class RouteManager {
         circle = new Circle(5);
         circle.setId("highlight");
         circle.setVisible(false);
+        
+        routeBean.getWaypoints().addListener((InvalidationListener) e -> {
+            circle.setVisible(false);
+            modifyRoute();
+        });
+
         circle.setOnMouseClicked(e -> {
                 PointWebMercator pt = mapViewParametersP.get().pointAt(circle.getCenterX(), circle.getCenterY());
                 PointCh ptch = pt.toPointCh();
@@ -52,6 +58,7 @@ public final class RouteManager {
                 }
                 });
 
+
         //routeBean.route.addListener(e ->{ polyline.setVisible(routeBean.route.get() != null);});
 
         pane.getChildren().addAll(polyline, circle);
@@ -63,7 +70,7 @@ public final class RouteManager {
         polyline.getPoints().clear();
 
        // System.out.println(routeBean.getRouteProperty().get().points().size());
-        System.out.println("manager reacts");
+        //System.out.println("manager reacts");
 
         if (routeBean.getRouteProperty().get() != null) {
             for (PointCh point : routeBean.getRouteProperty().get().points()) {
@@ -77,10 +84,12 @@ public final class RouteManager {
             PointWebMercator pw = PointWebMercator.ofPointCh(pt);
             circle.setCenterX(mapViewParametersP.get().viewX(pw));
             circle.setCenterY(mapViewParametersP.get().viewY(pw));
-            circle.setVisible(true);
+            if (routeBean.getWaypoints().size() > 1) {
+                circle.setVisible(true);
+            }
 
-            double[] points = polyline.getPoints().stream().mapToDouble(Number::doubleValue).toArray();
-            polyline.getLocalToParentTransform().transform2DPoints(points, 0, points, 0, points.length/2);
+            //double[] points = polyline.getPoints().stream().mapToDouble(Number::doubleValue).toArray();
+            //polyline.getLocalToParentTransform().transform2DPoints(points, 0, points, 0, points.length/2);
         }
     }
 

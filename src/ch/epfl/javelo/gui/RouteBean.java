@@ -9,30 +9,32 @@ import javafx.collections.ObservableList;
 
 import java.util.*;
 
-public final class RouteBean{
+public final class RouteBean {
     private final RouteComputer routeComputer;
     public static ObservableList<Waypoint> waypoints;
-    private ObjectProperty<Route> route;
-    private DoubleProperty highlightedPosition = new SimpleDoubleProperty();
-    private ObjectProperty<ElevationProfile> elevationProfile;
+    private final ObjectProperty<Route> route;
+    private final DoubleProperty highlightedPosition = new SimpleDoubleProperty();
+    private final ObjectProperty<ElevationProfile> elevationProfile;
     private final Map<Integer, Route> hashRouteMap = new LRUCache<>(5, 0.75f);
 
-    public RouteBean(RouteComputer routeComputer){
+    public RouteBean(RouteComputer routeComputer) {
         this.routeComputer = routeComputer;
         waypoints = FXCollections.observableArrayList();
         route = new SimpleObjectProperty<>();
         elevationProfile = new SimpleObjectProperty<>();
 
-        waypoints.addListener((InvalidationListener)  e -> recalculateRouteAndProfile());
-    }
+        waypoints.addListener((InvalidationListener) e -> {
+             if (waypoints.size() > 0)
+                recalculateRouteAndProfile();
+        });
 
 
-    public static void changeWayPoints(ObservableList<Waypoint> list) {
-        //waypoints.clear();
-        waypoints.addAll(list);
-    }
+
+}
+
 
     private void recalculateRouteAndProfile(){
+        System.out.println("rec");
         List<Route> singleRoutes = new ArrayList<>();
         Iterator<Waypoint> it = waypoints.listIterator();
         Waypoint oldWaypoint = it.next();
@@ -63,6 +65,7 @@ public final class RouteBean{
         else{
             route.setValue(null);
             elevationProfile.setValue(null);
+
         }
     }
 
@@ -87,13 +90,4 @@ public final class RouteBean{
         return elevationProfile;
     }
 
-    private static class Pair{
-        int first;
-        int second;
-
-        public Pair(int f, int s) {
-            first = f;
-            second = s;
-        }
-    }
 }

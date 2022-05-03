@@ -140,12 +140,8 @@ public final class WayPointsManager {
 
             pinWaypointMap = new HashMap<>();
             coordsBeforeDrag = new mouseCoordinates(0, 0);
-            wayPoints.addListener((InvalidationListener) observable -> {
-                redrawWaypoints();
-
-            });
+            wayPoints.addListener((InvalidationListener) observable -> redrawWaypoints());
             mapViewParameters.addListener(o -> repositionWayPoints());
-
             redrawWaypoints();
         }
 
