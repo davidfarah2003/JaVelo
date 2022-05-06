@@ -22,7 +22,6 @@ public final class RouteManager {
     private final Pane pane;
     private Polyline polyline;
     private final Circle circle;
-    MouseCoordinates beforeMove = new MouseCoordinates(0,0);
 
     public RouteManager(RouteBean routeBean, ObjectProperty<MapViewParameters> mapViewParametersP, Consumer<String> signalError) {
         this.routeBean = routeBean;
@@ -40,21 +39,20 @@ public final class RouteManager {
         circle.setId("highlight");
         circle.setVisible(false);
 
-        pane.getChildren().addAll(polyline, circle);
+        pane.getChildren().addAll(circle, polyline);
 
-        routeBean.getWaypoints().addListener((InvalidationListener) e -> reconstructPolyline());
+        routeBean.getWaypoints().addListener((InvalidationListener) e -> modifyRoute());
 
-        beforeMove.setX(mapViewParametersP.get().xUpperLeftMapView());
-        beforeMove.setY(mapViewParametersP.get().yUpperLeftMapView());
         this.mapViewParametersP.addListener(
                 (p, oldParams, newParams) -> {
             if (oldParams.zoomLevel() == newParams.zoomLevel()) {
-                repositionNodes(newParams.xUpperLeftMapView() - oldParams.xUpperLeftMapView(),
-                        newParams.yUpperLeftMapView() - oldParams.yUpperLeftMapView());
+                repositionNodes(newParams.xUpperLeftMapView() - oldParams.xUpperLeftMapView(), newParams.yUpperLeftMapView() - oldParams.yUpperLeftMapView());
+           //    beforeMove.setX(mapViewParametersP.get().xUpperLeftMapView());
+            //   beforeMove.setY(mapViewParametersP.get().yUpperLeftMapView());
 
             }
             else{
-                reconstructPolyline();
+                modifyRoute();
             }
         });
 
@@ -72,17 +70,17 @@ public final class RouteManager {
         });
 
 
-       routeBean.getRouteProperty().addListener(e -> {
-           polyline.setVisible(routeBean.getRouteProperty().get() != null);
-           circle.setVisible(routeBean.getRouteProperty().get() != null);
+        routeBean.getRouteProperty().addListener(e -> {
+            polyline.setVisible(routeBean.getRouteProperty().get() != null);
+            circle.setVisible(routeBean.getRouteProperty().get() != null);
 
-       });
+        });
 
     }
 
 
-    private void reconstructPolyline() {
-
+    private void modifyRoute() {
+        polyline.getPoints().clear();
         List<Double> newCoordinates = new ArrayList<>();
 
         int i = 0;
@@ -90,12 +88,11 @@ public final class RouteManager {
             for (PointCh pointCh : routeBean.getRouteProperty().get().points()) {
                 PointWebMercator pointWM = PointWebMercator.ofPointCh(pointCh);
                 if (i == 0) {
-                    double x = pointWM.xAtZoomLevel(mapViewParametersP.get().zoomLevel());
-                    newCoordinates.add(x - mapViewParametersP.get().xUpperLeftMapView());
-                }
-                 else {
-                    double y = pointWM.yAtZoomLevel(mapViewParametersP.get().zoomLevel());
-                    newCoordinates.add(y - mapViewParametersP.get().yUpperLeftMapView());
+                    double viewX = pointWM.xAtZoomLevel(mapViewParametersP.get().zoomLevel());
+                    newCoordinates.add(viewX - mapViewParametersP.get().xUpperLeftMapView());
+                } else {
+                    double viewY = pointWM.yAtZoomLevel(mapViewParametersP.get().zoomLevel());
+                    newCoordinates.add(viewY - mapViewParametersP.get().yUpperLeftMapView());
                 }
                 i += 1;
                 i %= 2;
@@ -153,17 +150,26 @@ public final class RouteManager {
  */
 
         if (routeBean.getRouteProperty().get() != null) {
-            for(Node n : pane().getChildren()){
+            for (Node n : pane.getChildren()) {
                 n.setLayoutX(n.getLayoutX() - x);
                 n.setLayoutY(n.getLayoutY() - y);
             }
-
+         //   polyline.setLayoutX(polyline.getLayoutX() + (beforeMove.getX() - mapViewParametersP.get().xUpperLeftMapView()));
+        //    polyline.setLayoutY(polyline.getLayoutY() + (beforeMove.getY() - mapViewParametersP.get().yUpperLeftMapView()));
         }
-
-
     }
+
+
+    /*
+    private void repositionRoutePoints() {
+        System.out.println("repositionned");
+        polyline.setLayoutX(polyline.getLayoutX() + (beforeMove.getX() - mapViewParametersP.get().xUpperLeftMapView()));
+        polyline.setLayoutY(polyline.getLayoutY() + (beforeMove.getY() - mapViewParametersP.get().yUpperLeftMapView()));
+    }
+     */
 
     public Pane pane() {
         return pane;
     }
+
 }
