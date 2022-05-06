@@ -81,7 +81,6 @@ public final class RouteManager {
         polyline.getPoints().clear();
         List<Double> newCoordinates = new ArrayList<>();
 
-
         int i = 0;
         if (routeBean.getRouteProperty().get() != null) {
             for (PointCh pointCh : routeBean.getRouteProperty().get().points()) {
@@ -121,9 +120,6 @@ public final class RouteManager {
 
           //  double[] points = polyline.getPoints().stream().mapToDouble(Number::doubleValue).toArray();
           //  polyline.getLocalToParentTransform().transform2DPoints(points, 0, points, 0, points.length/2);
-
-
-
 
 
     private void repositionNodes(double x, double y) {
