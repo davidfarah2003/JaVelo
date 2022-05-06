@@ -1,10 +1,10 @@
 package ch.epfl.javelo.gui;
 
-public class mouseCoordinates {
+public class MouseCoordinates {
     private double x;
     private double y;
 
-    mouseCoordinates (double x, double y) {
+    MouseCoordinates(double x, double y) {
         this.x = x;
         this.y = y;
     }

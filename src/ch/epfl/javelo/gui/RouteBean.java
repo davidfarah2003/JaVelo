@@ -28,13 +28,10 @@ public final class RouteBean {
                 recalculateRouteAndProfile();
         });
 
-
-
 }
 
 
     private void recalculateRouteAndProfile(){
-
         if (waypoints.size() == 1){
             route.setValue(null);
             elevationProfile.setValue(null);

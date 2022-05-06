@@ -4,7 +4,6 @@ import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
@@ -128,7 +127,7 @@ public final class WayPointsManager {
         private final String svgInside = "M0-23A1 1 0 000-29 1 1 0 000-23";
         private final Pane pane;
         private final Map<Group, Waypoint> pinWaypointMap;
-        private final mouseCoordinates coordsBeforeDrag;
+        private final MouseCoordinates coordsBeforeDrag;
 
         /**
          * Constructor of the gui nested class, initialises the attributes and sets listeners on
@@ -139,7 +138,7 @@ public final class WayPointsManager {
             pane.setPickOnBounds(false);
 
             pinWaypointMap = new HashMap<>();
-            coordsBeforeDrag = new mouseCoordinates(0, 0);
+            coordsBeforeDrag = new MouseCoordinates(0, 0);
             wayPoints.addListener((InvalidationListener) observable -> redrawWaypoints());
             mapViewParameters.addListener(o -> repositionWayPoints());
             redrawWaypoints();
@@ -157,7 +156,6 @@ public final class WayPointsManager {
                         pin.setLayoutY(mapViewParameters.get().viewY(waypointMercator));
                     }
             );
-
         }
 
 
