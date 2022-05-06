@@ -47,6 +47,7 @@ public final class ElevationProfileManager {
      */
     public ReadOnlyDoubleProperty mousePositionOnProfileProperty(){
         System.out.println(pane.getChildren());
+        System.out.println(((Pane) pane.getChildren().get(0)).getChildren());
         return new SimpleDoubleProperty(Double.NaN);
     }
 
