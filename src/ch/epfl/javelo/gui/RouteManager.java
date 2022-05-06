@@ -42,20 +42,19 @@ public final class RouteManager {
 
         pane.getChildren().addAll(polyline, circle);
 
-        routeBean.getWaypoints().addListener((InvalidationListener) e -> modifyRoute());
+        routeBean.getWaypoints().addListener((InvalidationListener) e -> reconstructPolyline());
 
         beforeMove.setX(mapViewParametersP.get().xUpperLeftMapView());
         beforeMove.setY(mapViewParametersP.get().yUpperLeftMapView());
         this.mapViewParametersP.addListener(
                 (p, oldParams, newParams) -> {
             if (oldParams.zoomLevel() == newParams.zoomLevel()) {
-                repositionNodes(newParams.xUpperLeftMapView() - oldParams.xUpperLeftMapView(), newParams.yUpperLeftMapView() - oldParams.yUpperLeftMapView());
-           //    beforeMove.setX(mapViewParametersP.get().xUpperLeftMapView());
-            //   beforeMove.setY(mapViewParametersP.get().yUpperLeftMapView());
+                repositionNodes(newParams.xUpperLeftMapView() - oldParams.xUpperLeftMapView(),
+                        newParams.yUpperLeftMapView() - oldParams.yUpperLeftMapView());
 
             }
             else{
-                modifyRoute();
+                reconstructPolyline();
             }
         });
 
@@ -82,8 +81,8 @@ public final class RouteManager {
     }
 
 
-    private void modifyRoute() {
-        polyline.getPoints().clear();
+    private void reconstructPolyline() {
+
         List<Double> newCoordinates = new ArrayList<>();
 
         int i = 0;
@@ -91,11 +90,12 @@ public final class RouteManager {
             for (PointCh pointCh : routeBean.getRouteProperty().get().points()) {
                 PointWebMercator pointWM = PointWebMercator.ofPointCh(pointCh);
                 if (i == 0) {
-                    double viewX = pointWM.xAtZoomLevel(mapViewParametersP.get().zoomLevel());
-                    newCoordinates.add(viewX - mapViewParametersP.get().xUpperLeftMapView());
-                } else {
-                    double viewY = pointWM.yAtZoomLevel(mapViewParametersP.get().zoomLevel());
-                    newCoordinates.add(viewY - mapViewParametersP.get().yUpperLeftMapView());
+                    double x = pointWM.xAtZoomLevel(mapViewParametersP.get().zoomLevel());
+                    newCoordinates.add(x - mapViewParametersP.get().xUpperLeftMapView());
+                }
+                 else {
+                    double y = pointWM.yAtZoomLevel(mapViewParametersP.get().zoomLevel());
+                    newCoordinates.add(y - mapViewParametersP.get().yUpperLeftMapView());
                 }
                 i += 1;
                 i %= 2;
@@ -157,8 +157,7 @@ public final class RouteManager {
                 n.setLayoutX(n.getLayoutX() - x);
                 n.setLayoutY(n.getLayoutY() - y);
             }
-         //   polyline.setLayoutX(polyline.getLayoutX() + (beforeMove.getX() - mapViewParametersP.get().xUpperLeftMapView()));
-        //    polyline.setLayoutY(polyline.getLayoutY() + (beforeMove.getY() - mapViewParametersP.get().yUpperLeftMapView()));
+
         }
 
 
