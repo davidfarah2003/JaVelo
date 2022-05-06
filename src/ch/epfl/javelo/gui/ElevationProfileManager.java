@@ -3,6 +3,7 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.routing.ElevationProfile;
 import javafx.beans.property.*;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -11,6 +12,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Transform;
+
 
 /**
  *
@@ -19,6 +22,9 @@ public final class ElevationProfileManager {
     ReadOnlyObjectProperty<ElevationProfile> elevationProfileRO;
     ReadOnlyDoubleProperty highlightedPosition;
     private final Pane pane;
+
+    private ObjectProperty<Rectangle2D> rectangle;
+    private ObjectProperty<Transform> transformObjectProperty;
 
     /**
      * Constructor
