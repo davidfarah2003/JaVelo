@@ -1,6 +1,7 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
+import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
@@ -62,8 +63,10 @@ public final class WayPointsManager {
             return false;
         }
 
-        wayPoints.add(new Waypoint(graph.nodePoint(closestNodeId), closestNodeId));
+        PointCh pt = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y).toPointCh();
+        wayPoints.add(new Waypoint(pt, closestNodeId));
         return true;
+
     }
 
     /**
@@ -83,7 +86,8 @@ public final class WayPointsManager {
             return false;
         }
 
-        wayPoints.set(wayPoints.indexOf(oldWaypoint), new Waypoint(graph.nodePoint(closestNodeId), closestNodeId));
+        PointCh pt = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y).toPointCh();
+        wayPoints.set(wayPoints.indexOf(oldWaypoint), new Waypoint(pt, closestNodeId));
         return true;
     }
 

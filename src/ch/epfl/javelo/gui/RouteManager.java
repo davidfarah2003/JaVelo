@@ -36,6 +36,7 @@ public final class RouteManager {
 
         circle = new Circle(5);
         circle.setId("highlight");
+        circle.setVisible(false);
 
         pane.getChildren().addAll(polyline, circle);
 
