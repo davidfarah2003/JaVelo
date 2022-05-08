@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  *
@@ -51,7 +52,8 @@ public final class ElevationProfileManager {
         Rectangle rect = new Rectangle(600 - (insets.getLeft() + insets.getRight()),
                 300 - (insets.getTop() + insets.getBottom()));
 
-
+       // System.out.println(rect.getWidth());
+       // System.out.println(rect.getHeight());
       // rect.heightProperty().bind(pane.heightProperty());
 
         System.out.println(rect.getHeight() + " " + rect.getWidth());
@@ -61,11 +63,11 @@ public final class ElevationProfileManager {
         borderPane.setCenter(pane);
         borderPane.setBottom(vBox);
 
-        Translate translation1 = Transform.translate(-insets.getLeft(), insets.getTop() + rect.getHeight());
+        Translate translation1 = Transform.translate(-insets.getLeft(),  rect.getHeight());
         Scale s2 = Transform.scale(elevationProfileRO.get().length()/ rect.getWidth() ,
                 -(elevationProfileRO.get().maxElevation() - elevationProfileRO.get().minElevation())
                                             /rect.getHeight());
-        Translate translation2 = Transform.translate(4, 6);
+       Translate translation2 = Transform.translate(0, (insets.getTop() + rect.getHeight()));
         Translate translation1Inversed = translation1.createInverse();
         Scale sInversed = s2.createInverse();
        Translate translation2Inversed = translation2.createInverse();
@@ -73,7 +75,7 @@ public final class ElevationProfileManager {
         Affine aff = new Affine();
         aff.prependTranslation(translation1.getTx(), translation1.getTy());
         aff.prependScale(s2.getX(), s2.getY());
-       aff.prependTranslation(translation2.getTx(), translation2.getTy());
+        aff.prependTranslation(translation2.getTx(), translation2.getTy());
 
         Affine affInversed = new Affine();
         affInversed.prependTranslation(translation2Inversed.getTx(), translation2Inversed.getTy());
@@ -83,32 +85,39 @@ public final class ElevationProfileManager {
         screenToWorldP.setValue(aff);
         worldToScreenP.setValue(affInversed);
 
-        Map<Double, Double> map = new HashMap();
+        Map<Double, Double> map = new TreeMap<>();
+
+        System.out.println(insets.getLeft());
+        System.out.println(insets.getLeft() + rect.getWidth());
 
         for (double x = insets.getLeft(); x <= insets.getLeft() + rect.getWidth(); x++){
 
             double xValue = screenToWorldP.get().
-                    transform(x, insets.getTop()).getX();
+                    transform(x, insets.getTop() + rect.getHeight()).getX();
+            System.out.println(x + "-" + xValue);
             double elevation = elevationProfileRO.get().elevationAt(xValue);
-
-
-            map.put(xValue, elevation);
+            System.out.println("Elevation= " + elevation);
+           double value = insets.getTop() + rect.getHeight() - (elevation/(elevationProfileRO.get().maxElevation() ) * rect.getHeight());
+            System.out.println("Value = " + value);
+            map.put(x, value);
         }
 
         Polygon p = new Polygon();
         p.setId("profile");
-        p.getPoints().addAll();
+       // p.setVisible(true);
+     //   p.getPoints().addAll();
       //  p.setLayoutX(40 - p.getLayoutBounds().getMinX());
        // p.setLayoutY(10 - p.getLayoutBounds().getMinY());
+
+        System.out.println(map.size());
+
 
         p.getPoints().addAll(insets.getLeft(), insets.getTop() + rect.getHeight());
         map.forEach((key, value) -> p.getPoints().addAll(key,value));
         p.getPoints().addAll(insets.getLeft() + rect.getWidth(), insets.getTop() + rect.getHeight());
 
         System.out.println(p.getPoints());
-
-        borderPane.setCenter(pane);
-        borderPane.setBottom(vBox);
+        pane.getChildren().add(p);
 
         Text text = new Text();
 
