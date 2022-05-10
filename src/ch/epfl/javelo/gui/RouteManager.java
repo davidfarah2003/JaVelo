@@ -70,7 +70,6 @@ public final class RouteManager {
                                 indexOfSegmentAt(routeBean.highlightedPosition()) + 1, w);
         });
 
-
        routeBean.getRouteProperty().addListener(e -> {
            polyline.setVisible(routeBean.getRouteProperty().get() != null);
            circle.setVisible(routeBean.getRouteProperty().get() != null);

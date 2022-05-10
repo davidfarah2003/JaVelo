@@ -1,12 +1,18 @@
 package ch.epfl.javelo.gui;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.routing.ElevationProfile;
+import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.*;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -20,13 +26,15 @@ import java.util.TreeMap;
  */
 public final class ElevationProfileManager {
     ReadOnlyObjectProperty<ElevationProfile> elevationProfileRO;
-    ReadOnlyDoubleProperty highlightedPosition;
+    DoubleProperty highlightedPosition;
     private final BorderPane borderPane;
-   // private final Pane pane;
+    private final Pane pane;
 
     private final ObjectProperty<Rectangle2D> rectangle = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> screenToWorldP = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> worldToScreenP = new SimpleObjectProperty<>();
+    private final DoubleProperty mousePositionOnProfileProperty = new SimpleDoubleProperty();
+
 
 
     /**
@@ -40,34 +48,31 @@ public final class ElevationProfileManager {
 
 
         this.elevationProfileRO = elevationProfileRO;
-        this.highlightedPosition = highlightedPosition;
+        this.highlightedPosition = (DoubleProperty) highlightedPosition;
         this.borderPane = new BorderPane();
         borderPane.getStylesheets().add("elevation_profile.css");
 
         Insets insets = new Insets(10, 10, 20, 40);
-        Pane pane = new Pane();
+
+        pane = new Pane();
 
 
+        rectangle.setValue(new Rectangle2D(insets.getLeft(), insets.getTop(),
+                600 - (insets.getLeft() + insets.getRight()),
+                300 -  - (insets.getTop() + insets.getBottom())));
 
-        Rectangle rect = new Rectangle(600 - (insets.getLeft() + insets.getRight()),
-                300 - (insets.getTop() + insets.getBottom()));
-
-       // System.out.println(rect.getWidth());
-       // System.out.println(rect.getHeight());
-      // rect.heightProperty().bind(pane.heightProperty());
-
-        System.out.println(rect.getHeight() + " " + rect.getWidth());
         VBox vBox = new VBox();
         vBox.setId("profile_data");
 
         borderPane.setCenter(pane);
         borderPane.setBottom(vBox);
 
-        Translate translation1 = Transform.translate(-insets.getLeft(),  rect.getHeight());
-        Scale s2 = Transform.scale(elevationProfileRO.get().length()/ rect.getWidth() ,
+        Translate translation1 = Transform.translate(-insets.getLeft(), -insets.getTop());
+        Scale s2 = Transform.scale(elevationProfileRO.get().length()/ rectangle.get().getWidth() ,
                 -(elevationProfileRO.get().maxElevation() - elevationProfileRO.get().minElevation())
-                                            /rect.getHeight());
-       Translate translation2 = Transform.translate(0, (insets.getTop() + rect.getHeight()));
+                                            /rectangle.get().getHeight());
+       Translate translation2 = Transform.translate(0, elevationProfileRO.get().maxElevation());
+
         Translate translation1Inversed = translation1.createInverse();
         Scale sInversed = s2.createInverse();
        Translate translation2Inversed = translation2.createInverse();
@@ -78,6 +83,7 @@ public final class ElevationProfileManager {
         aff.prependTranslation(translation2.getTx(), translation2.getTy());
 
         Affine affInversed = new Affine();
+
         affInversed.prependTranslation(translation2Inversed.getTx(), translation2Inversed.getTy());
         affInversed.prependScale(sInversed.getX(), sInversed.getY());
         affInversed.prependTranslation(translation1Inversed.getTx(), translation1Inversed.getTy());
@@ -87,41 +93,53 @@ public final class ElevationProfileManager {
 
         Map<Double, Double> map = new TreeMap<>();
 
-        System.out.println(insets.getLeft());
-        System.out.println(insets.getLeft() + rect.getWidth());
-
-        for (double x = insets.getLeft(); x <= insets.getLeft() + rect.getWidth(); x++){
-
-            double xValue = screenToWorldP.get().
-                    transform(x, insets.getTop() + rect.getHeight()).getX();
-            System.out.println(x + "-" + xValue);
-            double elevation = elevationProfileRO.get().elevationAt(xValue);
-            System.out.println("Elevation= " + elevation);
-           double value = insets.getTop() + rect.getHeight() - (elevation/(elevationProfileRO.get().maxElevation() ) * rect.getHeight());
-            System.out.println("Value = " + value);
-            map.put(x, value);
-        }
-
+        System.out.println(screenToWorldP.get().transform(40,10));
+        System.out.println(worldToScreenP.get().transform(0,663));
         Polygon p = new Polygon();
         p.setId("profile");
-       // p.setVisible(true);
-     //   p.getPoints().addAll();
-      //  p.setLayoutX(40 - p.getLayoutBounds().getMinX());
-       // p.setLayoutY(10 - p.getLayoutBounds().getMinY());
 
-        System.out.println(map.size());
+        for (double x = insets.getLeft(); x <= insets.getLeft() + rectangle.get().getWidth(); x++){
+            double xValue = screenToWorldP.get().
+                    transform(x, 0).getX();
+            double elevation = elevationProfileRO.get().elevationAt(xValue);
+            double yValue = worldToScreenP.get().transform(0, elevation).getY();
+            map.put(x, yValue);
+        }
 
-
-        p.getPoints().addAll(insets.getLeft(), insets.getTop() + rect.getHeight());
+        p.getPoints().addAll(insets.getLeft(), insets.getTop() + rectangle.get().getHeight());
         map.forEach((key, value) -> p.getPoints().addAll(key,value));
-        p.getPoints().addAll(insets.getLeft() + rect.getWidth(), insets.getTop() + rect.getHeight());
-
-        System.out.println(p.getPoints());
+        p.getPoints().addAll(insets.getLeft() + rectangle.get().getWidth(), insets.getTop() + rectangle.get().getHeight());
         pane.getChildren().add(p);
 
+
+
+        Line line = new Line();
+       // System.out.println(highlightedPosition.getValue());
+        //pane.setOnMouseMoved(e -> line.setLayoutX(Math2.clamp(insets.getLeft(),e.getX(), insets.getLeft() + rectangle.get().getWidth())));
+       // pane.setOnMouseMoved(e -> {
+         //           double value = Math2.clamp(insets.getLeft(), e.getX(), insets.getLeft() + rectangle.get().getWidth());
+           //         mousePositionOnProfileProperty.set(screenToWorldP.get().transform(value, 0).getX());
+             //   });
+
+     //   mousePositionOnProfileProperty.addListener(e -> System.out.println(mousePositionOnProfileProperty.get()));
+        //highlightedPosition.addListener(e ->{
+      //     line.setLayoutX(worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX());
+      //  });
+
+       DoubleBinding test = Bindings.createDoubleBinding(() -> worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX(),
+                 highlightedPosition, line.layoutXProperty());
+
+        line.layoutXProperty().bind(test);
+
+
+       // line.setLayoutX(worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX());
+        line.startYProperty().bind(Bindings.select(rectangle, "minY"));
+        line.endYProperty().bind(Bindings.select(rectangle, "maxY"));
+        line.setVisible(this.highlightedPosition.greaterThanOrEqualTo(0).get());
+        pane.getChildren().add(line);
+
+
         Text text = new Text();
-
-
         String s = "Longueur : %.1f km".formatted(elevationProfileRO.get().length() / 1000) +
                 "     Montée : %.0f m".formatted(elevationProfileRO.get().totalAscent()) +
                 "     Descente : %.0f m".formatted(elevationProfileRO.get().totalDescent()) +
@@ -131,46 +149,8 @@ public final class ElevationProfileManager {
         text.setText(s);
         vBox.getChildren().add(text);
 
-
-
-        // comment definir la taille du rectangle
-
-      //  Rectangle2D r = new Rectangle2D(insets.getLeft(), insets.getTop(),
-     //           elevationProfileRO.get().length(), elevationProfileRO.get().maxElevation());
-    //    rectangle.setValue(r);
-
-       // rect.get
-
-
-
-/*
-        pane.widthProperty().addListener(e -> {
-            try {
-                generationAffineFunctions();
-            } catch (NonInvertibleTransformException ex) {
-                ex.printStackTrace();
-            }
-        });
-        pane.heightProperty().addListener(e -> {
-            try {
-                generationAffineFunctions();
-            } catch (NonInvertibleTransformException ex) {
-                ex.printStackTrace();
-            }
-        });
-
- */
-
-        // translation en passant un point 2d
-
-
-
-        // ajouter transfos a des nodes
-     //   Rectangle rect = new Rectangle(50, 50, Color.RED);
-     //   rect.getTransforms().add(new Rotate(45, 0, 0)); //rotate by 45 degrees
-
-
     }
+
 
     private void generationAffineFunctions() throws NonInvertibleTransformException {
         Translate translation1 = Transform.translate(3, 4);
@@ -194,7 +174,6 @@ public final class ElevationProfileManager {
         screenToWorldP.setValue(aff);
         worldToScreenP.setValue(affInversed);
 
-        //  screenToWorldP.get().transform()
     }
 
     /**
@@ -210,6 +189,8 @@ public final class ElevationProfileManager {
      * @return the position (in meters, rounded to the nearest integer), or NaN if the mouse pointer is not above the profile
      */
     public ReadOnlyDoubleProperty mousePositionOnProfileProperty() {
+
+
         // System.out.println(pane.getChildren());
         //  System.out.println(((Pane) pane.getChildren().get(0)).getChildren());
         return new SimpleDoubleProperty(Double.NaN);
