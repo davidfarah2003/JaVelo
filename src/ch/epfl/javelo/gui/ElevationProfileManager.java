@@ -67,7 +67,7 @@ public final class ElevationProfileManager {
 
        rectangle.bind(Bindings.createObjectBinding(() -> {
            double xValue = Math.max(0,pane.getWidth() - (insets.getLeft() + insets.getRight()));
-           double yValue = Math.max(0,pane().getHeight() - (insets.getTop() + insets.getBottom()));
+           double yValue = Math.max(0, pane.getHeight() - (insets.getTop() + insets.getBottom()));
            return new Rectangle2D(insets.getLeft(), insets.getTop(),xValue,yValue);
        } ,pane.widthProperty(), pane.heightProperty()));
 
@@ -116,11 +116,9 @@ public final class ElevationProfileManager {
 
         line.layoutXProperty().bind(Bindings.createDoubleBinding(() -> worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX(),
                  highlightedPosition));
-
-       // line.setLayoutX(worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX());
         line.startYProperty().bind(Bindings.select(rectangle, "minY"));
         line.endYProperty().bind(Bindings.select(rectangle, "maxY"));
-        line.setVisible(this.highlightedPosition.greaterThanOrEqualTo(0).get());
+        //line.visibleProperty().bind(Bindings.createBooleanBinding()highlightedPosition.greaterThanOrEqualTo(0).get());
         pane.getChildren().add(line);
 
 
