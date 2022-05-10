@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static java.lang.Float.NaN;
+
 /**
  *
  */
@@ -31,11 +33,13 @@ public final class ElevationProfileManager {
     private final Pane pane;
     private final Polygon polygon;
     private final Insets insets;
+    private final Line line;
+
 
     private final ObjectProperty<Rectangle2D> rectangle;
     private final ObjectProperty<Transform> screenToWorldP = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> worldToScreenP = new SimpleObjectProperty<>();
-    private final DoubleProperty mousePositionOnProfileProperty = new SimpleDoubleProperty();
+    private final DoubleProperty mousePositionOnProfileProperty;
 
 
 
@@ -51,6 +55,8 @@ public final class ElevationProfileManager {
 
         this.elevationProfileRO = elevationProfileRO;
         this.highlightedPosition = (DoubleProperty) highlightedPosition;
+        mousePositionOnProfileProperty = new SimpleDoubleProperty();
+        line = new Line();
         this.borderPane = new BorderPane();
         borderPane.getStylesheets().add("elevation_profile.css");
 
@@ -58,17 +64,24 @@ public final class ElevationProfileManager {
 
         pane = new Pane();
 
+        pane.setOnMouseMoved(e -> {
+            double value = screenToWorldP.get().transform(e.getX(),0).getX();
+            if ((value >= 0 && value <= elevationProfileRO.get().length())){
+                mousePositionOnProfileProperty.setValue(value);
+            }
+            else{
+                mousePositionOnProfileProperty.setValue(NaN);
+            }
+
+        });
 
         rectangle = new SimpleObjectProperty<>();
        rectangle.setValue(Rectangle2D.EMPTY);
-     //   rectangle.setValue(new Rectangle2D(insets.getLeft(), insets.getTop(),
-     //           borderPane.getWidth() - (insets.getLeft() + insets.getRight()),
-    //            borderPane.getHeight() -  - (insets.getTop() + insets.getBottom())));
 
        rectangle.bind(Bindings.createObjectBinding(() -> {
            double xValue = Math.max(0,pane.getWidth() - (insets.getLeft() + insets.getRight()));
            double yValue = Math.max(0, pane.getHeight() - (insets.getTop() + insets.getBottom()));
-           return new Rectangle2D(insets.getLeft(), insets.getTop(),xValue,yValue);
+           return new Rectangle2D(insets.getLeft(), insets.getTop(), xValue, yValue);
        } ,pane.widthProperty(), pane.heightProperty()));
 
 
@@ -76,6 +89,11 @@ public final class ElevationProfileManager {
            try {
                generationAffineFunctions();
                redrawPolygon();
+               line.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
+                             worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX(),
+                       highlightedPosition, worldToScreenP));
+               line.startYProperty().bind(Bindings.select(rectangle, "minY"));
+               line.endYProperty().bind(Bindings.select(rectangle, "maxY"));
            } catch (NonInvertibleTransformException ex) {
                ex.printStackTrace();
            }
@@ -101,7 +119,6 @@ public final class ElevationProfileManager {
 
 
 
-        Line line = new Line();
        // System.out.println(highlightedPosition.getValue());
         //pane.setOnMouseMoved(e -> line.setLayoutX(Math2.clamp(insets.getLeft(),e.getX(), insets.getLeft() + rectangle.get().getWidth())));
        // pane.setOnMouseMoved(e -> {
@@ -114,11 +131,11 @@ public final class ElevationProfileManager {
       //     line.setLayoutX(worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX());
       //  });
 
-        line.layoutXProperty().bind(Bindings.createDoubleBinding(() -> worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX(),
-                 highlightedPosition));
-        line.startYProperty().bind(Bindings.select(rectangle, "minY"));
-        line.endYProperty().bind(Bindings.select(rectangle, "maxY"));
-        //line.visibleProperty().bind(Bindings.createBooleanBinding()highlightedPosition.greaterThanOrEqualTo(0).get());
+
+
+        line.visibleProperty().bind(highlightedPosition.greaterThanOrEqualTo(0));
+
+
         pane.getChildren().add(line);
 
 
@@ -190,11 +207,7 @@ public final class ElevationProfileManager {
      * @return the position (in meters, rounded to the nearest integer), or NaN if the mouse pointer is not above the profile
      */
     public ReadOnlyDoubleProperty mousePositionOnProfileProperty() {
-
-
-        // System.out.println(pane.getChildren());
-        //  System.out.println(((Pane) pane.getChildren().get(0)).getChildren());
-        return new SimpleDoubleProperty(Double.NaN);
+        return mousePositionOnProfileProperty;
     }
 }
 
