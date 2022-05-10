@@ -29,8 +29,10 @@ public final class ElevationProfileManager {
     DoubleProperty highlightedPosition;
     private final BorderPane borderPane;
     private final Pane pane;
+    private final Polygon polygon;
+    private final Insets insets;
 
-    private final ObjectProperty<Rectangle2D> rectangle = new SimpleObjectProperty<>();
+    private final ObjectProperty<Rectangle2D> rectangle;
     private final ObjectProperty<Transform> screenToWorldP = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> worldToScreenP = new SimpleObjectProperty<>();
     private final DoubleProperty mousePositionOnProfileProperty = new SimpleDoubleProperty();
@@ -52,14 +54,32 @@ public final class ElevationProfileManager {
         this.borderPane = new BorderPane();
         borderPane.getStylesheets().add("elevation_profile.css");
 
-        Insets insets = new Insets(10, 10, 20, 40);
+        insets = new Insets(10, 10, 20, 40);
 
         pane = new Pane();
 
 
-        rectangle.setValue(new Rectangle2D(insets.getLeft(), insets.getTop(),
-                600 - (insets.getLeft() + insets.getRight()),
-                300 -  - (insets.getTop() + insets.getBottom())));
+        rectangle = new SimpleObjectProperty<>();
+       rectangle.setValue(Rectangle2D.EMPTY);
+     //   rectangle.setValue(new Rectangle2D(insets.getLeft(), insets.getTop(),
+     //           borderPane.getWidth() - (insets.getLeft() + insets.getRight()),
+    //            borderPane.getHeight() -  - (insets.getTop() + insets.getBottom())));
+
+       rectangle.bind(Bindings.createObjectBinding(() -> {
+           double xValue = Math.max(0,pane.getWidth() - (insets.getLeft() + insets.getRight()));
+           double yValue = Math.max(0,pane().getHeight() - (insets.getTop() + insets.getBottom()));
+           return new Rectangle2D(insets.getLeft(), insets.getTop(),xValue,yValue);
+       } ,pane.widthProperty(), pane.heightProperty()));
+
+
+       rectangle.addListener(e -> {
+           try {
+               generationAffineFunctions();
+               redrawPolygon();
+           } catch (NonInvertibleTransformException ex) {
+               ex.printStackTrace();
+           }
+       });
 
         VBox vBox = new VBox();
         vBox.setId("profile_data");
@@ -67,49 +87,17 @@ public final class ElevationProfileManager {
         borderPane.setCenter(pane);
         borderPane.setBottom(vBox);
 
-        Translate translation1 = Transform.translate(-insets.getLeft(), -insets.getTop());
-        Scale s2 = Transform.scale(elevationProfileRO.get().length()/ rectangle.get().getWidth() ,
-                -(elevationProfileRO.get().maxElevation() - elevationProfileRO.get().minElevation())
-                                            /rectangle.get().getHeight());
-       Translate translation2 = Transform.translate(0, elevationProfileRO.get().maxElevation());
 
-        Translate translation1Inversed = translation1.createInverse();
-        Scale sInversed = s2.createInverse();
-       Translate translation2Inversed = translation2.createInverse();
 
-        Affine aff = new Affine();
-        aff.prependTranslation(translation1.getTx(), translation1.getTy());
-        aff.prependScale(s2.getX(), s2.getY());
-        aff.prependTranslation(translation2.getTx(), translation2.getTy());
 
-        Affine affInversed = new Affine();
+    //    Map<Double, Double> map = new TreeMap<>();
 
-        affInversed.prependTranslation(translation2Inversed.getTx(), translation2Inversed.getTy());
-        affInversed.prependScale(sInversed.getX(), sInversed.getY());
-        affInversed.prependTranslation(translation1Inversed.getTx(), translation1Inversed.getTy());
+      //  System.out.println(screenToWorldP.get().transform(40,10));
+     //   System.out.println(worldToScreenP.get().transform(0,663));
 
-        screenToWorldP.setValue(aff);
-        worldToScreenP.setValue(affInversed);
-
-        Map<Double, Double> map = new TreeMap<>();
-
-        System.out.println(screenToWorldP.get().transform(40,10));
-        System.out.println(worldToScreenP.get().transform(0,663));
-        Polygon p = new Polygon();
-        p.setId("profile");
-
-        for (double x = insets.getLeft(); x <= insets.getLeft() + rectangle.get().getWidth(); x++){
-            double xValue = screenToWorldP.get().
-                    transform(x, 0).getX();
-            double elevation = elevationProfileRO.get().elevationAt(xValue);
-            double yValue = worldToScreenP.get().transform(0, elevation).getY();
-            map.put(x, yValue);
-        }
-
-        p.getPoints().addAll(insets.getLeft(), insets.getTop() + rectangle.get().getHeight());
-        map.forEach((key, value) -> p.getPoints().addAll(key,value));
-        p.getPoints().addAll(insets.getLeft() + rectangle.get().getWidth(), insets.getTop() + rectangle.get().getHeight());
-        pane.getChildren().add(p);
+        polygon = new Polygon();
+        polygon.setId("profile");
+        pane.getChildren().add(polygon);
 
 
 
@@ -126,11 +114,8 @@ public final class ElevationProfileManager {
       //     line.setLayoutX(worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX());
       //  });
 
-       DoubleBinding test = Bindings.createDoubleBinding(() -> worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX(),
-                 highlightedPosition, line.layoutXProperty());
-
-        line.layoutXProperty().bind(test);
-
+        line.layoutXProperty().bind(Bindings.createDoubleBinding(() -> worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX(),
+                 highlightedPosition));
 
        // line.setLayoutX(worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX());
         line.startYProperty().bind(Bindings.select(rectangle, "minY"));
@@ -153,10 +138,10 @@ public final class ElevationProfileManager {
 
 
     private void generationAffineFunctions() throws NonInvertibleTransformException {
-        Translate translation1 = Transform.translate(3, 4);
+        Translate translation1 = Transform.translate(-insets.getLeft(), -insets.getTop());
         Scale s = Transform.scale(elevationProfileRO.get().length() / rectangle.get().getWidth(),
-                elevationProfileRO.get().maxElevation() / rectangle.get().getHeight());
-        Translate translation2 = Transform.translate(4, 6);
+                -(elevationProfileRO.get().maxElevation() - elevationProfileRO.get().minElevation()) / rectangle.get().getHeight());
+        Translate translation2 = Transform.translate(0, elevationProfileRO.get().maxElevation());
         Translate translation1Inversed = translation1.createInverse();
         Scale sInversed = s.createInverse();
         Translate translation2Inversed = translation2.createInverse();
@@ -175,6 +160,24 @@ public final class ElevationProfileManager {
         worldToScreenP.setValue(affInversed);
 
     }
+
+    private void redrawPolygon(){
+            polygon.getPoints().clear();
+            Map<Double, Double> map = new TreeMap<>();
+
+            for (double x = insets.getLeft(); x <= insets.getLeft() + rectangle.get().getWidth(); x++) {
+                double xValue = screenToWorldP.get().
+                        transform(x, 0).getX();
+                double elevation = elevationProfileRO.get().elevationAt(xValue);
+                double yValue = worldToScreenP.get().transform(0, elevation).getY();
+                map.put(x, yValue);
+            }
+
+            polygon.getPoints().addAll(insets.getLeft(), insets.getTop() + rectangle.get().getHeight());
+            map.forEach((key, value) -> polygon.getPoints().addAll(key, value));
+            polygon.getPoints().addAll(insets.getLeft() + rectangle.get().getWidth(), insets.getTop() + rectangle.get().getHeight());
+        }
+
 
     /**
      * returns the pane of the ElevationProfileManager
