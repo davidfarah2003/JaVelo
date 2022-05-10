@@ -12,12 +12,11 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.scene.transform.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -61,7 +60,6 @@ public final class ElevationProfileManager {
         borderPane.getStylesheets().add("elevation_profile.css");
 
         insets = new Insets(10, 10, 20, 40);
-
         pane = new Pane();
 
         pane.setOnMouseMoved(e -> {
@@ -76,13 +74,19 @@ public final class ElevationProfileManager {
         });
 
         rectangle = new SimpleObjectProperty<>();
+        rectangle.setValue(Rectangle2D.EMPTY);
+
+     //   rectangle.setValue(new Rectangle2D(insets.getLeft(), insets.getTop(),
+     //           borderPane.getWidth() - (insets.getLeft() + insets.getRight()),
+    //            borderPane.getHeight() -  - (insets.getTop() + insets.getBottom())));
        rectangle.setValue(Rectangle2D.EMPTY);
 
        rectangle.bind(Bindings.createObjectBinding(() -> {
            double xValue = Math.max(0,pane.getWidth() - (insets.getLeft() + insets.getRight()));
            double yValue = Math.max(0, pane.getHeight() - (insets.getTop() + insets.getBottom()));
-           return new Rectangle2D(insets.getLeft(), insets.getTop(), xValue, yValue);
-       } ,pane.widthProperty(), pane.heightProperty()));
+           return new Rectangle2D(insets.getLeft(), insets.getTop(),xValue,yValue);
+       } ,pane.widthProperty(), pane.heightProperty())
+       );
 
 
        rectangle.addListener(e -> {
@@ -105,31 +109,13 @@ public final class ElevationProfileManager {
         borderPane.setCenter(pane);
         borderPane.setBottom(vBox);
 
-
-
-
-    //    Map<Double, Double> map = new TreeMap<>();
-
-      //  System.out.println(screenToWorldP.get().transform(40,10));
-     //   System.out.println(worldToScreenP.get().transform(0,663));
-
         polygon = new Polygon();
         polygon.setId("profile");
         pane.getChildren().add(polygon);
 
 
 
-       // System.out.println(highlightedPosition.getValue());
-        //pane.setOnMouseMoved(e -> line.setLayoutX(Math2.clamp(insets.getLeft(),e.getX(), insets.getLeft() + rectangle.get().getWidth())));
-       // pane.setOnMouseMoved(e -> {
-         //           double value = Math2.clamp(insets.getLeft(), e.getX(), insets.getLeft() + rectangle.get().getWidth());
-           //         mousePositionOnProfileProperty.set(screenToWorldP.get().transform(value, 0).getX());
-             //   });
-
-     //   mousePositionOnProfileProperty.addListener(e -> System.out.println(mousePositionOnProfileProperty.get()));
-        //highlightedPosition.addListener(e ->{
-      //     line.setLayoutX(worldToScreenP.get().transform(highlightedPosition.getValue(), 0).getX());
-      //  });
+        Line line = new Line();
 
 
 
@@ -148,6 +134,9 @@ public final class ElevationProfileManager {
 
         text.setText(s);
         vBox.getChildren().add(text);
+        generationAffineFunctions();
+
+        drawGrid(pane);
 
     }
 
@@ -177,22 +166,65 @@ public final class ElevationProfileManager {
     }
 
     private void redrawPolygon(){
-            polygon.getPoints().clear();
-            Map<Double, Double> map = new TreeMap<>();
+        polygon.getPoints().clear();
+        Map<Double, Double> map = new TreeMap<>();
 
-            for (double x = insets.getLeft(); x <= insets.getLeft() + rectangle.get().getWidth(); x++) {
-                double xValue = screenToWorldP.get().
-                        transform(x, 0).getX();
-                double elevation = elevationProfileRO.get().elevationAt(xValue);
-                double yValue = worldToScreenP.get().transform(0, elevation).getY();
-                map.put(x, yValue);
-            }
-
-            polygon.getPoints().addAll(insets.getLeft(), insets.getTop() + rectangle.get().getHeight());
-            map.forEach((key, value) -> polygon.getPoints().addAll(key, value));
-            polygon.getPoints().addAll(insets.getLeft() + rectangle.get().getWidth(), insets.getTop() + rectangle.get().getHeight());
+        for (double x = insets.getLeft(); x <= insets.getLeft() + rectangle.get().getWidth(); x++) {
+            double xValue = screenToWorldP.get().
+                    transform(x, 0).getX();
+            double elevation = elevationProfileRO.get().elevationAt(xValue);
+            double yValue = worldToScreenP.get().transform(0, elevation).getY();
+            map.put(x, yValue);
         }
 
+        polygon.getPoints().addAll(insets.getLeft(), insets.getTop() + rectangle.get().getHeight());
+        map.forEach((key, value) -> polygon.getPoints().addAll(key, value));
+        polygon.getPoints().addAll(insets.getLeft() + rectangle.get().getWidth(), insets.getTop() + rectangle.get().getHeight());
+    }
+
+    private void drawGrid(Pane pane){
+        Path grid = new Path();
+        grid.setId("grid");
+
+        //calculate distance between lines
+        //vertical:
+        int[] vertical = { 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
+        double verticalSpacing;
+        for (double spacing: vertical) {
+
+            if(worldToScreenP.get().deltaTransform(new Point2D(elevationProfileRO.get().length()/spacing, 0)).getX() >= 50){
+                verticalSpacing = spacing;
+                break;
+            }
+        }
+
+        int[] horizontal = { 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
+        double horizontalSpacing = horizontal[horizontal.length -1];
+        for (double spacing: horizontal) {
+            if(worldToScreenP.get().deltaTransform(new Point2D(0, elevationProfileRO.get().maxElevation()/spacing)).getY() >= 25){
+                horizontalSpacing = spacing;
+                break;
+            }
+        }
+
+        double horizontalCoordinate = 0;
+        while(horizontalCoordinate < elevationProfileRO.get().length()){
+            double x_pixels = worldToScreen(horizontalCoordinate,0).getX();
+
+            PathElement lineExtremity1 = new MoveTo(x_pixels, 0);
+            PathElement lineExtremity2 = new LineTo(x_pixels, worldToScreen(0, elevationProfileRO.get().maxElevation()).getY());
+            grid.getElements().addAll(lineExtremity1, lineExtremity2);
+            horizontalCoordinate += horizontalSpacing;
+        }
+
+
+        pane.getChildren().add(grid);
+
+    }
+
+    private Point2D worldToScreen(double x, double y){
+        return worldToScreenP.get().deltaTransform(new Point2D(x, y));
+    }
 
     /**
      * returns the pane of the ElevationProfileManager
@@ -207,7 +239,11 @@ public final class ElevationProfileManager {
      * @return the position (in meters, rounded to the nearest integer), or NaN if the mouse pointer is not above the profile
      */
     public ReadOnlyDoubleProperty mousePositionOnProfileProperty() {
-        return mousePositionOnProfileProperty;
+
+        // System.out.println(pane.getChildren());
+        //  System.out.println(((Pane) pane.getChildren().get(0)).getChildren());
+        return new SimpleDoubleProperty(Double.NaN);
+        //return mousePositionOnProfileProperty;
     }
 }
 
