@@ -33,7 +33,7 @@ public final class Stage10Test extends Application {
         ObjectProperty<ElevationProfile> profileProperty =
                 new SimpleObjectProperty<>(profile);
         DoubleProperty highlightProperty =
-                new SimpleDoubleProperty(1500);
+                new SimpleDoubleProperty(0);
 
         ElevationProfileManager profileManager =
                 new ElevationProfileManager(profileProperty,
