@@ -4,13 +4,14 @@ import ch.epfl.javelo.routing.ElevationProfile;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.*;
 import java.util.Map;
@@ -29,7 +30,7 @@ public final class ElevationProfileManager {
     private final Insets insets;
     private final Line line;
     private final Path grid;
-
+    private final Group gridLabels;
 
     private final ObjectProperty<Rectangle2D> rectangle;
     private final ObjectProperty<Transform> screenToWorldP;
@@ -69,6 +70,15 @@ public final class ElevationProfileManager {
         worldToScreenP = new SimpleObjectProperty<>();
         mousePositionOnProfileProperty = new SimpleDoubleProperty();
 
+        grid = new Path();
+        grid.setId("grid");
+        pane.getChildren().add(grid);
+
+        gridLabels = new Group();
+
+        pane.getChildren().add(gridLabels);
+
+
         pane.setOnMouseMoved(e -> {
             double value = screenToWorldP.get().transform(e.getX(),0).getX();
             if ((value >= 0 && value <= elevationProfileRO.get().length())){
@@ -92,8 +102,8 @@ public final class ElevationProfileManager {
            try {
                generateNewAffineFunctions();
                redrawPolygon();
-               drawGrid();
-               drawLabels();
+               drawGridAndLabels();
+
                line.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                                worldToScreenP.get().transform(this.highlightedPosition.getValue(), 0).getX(),
                        this.highlightedPosition, worldToScreenP));
@@ -118,33 +128,12 @@ public final class ElevationProfileManager {
 
         text.setText(s);
         vBox.getChildren().add(text);
-
-        //Ainsi, les lignes verticales correspondant à la position peuvent être dessinées tous les
-        //1, 2, 5, 10, 25, 50 ou 100 km, tandis que les lignes horizontales correspondant à
-        // l'altitude peuvent être dessinées tous les 5, 10, 20, 25, 50, 100, 200, 250, 500 ou 1000 m.
-        // La valeur utilisée dans les deux cas est la plus petite garantissant que, à l'écran,
-        // les lignes horizontales soient distantes d'au moins 25 unités JavaFX (pixels),
-        // et les verticales d'au moins 50 unités.
-        // (Si aucune valeur ne permet de garantir cela, la plus grande de toutes est utilisée.)
-
-
-        grid = new Path();
-        grid.setId("grid");
-        pane.getChildren().add(grid);
-
-
-
-
-
-
     }
 
 
-    private void drawLabels(){
-
-    }
-    private void drawGrid() {
+    private void drawGridAndLabels() {
         grid.getElements().clear();
+        gridLabels.getChildren().clear();
 
         double numberOfPixelsPerMeterY = rectangle.get().getHeight() /
                 (elevationProfileRO.get().maxElevation() - elevationProfileRO.get().minElevation());
@@ -160,18 +149,30 @@ public final class ElevationProfileManager {
         }
 
         double height = 0;
+        int firstHeight = (int) ((int) spaceBetweenHorizontalLines *
+                Math.ceil(elevationProfileRO.get().minElevation() / spaceBetweenHorizontalLines));
+
+
         while(height < elevationProfileRO.get().maxElevation()){
             double y_pixels = worldToScreenP.get().transform(0, height).getY();
             height += spaceBetweenHorizontalLines;
 
-            if (y_pixels <= insets.getTop() + rectangle.get().getHeight()) {
+            if (y_pixels < insets.getTop() + rectangle.get().getHeight()) {
                 PathElement lineExtremity1 = new MoveTo(insets.getLeft(), y_pixels);
                 PathElement lineExtremity2 = new LineTo(insets.getLeft() + rectangle.get().getWidth(), y_pixels);
                 grid.getElements().addAll(lineExtremity1, lineExtremity2);
+
+                Text text = new Text();
+                text.setX(insets.getLeft()/2);
+                text.setY(y_pixels);
+                text.setText(Integer.toString(firstHeight));
+                text.setTextOrigin(VPos.CENTER);
+                text.setFont(Font.font("Avenir", 10));
+                gridLabels.getChildren().add(text);
+                firstHeight += spaceBetweenHorizontalLines;
             }
 
         }
-
 
         double numberOfPixelsPerMeterX = rectangle.get().getWidth() / elevationProfileRO.get().length();
         int[] POS_STEPS = { 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
@@ -185,23 +186,25 @@ public final class ElevationProfileManager {
             }
         }
 
-        double length = 0;
+        int length = 0;
         while(length < elevationProfileRO.get().length()){
             double x_pixels = worldToScreenP.get().transform(length, 0).getX();
-            System.out.println(x_pixels);
             PathElement lineExtremity1 = new MoveTo(x_pixels, insets.getTop() + rectangle.get().getHeight());
             PathElement lineExtremity2 = new LineTo(x_pixels, insets.getTop());
             grid.getElements().addAll(lineExtremity1, lineExtremity2);
             length += spaceBetweenVerticalLines;
+
+            Text text = new Text();
+            text.setX(x_pixels - 3);
+            text.setY(insets.getTop() + rectangle.get().getHeight());
+            text.setText(Integer.toString((length / 1000) - 1));
+            text.setTextOrigin(VPos.TOP);
+            text.setFont(Font.font("Avenir", 10));
+            gridLabels.getChildren().add(text);
+            firstHeight += spaceBetweenHorizontalLines;
         }
 
     }
-
-
-
-
-
-
 
     private void generateNewAffineFunctions() throws NonInvertibleTransformException {
         Translate translation1 = Transform.translate(-insets.getLeft(), -insets.getTop());
