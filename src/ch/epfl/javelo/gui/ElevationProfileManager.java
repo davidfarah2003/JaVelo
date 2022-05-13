@@ -75,12 +75,12 @@ public final class ElevationProfileManager {
         pane.getChildren().add(grid);
 
         gridLabels = new Group();
-
         pane.getChildren().add(gridLabels);
 
 
         pane.setOnMouseMoved(e -> {
             double value = screenToWorldP.get().transform(e.getX(),0).getX();
+            System.out.println(value);
             if ((value >= 0 && value <= elevationProfileRO.get().length())){
                 mousePositionOnProfileProperty.setValue(value);
             }
@@ -139,34 +139,25 @@ public final class ElevationProfileManager {
                 (elevationProfileRO.get().maxElevation() - elevationProfileRO.get().minElevation());
 
         int[] ELE_STEPS = { 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
-        double spaceBetweenHorizontalLines = ELE_STEPS[ELE_STEPS.length -1];
-        for (double spacing: ELE_STEPS) {
-            double value = spacing * numberOfPixelsPerMeterY;
-            if(value >= 25){
-                spaceBetweenHorizontalLines = spacing;
-                break;
-            }
-        }
+        int spaceBetweenHorizontalLines = chooseSpaceBetweenLines(numberOfPixelsPerMeterY, ELE_STEPS, 25);
 
         double height = 0;
-        int firstHeight = (int) ((int) spaceBetweenHorizontalLines *
+        int firstHeight = (int) (spaceBetweenHorizontalLines *
                 Math.ceil(elevationProfileRO.get().minElevation() / spaceBetweenHorizontalLines));
-
 
         while(height < elevationProfileRO.get().maxElevation()){
             double y_pixels = worldToScreenP.get().transform(0, height).getY();
             height += spaceBetweenHorizontalLines;
-
             if (y_pixels < insets.getTop() + rectangle.get().getHeight()) {
                 PathElement lineExtremity1 = new MoveTo(insets.getLeft(), y_pixels);
                 PathElement lineExtremity2 = new LineTo(insets.getLeft() + rectangle.get().getWidth(), y_pixels);
                 grid.getElements().addAll(lineExtremity1, lineExtremity2);
 
                 Text text = new Text();
+                text.setTextOrigin(VPos.CENTER);
                 text.setX(insets.getLeft()/2);
                 text.setY(y_pixels);
                 text.setText(Integer.toString(firstHeight));
-                text.setTextOrigin(VPos.CENTER);
                 text.setFont(Font.font("Avenir", 10));
                 gridLabels.getChildren().add(text);
                 firstHeight += spaceBetweenHorizontalLines;
@@ -176,15 +167,7 @@ public final class ElevationProfileManager {
 
         double numberOfPixelsPerMeterX = rectangle.get().getWidth() / elevationProfileRO.get().length();
         int[] POS_STEPS = { 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
-        double spaceBetweenVerticalLines = POS_STEPS[POS_STEPS.length -1];
-
-        for (double spacing: POS_STEPS) {
-            double value = spacing * numberOfPixelsPerMeterX;
-            if(value >= 50){
-                spaceBetweenVerticalLines = spacing;
-                break;
-            }
-        }
+        int spaceBetweenVerticalLines = chooseSpaceBetweenLines(numberOfPixelsPerMeterX, POS_STEPS, 50);
 
         int length = 0;
         while(length < elevationProfileRO.get().length()){
@@ -195,15 +178,26 @@ public final class ElevationProfileManager {
             length += spaceBetweenVerticalLines;
 
             Text text = new Text();
+            text.setTextOrigin(VPos.TOP);
             text.setX(x_pixels - 3);
             text.setY(insets.getTop() + rectangle.get().getHeight());
-            text.setText(Integer.toString((length / 1000) - 1));
-            text.setTextOrigin(VPos.TOP);
+            text.setText(Integer.toString((length / spaceBetweenVerticalLines) - spaceBetweenVerticalLines/1000));
             text.setFont(Font.font("Avenir", 10));
             gridLabels.getChildren().add(text);
-            firstHeight += spaceBetweenHorizontalLines;
         }
 
+    }
+
+    private int chooseSpaceBetweenLines(double pixelsPerMeter,int[] steps, int minimalDistance){
+        int space = steps[steps.length - 1];
+        for (int spacing: steps) {
+            double value = spacing * pixelsPerMeter;
+            if(value >= minimalDistance){
+                space = spacing;
+                break;
+            }
+        }
+        return space;
     }
 
     private void generateNewAffineFunctions() throws NonInvertibleTransformException {
