@@ -19,6 +19,6 @@ public record Waypoint(PointCh point, int nodeID) {
 
     @Override
     public int hashCode() {
-        return Objects.hash(point.e() , point.n() , nodeID);
+        return Objects.hash(nodeID);
     }
 }

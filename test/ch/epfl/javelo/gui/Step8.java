@@ -42,7 +42,7 @@ public class Step8 extends Application{
         RouteComputer rc = new RouteComputer(graph, cf);
         RouteBean rb = new RouteBean(rc);
         rb.setHighlightedPositionProperty(1000);
-        RouteManager rm = new RouteManager(rb,mapViewParametersP, errorConsumer);
+        RouteManager rm = new RouteManager(rb,mapViewParametersP);
 
         ObservableList<Waypoint> waypoints = rb.getWaypoints();
 

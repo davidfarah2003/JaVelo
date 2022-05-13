@@ -27,7 +27,6 @@ public final class RouteBean {
              if (waypoints.size() > 0)
                 recalculateRouteAndProfile();
         });
-
 }
 
 
@@ -46,16 +45,16 @@ public final class RouteBean {
         while (it.hasNext()){
             currentWaypoint = it.next();
 
-            int hash = Objects.hash(oldWaypoint.nodeID(), currentWaypoint.nodeID());
-
-            if (hashRouteMap.containsKey(hash)){
-                singleRoutes.add(hashRouteMap.get(hash));
-            }
-
-            else{
-                Route singleRoute = routeComputer.bestRouteBetween(oldWaypoint.nodeID(), currentWaypoint.nodeID());
-                singleRoutes.add(singleRoute);
-                hashRouteMap.put(hash, singleRoute);
+            if(!currentWaypoint.equals(oldWaypoint)){
+                int hash = Objects.hash(oldWaypoint.nodeID(), currentWaypoint.nodeID());
+                if (hashRouteMap.containsKey(hash)){
+                    singleRoutes.add(hashRouteMap.get(hash));
+                }
+                else{
+                    Route singleRoute = routeComputer.bestRouteBetween(oldWaypoint.nodeID(), currentWaypoint.nodeID());
+                    singleRoutes.add(singleRoute);
+                    hashRouteMap.put(hash, singleRoute);
+                }
             }
 
             oldWaypoint = currentWaypoint;
@@ -71,8 +70,13 @@ public final class RouteBean {
             }
 
         }
-        
 
+
+    /**
+     * returns the index of the segment containing it, ignoring empty segments
+     * @param position position along the route
+     * @return the index
+     */
     public int indexOfNonEmptySegmentAt(double position) {
         int index = route.get().indexOfSegmentAt(position);
         for (int i = 0; i <= index; i += 1) {
@@ -82,8 +86,6 @@ public final class RouteBean {
         }
         return index;
     }
-
-
 
 
     public double highlightedPosition(){

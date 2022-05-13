@@ -16,20 +16,15 @@ import java.util.function.Consumer;
 public final class RouteManager {
     private final RouteBean routeBean;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
-    private final Consumer<String> signalError;
-    private final String message = "Un point de passage est déjà présent à cet endroit!";
+    //private final String message = "Un point de passage est déjà présent à cet endroit!";
 
     private final Pane pane;
     private final Polyline polyline;
     private final Circle circle;
 
-    public RouteManager(RouteBean routeBean, ObjectProperty<MapViewParameters> mapViewParametersP, Consumer<String> signalError) {
+    public RouteManager(RouteBean routeBean, ObjectProperty<MapViewParameters> mapViewParametersP) {
         this.routeBean = routeBean;
         this.mapViewParametersP = mapViewParametersP;
-        this.signalError = signalError;
-
-        pane = new Pane();
-        pane.setPickOnBounds(false);
 
         polyline = new Polyline();
         polyline.setId("route");
@@ -38,19 +33,25 @@ public final class RouteManager {
         circle.setId("highlight");
         circle.setVisible(false);
 
+        pane = new Pane();
+        pane.setPickOnBounds(false);
         pane.getChildren().addAll(polyline, circle);
 
+        addListeners();
+    }
+
+    private void addListeners(){
         routeBean.getWaypoints().addListener((InvalidationListener) e -> reconstructPolyline());
 
         this.mapViewParametersP.addListener(
                 (p, oldParams, newParams) -> {
-            if (oldParams.zoomLevel() == newParams.zoomLevel()) {
-                repositionNodes();
-            }
-            else{
-                reconstructPolyline();
-            }
-        });
+                    if (oldParams.zoomLevel() == newParams.zoomLevel()) {
+                        repositionNodes();
+                    }
+                    else{
+                        reconstructPolyline();
+                    }
+                });
 
         circle.setOnMouseClicked(e -> {
             PointWebMercator pointRelatedToPaneCh = mapViewParametersP.get().pointAt(
@@ -62,22 +63,13 @@ public final class RouteManager {
             int id = routeBean.getRouteProperty().get().nodeClosestTo(routeBean.highlightedPosition());
             Waypoint w = new Waypoint(pointRelatedToPane, id);
 
-            boolean value = routeBean.getWaypoints().stream().map(Waypoint::nodeID).anyMatch(i -> i == id);
-            if (value)
-                this.signalError.accept(message);
-            else
-                /*
-                routeBean.getWaypoints().add(routeBean.getRouteProperty().get().
-                                indexOfSegmentAt(routeBean.highlightedPosition()) + 1, w);
-
-                 */
-                routeBean.getWaypoints().add(routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1,w);
+            routeBean.getWaypoints().add(routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1, w);
         });
 
-       routeBean.getRouteProperty().addListener(e -> {
-           polyline.setVisible(routeBean.getRouteProperty().get() != null);
-           circle.setVisible(routeBean.getRouteProperty().get() != null);
-       });
+        routeBean.getRouteProperty().addListener(e -> {
+            polyline.setVisible(routeBean.getRouteProperty().get() != null);
+            circle.setVisible(routeBean.getRouteProperty().get() != null);
+        });
     }
 
 

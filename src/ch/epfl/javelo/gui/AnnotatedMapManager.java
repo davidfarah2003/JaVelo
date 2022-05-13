@@ -36,7 +36,7 @@ public final class AnnotatedMapManager {
 
         currentMousePosition = new SimpleObjectProperty<>();
 
-        this.routeManager = new RouteManager(routeBean, mapViewParametersP, consumer);
+        this.routeManager = new RouteManager(routeBean, mapViewParametersP);
         this.wayPointsManager = new WayPointsManager(graph, mapViewParametersP, routeBean.getWaypoints(), consumer);
         this.baseMapManager = new BaseMapManager(tileManager, this.wayPointsManager, mapViewParametersP);
         this.stackPane = new StackPane(baseMapManager.pane(), wayPointsManager.pane(), routeManager.pane());
