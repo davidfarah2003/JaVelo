@@ -102,10 +102,11 @@ public final class BaseMapManager {
         SimpleLongProperty minScrollTime = new SimpleLongProperty();
         pane.setOnScroll(e -> {
             // minimizing the frequency which enables zoom level changes (4 zoomLevel max per second)
+            if (e.getDeltaY() == 0d) return;
             long currentTime = System.currentTimeMillis();
             if (currentTime < minScrollTime.get()) return;
-            minScrollTime.set(currentTime + 250);
-            double zoomDelta = Math.signum(e.getDeltaY());
+            minScrollTime.set(currentTime + 200);
+            int zoomDelta = (int) Math.signum(e.getDeltaY());
 
             int currentZoomLevel = mapViewParametersP.get().zoomLevel();
             int newZoomLevel = Math2.clamp(ZOOM_LEVEL_MIN, currentZoomLevel + (int) zoomDelta, ZOOM_LEVEL_MAX);
