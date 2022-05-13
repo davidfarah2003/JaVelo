@@ -64,7 +64,6 @@ public final class AnnotatedMapManager {
     }
 
     private void recalculateMousePositionOnRouteProperty(){
-        mousePositionOnRouteProperty.setValue(routeBean.getRouteProperty().get().pointClosestTo(mapViewParametersP.get().pointAt(currentMousePosition.get().getX(), currentMousePosition.get().getY()).position());
-        )
+
     }
 }

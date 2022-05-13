@@ -20,6 +20,9 @@ import java.util.TreeMap;
 
 import static java.lang.Double.NaN;
 
+/**
+ * Class that is responsible for drawing elevation profile of the route on GUI
+ */
 public final class ElevationProfileManager{
     private final ReadOnlyObjectProperty<ElevationProfile> elevationProfile;
     private final DoubleProperty highlightedPosition;
@@ -29,6 +32,11 @@ public final class ElevationProfileManager{
     private final ObjectProperty<Transform> worldToScreenP;
     private final DoubleProperty mousePositionOnProfileProperty;
 
+    /**
+     * Constructor that initializes the GUI and creates bindings and listeners
+     * @param elevationProfileRO Elevation profile of the Route (Read Only Property)
+     * @param highlightedPosition Currently highlighted position
+     */
     public ElevationProfileManager(ReadOnlyObjectProperty<ElevationProfile> elevationProfileRO,
                                    ReadOnlyDoubleProperty highlightedPosition){
         this.elevationProfile = elevationProfileRO;
@@ -44,6 +52,9 @@ public final class ElevationProfileManager{
     }
 
 
+    /**
+     * Add bindings between rectangle and pane
+     */
     private void addBindings(){
         rectangle.bind(Bindings.createObjectBinding( () ->
                         {double xValue = Math.max(0,pane.getWidth() - (insets.getLeft() + insets.getRight()));
@@ -54,6 +65,9 @@ public final class ElevationProfileManager{
         );
     }
 
+    /**
+     * Add listeners to the pane and rectangle
+     */
     private void addListeners(){
         pane.setOnMouseMoved(e -> {
             double value = screenToWorldP.get().transform(e.getX(),0).getX();
@@ -105,24 +119,31 @@ public final class ElevationProfileManager{
 //----------------------------------Section for Creating and Drawing GUI Groups----------------------------------
 
     private final BorderPane borderPane;
-    private Pane pane;
-    private Polygon profileGraph;
-    private Line highlightedPositionLine;
-    private Path grid;
-    private Group gridLabels;
-    private Insets insets;
+    private final Pane pane = new Pane();
+    private final Polygon profileGraph = new Polygon();
+    private final Line highlightedPositionLine = new Line();
+    private final Path grid = new Path();
+    private final Group gridLabels = new Group();
+    private static final Insets insets = new Insets(10, 10, 20, 40);
 
+    /**
+     * Creates the GUI structure that will display the elevation Profile
+     * @return return the BorderPane that is on the root of the structure
+     */
     private BorderPane createGui(){
         BorderPane borderPane = new BorderPane();
-        insets = new Insets(10, 10, 20, 40);
         borderPane.getStylesheets().add("elevation_profile.css");
-        VBox profileDataBox = createVBox();
+        VBox profileDataBox = createProfileDataBox();
         profileDataBox.setId("profile_data");
-        borderPane.setCenter(createInternalPane());
+        borderPane.setCenter(initializeInternalPane());
         borderPane.setBottom(profileDataBox);
         return borderPane;
     }
-    private VBox createVBox(){
+
+    /**
+     * @return the VBox that contains ElevationProfile information of the route
+     */
+    private VBox createProfileDataBox(){
         VBox profileDataBox = new VBox();
         Text text = new Text();
 
@@ -137,19 +158,24 @@ public final class ElevationProfileManager{
 
         return profileDataBox;
     }
-    private Pane createInternalPane(){
-        pane = new Pane();
-        grid = new Path();
+
+    /**
+     * Initializes the internal Pane of that will contain the grid and graph
+     * @return the pane after initializing
+     */
+    private Pane initializeInternalPane(){
         grid.setId("grid");
-        profileGraph = new Polygon();
         profileGraph.setId("profile");
-        gridLabels = createGridLabelsGroup();
-        highlightedPositionLine = new Line();
-        pane.getChildren().addAll(grid, profileGraph, gridLabels, highlightedPositionLine);
+        initializeGridLabelsGroup();
+        pane.getChildren().addAll(grid, profileGraph, initializeGridLabelsGroup(), highlightedPositionLine);
         return pane;
     }
-    private Group createGridLabelsGroup(){
-        gridLabels = new Group();
+
+    /**
+     * Initializes the Grid Labels Group
+     * @return the gridLabels Group after initializing
+     */
+    private Group initializeGridLabelsGroup(){
         Text horizontalText = new Text();
         horizontalText.getStyleClass().addAll("grid_label", "horizontal");
         Text verticalText = new Text();
@@ -158,7 +184,9 @@ public final class ElevationProfileManager{
         return gridLabels;
     }
 
-
+    /**
+     * Redraw the Profile Graph
+     */
     private void redrawProfile(){
         profileGraph.getPoints().clear();
         Map<Double, Double> map = new TreeMap<>();
@@ -175,6 +203,9 @@ public final class ElevationProfileManager{
         profileGraph.getPoints().addAll(insets.getLeft() + rectangle.get().getWidth(), insets.getTop() + rectangle.get().getHeight());
     }
 
+    /**
+     * Draws Grid and it's labels
+     */
     private void drawGridAndLabels(){
         int[] ELE_STEPS = { 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
         int[] POS_STEPS = { 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
@@ -232,6 +263,10 @@ public final class ElevationProfileManager{
 
 //---------------------------------------Section for relative position methods---------------------------------------
 
+    /**
+     * Generates Affine properties that convert from Screen to World
+     * @throws NonInvertibleTransformException when the transformation is not invertible (it is in our case)
+     */
     private void generateNewAffineFunctions() throws NonInvertibleTransformException {
         /*
             translate the rectangle origin to borderpane origin
@@ -250,7 +285,13 @@ public final class ElevationProfileManager{
         worldToScreenP.setValue(screenToWorld.createInverse());
     }
 
-    private int chooseSpaceBetweenLines(double pixelsPerMeter,int[] steps, int minimalDistance){
+    /**
+     * @param pixelsPerMeter number of pixels per meter in the direction
+     * @param steps Different spacing possible for this direction
+     * @param minimalDistance Minimal distance between 2 values
+     * @return the spacing between 2 positions
+     */
+    private int chooseSpaceBetweenLines(double pixelsPerMeter, int[] steps, int minimalDistance){
         int space = steps[steps.length - 1];
         for (int spacing: steps) {
             double value = spacing * pixelsPerMeter;
