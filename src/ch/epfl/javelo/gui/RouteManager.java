@@ -66,8 +66,12 @@ public final class RouteManager {
             if (value)
                 this.signalError.accept(message);
             else
+                /*
                 routeBean.getWaypoints().add(routeBean.getRouteProperty().get().
                                 indexOfSegmentAt(routeBean.highlightedPosition()) + 1, w);
+
+                 */
+                routeBean.getWaypoints().add(routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1,w);
         });
 
        routeBean.getRouteProperty().addListener(e -> {
