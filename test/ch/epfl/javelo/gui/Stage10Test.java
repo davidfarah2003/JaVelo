@@ -33,7 +33,7 @@ public final class Stage10Test extends Application {
         ObjectProperty<ElevationProfile> profileProperty =
                 new SimpleObjectProperty<>(profile);
         DoubleProperty highlightProperty =
-                new SimpleDoubleProperty(0);
+                new SimpleDoubleProperty(1500);
 
         ElevationProfileManager profileManager =
                 new ElevationProfileManager(profileProperty,
@@ -48,27 +48,5 @@ public final class Stage10Test extends Application {
         primaryStage.setMinHeight(300);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        /*
-        Translate translation1 = Transform.translate(3,4);
-        Scale s = Transform.scale(3,4);
-        Translate translation2 = Transform.translate(4,6);
-        Translate translation1Inversed = translation1.createInverse();
-        Scale sInversed = s.createInverse();
-        Translate translation2Inversed = translation2.createInverse();
-
-        Affine aff = new Affine();
-        aff.prependTranslation(translation1.getTx(), translation1.getTy());
-        aff.prependScale(s.getX(), s.getY());
-        aff.prependTranslation(translation2.getTx(), translation2.getTy());
-
-        Affine affInversed = new Affine();
-        affInversed.prependTranslation(translation2Inversed.getTx(), translation2Inversed.getTy());
-        affInversed.prependScale(sInversed.getX(), sInversed.getY());
-        affInversed.prependTranslation(translation1Inversed.getTx(), translation1Inversed.getTy());
-
-        System.out.println(aff.transform(40,10));
-
-         */
     }
 }
