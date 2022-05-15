@@ -1,7 +1,10 @@
 package ch.epfl.javelo.gui;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
+import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
+import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -29,6 +32,7 @@ public final class AnnotatedMapManager {
 
 
     public AnnotatedMapManager(Graph graph, TileManager tileManager, RouteBean routeBean, Consumer<String> consumer){
+
         this.routeBean = routeBean;
 
         mapViewParametersP = new SimpleObjectProperty<>(
@@ -47,6 +51,7 @@ public final class AnnotatedMapManager {
 
         mapViewParametersP.addListener(e -> recalculateMousePositionOnRouteProperty());
         routeBean.getRouteProperty().addListener(e -> recalculateMousePositionOnRouteProperty());
+        currentMousePosition.addListener(e -> recalculateMousePositionOnRouteProperty());
         stackPane.setOnMouseMoved(e -> currentMousePosition.setValue(new Point2D(e.getX(), e.getY())));
         stackPane.setOnMouseExited(e -> mousePositionOnRouteProperty.setValue(NaN));
 
@@ -64,6 +69,23 @@ public final class AnnotatedMapManager {
     }
 
     private void recalculateMousePositionOnRouteProperty(){
+        PointWebMercator pointUnderMouse = mapViewParametersP.get().pointAt(currentMousePosition.get().getX(),
+                currentMousePosition.get().getY());
+
+        RoutePoint rp = routeBean.getRouteProperty().get().pointClosestTo
+                        (pointUnderMouse.toPointCh());
+
+        PointWebMercator projectedPoint = PointWebMercator.ofPointCh(rp.point());
+
+
+        if (Math2.norm(mapViewParametersP.get().viewX(pointUnderMouse) - mapViewParametersP.get().viewX(projectedPoint),
+                mapViewParametersP.get().viewY(pointUnderMouse) - mapViewParametersP.get().viewY(projectedPoint)) <= 15){
+
+            mousePositionOnRouteProperty.setValue(rp.position());
+        }
+        else{
+            mousePositionOnRouteProperty.setValue(NaN);
+        }
 
     }
 }

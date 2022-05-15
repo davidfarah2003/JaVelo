@@ -26,7 +26,7 @@ public final class TestTileManager extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        TileManager tm = new TileManager(Path.of("./cache"), "tile.openstreetmap.org");
+        TileManager tm = new TileManager(Path.of("./osm-cache"), "tile.openstreetmap.org");
 
      //   TileManager.TileId tileId = new TileManager.TileId(23, 271725, 185422);
        Image tileImage = tm.getTileImage(new TileManager.TileId(19, 271725, 185422));
