@@ -116,7 +116,7 @@ public final class ElevationProfileManager{
     }
 
 
-//----------------------------------Section for Creating and Drawing GUI Groups----------------------------------
+//----------------------------------Section for Creating and Drawing GUI elements----------------------------------
 
     private final BorderPane borderPane;
     private final Pane pane = new Pane();
@@ -268,11 +268,10 @@ public final class ElevationProfileManager{
      * @throws NonInvertibleTransformException when the transformation is not invertible (it is in our case)
      */
     private void generateNewAffineFunctions() throws NonInvertibleTransformException {
-        /*
-            translate the rectangle origin to borderpane origin
+        /*  translate the rectangle origin to borderpane origin
             scale rectangle to borderpane
-            reposition rectangle to original position
-        */
+            reposition rectangle to original position  */
+
         Affine screenToWorld = new Affine();
         screenToWorld.prependTranslation(-insets.getLeft(), -insets.getTop());
         screenToWorld.prependScale(elevationProfile.get().length() / rectangle.get().getWidth(),

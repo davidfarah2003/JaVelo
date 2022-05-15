@@ -223,9 +223,7 @@ public final class WayPointsManager {
          */
         private void addPinListeners(Group pin) {
             pin.setOnMouseClicked(mouseEvent -> {
-                        if (mouseEvent.isStillSincePress()) {
-                            removeWaypoint(pinWaypointMap.get(pin));
-                        }
+                        if (mouseEvent.isStillSincePress()) removeWaypoint(pinWaypointMap.get(pin));
                     }
             );
 
@@ -238,19 +236,11 @@ public final class WayPointsManager {
             pin.setOnMouseDragged(mouseEvent -> {
                 pin.setLayoutX(pin.getLayoutX() + (mouseEvent.getX() - coordsBeforeDrag.getX()));
                 pin.setLayoutY(pin.getLayoutY() + (mouseEvent.getY() - coordsBeforeDrag.getY()));
-
                 pin.setOnMouseReleased(mouseEvent1 -> {
-
                             if(!replaceWaypoint(mapViewParameters.get().xUpperLeftMapView() + pin.getLayoutX(),
                                                 mapViewParameters.get().yUpperLeftMapView() + pin.getLayoutY(),
-                                                   pinWaypointMap.get(pin)))
-                            {
-                                redrawWaypoints();
-                            }
-
+                                                   pinWaypointMap.get(pin))) {redrawWaypoints();}
                 });
-
-
             });
         }
     }

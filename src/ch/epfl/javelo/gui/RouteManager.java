@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 public final class RouteManager {
     private final RouteBean routeBean;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
-    //private final String message = "Un point de passage est déjà présent à cet endroit!";
 
     private final Pane pane;
     private final Polyline polyline;
