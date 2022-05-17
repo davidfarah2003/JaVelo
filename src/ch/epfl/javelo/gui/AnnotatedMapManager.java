@@ -68,11 +68,10 @@ public final class AnnotatedMapManager {
 
         stackPane.setOnMouseMoved(e -> currentMousePosition.setValue(new Point2D(e.getX(), e.getY())));
         stackPane.setOnMouseExited(e -> {
-            currentMousePosition.setValue(Point2D.ZERO);
             mousePositionOnRouteProperty.setValue(NaN);
         });
 
-     //   routeBean.getHighlightedPositionP().bind(mousePositionOnRouteProperty());
+
     }
 
     public Pane pane(){

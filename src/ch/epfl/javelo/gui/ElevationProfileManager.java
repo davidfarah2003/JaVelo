@@ -107,15 +107,16 @@ public final class ElevationProfileManager{
         });
 
         elevationProfile.addListener(e ->{
-            try {
-                generateNewAffineFunctions();
-            } catch (NonInvertibleTransformException ex) {
-                ex.printStackTrace();
+            if (elevationProfile.get() != null) {
+                try {
+                    generateNewAffineFunctions();
+                } catch (NonInvertibleTransformException ex) {
+                    ex.printStackTrace();
+                }
+                redrawProfile();
+                drawGridAndLabels();
+                createProfileDataBox();
             }
-            redrawProfile();
-            drawGridAndLabels();
-            createProfileDataBox();
-
         });
 
     }
@@ -149,8 +150,6 @@ public final class ElevationProfileManager{
         vBox.setId("profile_data");
         borderPane.setCenter(initializeInternalPane());
         borderPane.setBottom(vBox);
-
-        createProfileDataBox();
         return borderPane;
     }
 
@@ -159,7 +158,6 @@ public final class ElevationProfileManager{
      */
     private void createProfileDataBox(){
 
-        if (elevationProfile.get() != null) {
             vBox.getChildren().clear();
             Text text = new Text();
             String s = "Longueur : %.1f km".formatted(elevationProfile.get().length() / 1000) +
@@ -170,7 +168,7 @@ public final class ElevationProfileManager{
 
             text.setText(s);
             vBox.getChildren().add(text);
-        }
+
 
     }
 
@@ -202,20 +200,22 @@ public final class ElevationProfileManager{
     /**
      * Redraw the Profile Graph
      */
-    private void redrawProfile(){
+    private void redrawProfile() {
         profileGraph.getPoints().clear();
         Map<Double, Double> map = new TreeMap<>();
 
-        for (double x = insets.getLeft(); x < insets.getLeft() + rectangle.get().getWidth(); x++) {
-            double xValue = screenToWorldP.get().transform(x, 0).getX();
-            double elevation = elevationProfile.get().elevationAt(xValue);
-            double yValue = worldToScreenP.get().transform(0, elevation).getY();
-            map.put(x, yValue);
-        }
+            for (double x = insets.getLeft(); x < insets.getLeft() + rectangle.get().getWidth(); x++) {
+                double xValue = screenToWorldP.get().transform(x, 0).getX();
+                double elevation = elevationProfile.get().elevationAt(xValue);
+                double yValue = worldToScreenP.get().transform(0, elevation).getY();
+                map.put(x, yValue);
+            }
 
-        profileGraph.getPoints().addAll(insets.getLeft(), insets.getTop() + rectangle.get().getHeight());
-        map.forEach((key, value) -> profileGraph.getPoints().addAll(key, value));
-        profileGraph.getPoints().addAll(insets.getLeft() + rectangle.get().getWidth(), insets.getTop() + rectangle.get().getHeight());
+            profileGraph.getPoints().addAll(insets.getLeft(), insets.getTop() + rectangle.get().getHeight());
+            map.forEach((key, value) -> profileGraph.getPoints().addAll(key, value));
+            profileGraph.getPoints().addAll(insets.getLeft() + rectangle.get().getWidth(),
+                                                insets.getTop() + rectangle.get().getHeight());
+
     }
 
     /**
@@ -298,7 +298,6 @@ public final class ElevationProfileManager{
                             / rectangle.get().getHeight()
             );
             screenToWorld.prependTranslation(0, elevationProfile.get().maxElevation());
-
             screenToWorldP.setValue(screenToWorld);
             worldToScreenP.setValue(screenToWorld.createInverse());
         }

@@ -29,8 +29,6 @@ public final class WayPointsManager {
     private final gui gui;
     private final double SEARCH_DISTANCE = 1000;
     private final String PROXIMITY_ERROR_MSG = "Aucune route à proximité !";
-    private final ErrorManager errorManager;
-    private final StackPane stackPane;
 
 
 
@@ -49,10 +47,9 @@ public final class WayPointsManager {
         this.wayPoints = wayPoints;
         this.signalError = signalError;
         this.gui = new gui();
-        errorManager = new ErrorManager();
 
-        stackPane = new StackPane(errorManager.pane(), gui.pane);
-        stackPane.setPickOnBounds(false);
+
+
 
 
 
@@ -73,7 +70,7 @@ public final class WayPointsManager {
         int closestNodeId = getClosestNodeId(x, y);
 
         if (closestNodeId < 0) {
-            errorManager.displayError(PROXIMITY_ERROR_MSG);
+           signalError.accept(PROXIMITY_ERROR_MSG);
             return false;
         }
 
@@ -95,7 +92,7 @@ public final class WayPointsManager {
         int closestNodeId = getClosestNodeId(x, y);
 
         if (closestNodeId < 0) {
-            errorManager.displayError(PROXIMITY_ERROR_MSG);
+            signalError.accept(PROXIMITY_ERROR_MSG);
             return false;
         } else if (!wayPoints.contains(oldWaypoint)) {
             return false;
@@ -135,7 +132,7 @@ public final class WayPointsManager {
      * @return the JavaFX pane displaying the pins.
      */
     public Pane pane() {
-        return stackPane;
+        return gui.pane;
     }
 
     /**

@@ -39,22 +39,22 @@ public final class RouteManager {
         addListeners();
     }
 
-    private void addListeners(){
+    private void addListeners() {
         routeBean.getWaypoints().addListener((InvalidationListener) e -> reconstructPolyline());
 
         this.mapViewParametersP.addListener(
                 (p, oldParams, newParams) -> {
                     if (oldParams.zoomLevel() == newParams.zoomLevel()) {
                         repositionNodes();
-                    }
-                    else{
+                    } else {
                         reconstructPolyline();
                     }
                 });
 
-            circle.setOnMouseClicked(e -> {
+
+        circle.setOnMouseClicked(e -> {
             PointWebMercator pointRelatedToPane = mapViewParametersP.get().pointAt(
-                    circle.localToParent(e.getX(), e.getY()).getX() ,
+                    circle.localToParent(e.getX(), e.getY()).getX(),
                     circle.localToParent(e.getX(), e.getY()).getY()
             );
             PointCh pointRelatedToPaneCh = pointRelatedToPane.toPointCh();
@@ -63,7 +63,7 @@ public final class RouteManager {
             Waypoint w = new Waypoint(pointRelatedToPaneCh, id);
 
             routeBean.getWaypoints().add(routeBean.
-                    indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1,
+                            indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1,
                     w);
         });
 
@@ -72,18 +72,33 @@ public final class RouteManager {
             circle.setVisible(routeBean.getRouteProperty().get() != null);
         });
 
-        routeBean.getHighlightedPositionP().addListener(e ->{
-            System.out.println("listener");
-            if (routeBean.getRouteProperty().get() != null && !Double.isNaN(routeBean.getHighlightedPositionP().get())) {
+        routeBean.getHighlightedPositionP().addListener(e -> {
+            if (routeBean.getRouteProperty().get() != null && !Double.isNaN(routeBean.highlightedPosition())){
                 PointWebMercator highlightedPoint =
                         PointWebMercator.ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
-               // circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+                circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+                circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+                circle.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
+                circle.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
+            }
+        });
+
+
+    }
+            /*
+            if (routeBean.getRouteProperty().get() != null && !Double.isNaN(routeBean.getHighlightedPositionP().get())) {
+                System.out.println(routeBean.highlightedPosition());
+                PointWebMercator highlightedPoint =
+                        PointWebMercator.ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
+              //  circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
                // circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
                 circle.setLayoutX(mapViewParametersP.get().viewX(highlightedPoint));
                 circle.setLayoutY(mapViewParametersP.get().viewY(highlightedPoint));
             }
         });
     }
+    }
+             */
 
 
     private void reconstructPolyline() {
@@ -110,14 +125,17 @@ public final class RouteManager {
             polyline.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
             polyline.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
 
-            System.out.println(routeBean.highlightedPosition());
 
             PointWebMercator highlightedPoint =
                     PointWebMercator.ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
-            circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
-            circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
-            circle.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
-            circle.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
+          //  circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+          //  circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+            circle.setLayoutX((mapViewParametersP.get().viewX(highlightedPoint)));
+            circle.setLayoutY(mapViewParametersP.get().viewY(highlightedPoint));
+
+
+
+
 
         }
     }

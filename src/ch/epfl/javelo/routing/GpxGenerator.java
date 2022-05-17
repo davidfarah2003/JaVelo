@@ -82,7 +82,7 @@ public class GpxGenerator {
     }
 
     public static void writeGPX(Document doc) throws IOException, TransformerException {
-      try (Writer w = new FileWriter("rendu.gpx")){
+      try (Writer w = new FileWriter("javelo.gpx")){
             Transformer transformer = newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(new DOMSource(doc), new StreamResult(w));
