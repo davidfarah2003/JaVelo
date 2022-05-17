@@ -12,6 +12,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -55,8 +56,11 @@ public final class JaVelo extends Application {
                 errorManager.displayError("Aucune route à proximité");
             }
         });
+
         elevationProfileP.addListener((p, oldV, newV) -> {
             if (oldV == null && newV != null) {
+                Pane borderPane = elevationProfileManager.pane();
+                SplitPane.setResizableWithParent(borderPane, false);
                 splitPane.getItems().add(elevationProfileManager.pane());
             } else if (oldV != null && newV == null) {
                 splitPane.getItems().remove(splitPane.getItems().size() - 1);

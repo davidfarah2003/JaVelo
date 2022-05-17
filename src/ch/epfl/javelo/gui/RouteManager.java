@@ -4,14 +4,11 @@ import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
-import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public final class RouteManager {
     private final RouteBean routeBean;
@@ -55,27 +52,26 @@ public final class RouteManager {
         circle.setOnMouseClicked(e -> {
             PointWebMercator pointRelatedToPane = mapViewParametersP.get().pointAt(
                     circle.localToParent(e.getX(), e.getY()).getX(),
-                    circle.localToParent(e.getX(), e.getY()).getY()
-            );
+                    circle.localToParent(e.getX(), e.getY()).getY());
+
             PointCh pointRelatedToPaneCh = pointRelatedToPane.toPointCh();
 
             int id = routeBean.getRouteProperty().get().nodeClosestTo(routeBean.highlightedPosition());
             Waypoint w = new Waypoint(pointRelatedToPaneCh, id);
 
-            routeBean.getWaypoints().add(routeBean.
-                            indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1,
-                    w);
+            routeBean.getWaypoints().add(routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1,
+                                        w);
         });
 
-        routeBean.getRouteProperty().addListener(e -> {
-            polyline.setVisible(routeBean.getRouteProperty().get() != null);
-            circle.setVisible(routeBean.getRouteProperty().get() != null);
-        });
+   //     routeBean.getRouteProperty().addListener(e -> {
+    //        polyline.setVisible(routeBean.getRouteProperty().get() != null);
+    //        circle.setVisible(routeBean.getRouteProperty().get() != null);
+   //     });
 
         routeBean.getHighlightedPositionP().addListener(e -> {
             if (routeBean.getRouteProperty().get() != null && !Double.isNaN(routeBean.highlightedPosition())){
-                PointWebMercator highlightedPoint =
-                        PointWebMercator.ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
+                PointWebMercator highlightedPoint = PointWebMercator.
+                        ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
                 circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
                 circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
                 circle.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
