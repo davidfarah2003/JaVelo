@@ -106,6 +106,8 @@ public final class RouteManager {
         polyline.getPoints().clear();
 
         if (routeBean.getRouteProperty().get() != null) {
+            circle.setVisible(true);
+            polyline.setVisible(true);
 
             //add x and y coordinates in alternating order
             // int i = 0;
@@ -126,17 +128,17 @@ public final class RouteManager {
             polyline.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
 
 
-            PointWebMercator highlightedPoint =
-                    PointWebMercator.ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
-          //  circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
-          //  circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
-            circle.setLayoutX((mapViewParametersP.get().viewX(highlightedPoint)));
-            circle.setLayoutY(mapViewParametersP.get().viewY(highlightedPoint));
-
-
-
-
-
+            if (!Double.isNaN(routeBean.highlightedPosition())) {
+                PointWebMercator highlightedPoint =
+                        PointWebMercator.ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
+                circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+                circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+                circle.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
+                circle.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
+            }
+            else{
+                circle.setVisible(false);
+            }
         }
     }
 
