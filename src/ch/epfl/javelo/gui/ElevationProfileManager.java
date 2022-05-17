@@ -32,6 +32,14 @@ public final class ElevationProfileManager{
     private final ObjectProperty<Transform> worldToScreenP;
     private final DoubleProperty mousePositionOnProfileProperty;
 
+    private final BorderPane borderPane;
+    private final Pane pane = new Pane();
+    private final Polygon profileGraph = new Polygon();
+    private final Line highlightedPositionLine = new Line();
+    private final Path grid = new Path();
+    private final Group gridLabels = new Group();
+    private static final Insets insets = new Insets(10, 10, 20, 40);
+    private VBox vBox;
     /**
      * Constructor that initializes the GUI and creates bindings and listeners
      * @param elevationProfileRO Elevation profile of the Route (Read Only Property)
@@ -98,6 +106,18 @@ public final class ElevationProfileManager{
             }
         });
 
+        elevationProfile.addListener(e ->{
+            try {
+                generateNewAffineFunctions();
+            } catch (NonInvertibleTransformException ex) {
+                ex.printStackTrace();
+            }
+            redrawProfile();
+            drawGridAndLabels();
+            createProfileDataBox();
+
+        });
+
     }
 
     /**
@@ -118,14 +138,6 @@ public final class ElevationProfileManager{
 
 //----------------------------------Section for Creating and Drawing GUI elements----------------------------------
 
-    private final BorderPane borderPane;
-    private final Pane pane = new Pane();
-    private final Polygon profileGraph = new Polygon();
-    private final Line highlightedPositionLine = new Line();
-    private final Path grid = new Path();
-    private final Group gridLabels = new Group();
-    private static final Insets insets = new Insets(10, 10, 20, 40);
-
     /**
      * Creates the GUI structure that will display the elevation Profile
      * @return return the BorderPane that is on the root of the structure
@@ -133,30 +145,33 @@ public final class ElevationProfileManager{
     private BorderPane createGui(){
         BorderPane borderPane = new BorderPane();
         borderPane.getStylesheets().add("elevation_profile.css");
-        VBox profileDataBox = createProfileDataBox();
-        profileDataBox.setId("profile_data");
+        vBox =  new VBox();
+        vBox.setId("profile_data");
         borderPane.setCenter(initializeInternalPane());
-        borderPane.setBottom(profileDataBox);
+        borderPane.setBottom(vBox);
+
+        createProfileDataBox();
         return borderPane;
     }
 
     /**
      * @return the VBox that contains ElevationProfile information of the route
      */
-    private VBox createProfileDataBox(){
-        VBox profileDataBox = new VBox();
-        Text text = new Text();
+    private void createProfileDataBox(){
 
-        String s = "Longueur : %.1f km".formatted(elevationProfile.get().length() / 1000) +
-                "     Montée : %.0f m".formatted(elevationProfile.get().totalAscent()) +
-                "     Descente : %.0f m".formatted(elevationProfile.get().totalDescent()) +
-                "     Altitude : de %.0f m à %.0f m".formatted(elevationProfile.get().minElevation(),
-                        elevationProfile.get().maxElevation());
+        if (elevationProfile.get() != null) {
+            vBox.getChildren().clear();
+            Text text = new Text();
+            String s = "Longueur : %.1f km".formatted(elevationProfile.get().length() / 1000) +
+                    "     Montée : %.0f m".formatted(elevationProfile.get().totalAscent()) +
+                    "     Descente : %.0f m".formatted(elevationProfile.get().totalDescent()) +
+                    "     Altitude : de %.0f m à %.0f m".formatted(elevationProfile.get().minElevation(),
+                            elevationProfile.get().maxElevation());
 
-        text.setText(s);
-        profileDataBox.getChildren().add(text);
+            text.setText(s);
+            vBox.getChildren().add(text);
+        }
 
-        return profileDataBox;
     }
 
     /**
@@ -191,7 +206,7 @@ public final class ElevationProfileManager{
         profileGraph.getPoints().clear();
         Map<Double, Double> map = new TreeMap<>();
 
-        for (double x = insets.getLeft(); x <= insets.getLeft() + rectangle.get().getWidth(); x++) {
+        for (double x = insets.getLeft(); x < insets.getLeft() + rectangle.get().getWidth(); x++) {
             double xValue = screenToWorldP.get().transform(x, 0).getX();
             double elevation = elevationProfile.get().elevationAt(xValue);
             double yValue = worldToScreenP.get().transform(0, elevation).getY();
@@ -215,14 +230,14 @@ public final class ElevationProfileManager{
 
         double nbPixelsPerMeterY = rectangle.get().getHeight() /
                 (elevationProfile.get().maxElevation() - elevationProfile.get().minElevation());
-        int horizontalSpacing = chooseSpaceBetweenLines(nbPixelsPerMeterY, ELE_STEPS, 25);
+        int spaceBetweenHorizontalLines = chooseSpaceBetweenLines(nbPixelsPerMeterY, ELE_STEPS, 25);
         double y_meters = 0;
-        int firstHeight = (int) (horizontalSpacing *
-                Math.ceil(elevationProfile.get().minElevation() / horizontalSpacing));
+        int firstHeight = (int) (spaceBetweenHorizontalLines *
+                Math.ceil(elevationProfile.get().minElevation() / spaceBetweenHorizontalLines));
 
         while(y_meters < elevationProfile.get().maxElevation()){
             double y_pixels = worldToScreenP.get().transform(0, y_meters).getY();
-            y_meters += horizontalSpacing;
+            y_meters += spaceBetweenHorizontalLines;
 
             if (y_pixels < insets.getTop() + rectangle.get().getHeight()) {
                 PathElement lineExtremity1 = new MoveTo(insets.getLeft(), y_pixels);
@@ -236,27 +251,30 @@ public final class ElevationProfileManager{
                 text.setText(Integer.toString(firstHeight));
                 text.setFont(Font.font("Avenir", 10));
                 gridLabels.getChildren().add(text);
-                firstHeight += horizontalSpacing;
+                firstHeight += spaceBetweenHorizontalLines;
             }
         }
 
         double nbPixelsPerMeterX = rectangle.get().getWidth() / elevationProfile.get().length();
-        int verticalSpacing = chooseSpaceBetweenLines(nbPixelsPerMeterX, POS_STEPS, 50);
+        int spaceBetweenVerticalLines = chooseSpaceBetweenLines(nbPixelsPerMeterX, POS_STEPS, 50);
+
         int length = 0;
+        int i = 0;
         while(length < elevationProfile.get().length()){
             double pixelsX = worldToScreenP.get().transform(length, 0).getX();
             PathElement lineExtremity1 = new MoveTo(pixelsX, insets.getTop() + rectangle.get().getHeight());
             PathElement lineExtremity2 = new LineTo(pixelsX, insets.getTop());
             grid.getElements().addAll(lineExtremity1, lineExtremity2);
-            length += verticalSpacing;
+            length += spaceBetweenVerticalLines;
 
             Text text = new Text();
             text.setTextOrigin(VPos.TOP);
-            text.setX(pixelsX - 3);
+            text.setX(pixelsX - 2);
             text.setY(insets.getTop() + rectangle.get().getHeight());
-            text.setText(Integer.toString((length / verticalSpacing) - verticalSpacing/1000));
+            text.setText(Integer.toString((spaceBetweenVerticalLines/1000)* i));
             text.setFont(Font.font("Avenir", 10));
             gridLabels.getChildren().add(text);
+            i++;
         }
     }
 
@@ -272,16 +290,18 @@ public final class ElevationProfileManager{
             scale rectangle to borderpane
             reposition rectangle to original position  */
 
-        Affine screenToWorld = new Affine();
-        screenToWorld.prependTranslation(-insets.getLeft(), -insets.getTop());
-        screenToWorld.prependScale(elevationProfile.get().length() / rectangle.get().getWidth(),
-                -(elevationProfile.get().maxElevation() - elevationProfile.get().minElevation())
-                        / rectangle.get().getHeight()
-        );
-        screenToWorld.prependTranslation(0, elevationProfile.get().maxElevation());
+        if (elevationProfile.get() != null) {
+            Affine screenToWorld = new Affine();
+            screenToWorld.prependTranslation(-insets.getLeft(), -insets.getTop());
+            screenToWorld.prependScale(elevationProfile.get().length() / rectangle.get().getWidth(),
+                    -(elevationProfile.get().maxElevation() - elevationProfile.get().minElevation())
+                            / rectangle.get().getHeight()
+            );
+            screenToWorld.prependTranslation(0, elevationProfile.get().maxElevation());
 
-        screenToWorldP.setValue(screenToWorld);
-        worldToScreenP.setValue(screenToWorld.createInverse());
+            screenToWorldP.setValue(screenToWorld);
+            worldToScreenP.setValue(screenToWorld.createInverse());
+        }
     }
 
     /**

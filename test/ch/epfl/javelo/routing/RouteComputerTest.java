@@ -37,8 +37,9 @@ class RouteComputerTest {
 
         long t0 = System.nanoTime();
 
-        //Route r = rc.bestRouteBetween(159049, 117669);
-        Route r = rc.bestRouteBetween(2046055, 2694240);
+        Route r = rc.bestRouteBetween(159049, 117669);
+        System.out.println(r);
+       // Route r = rc.bestRouteBetween(2046055, 2694240);
 
         System.out.printf("Itinéraire calculé en %d ms\n",
                 (System.nanoTime() - t0) / 1_000_000);

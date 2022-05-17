@@ -18,7 +18,7 @@ public final class Functions {
      * @return a constant function
      */
     public static DoubleUnaryOperator constant(double y) {
-        return x-> y;
+        return x -> y;
     }
 
 

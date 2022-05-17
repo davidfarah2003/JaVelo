@@ -43,21 +43,36 @@ public final class AnnotatedMapManager {
         this.routeManager = new RouteManager(routeBean, mapViewParametersP);
         this.wayPointsManager = new WayPointsManager(graph, mapViewParametersP, routeBean.getWaypoints(), consumer);
         this.baseMapManager = new BaseMapManager(tileManager, this.wayPointsManager, mapViewParametersP);
-        this.stackPane = new StackPane(baseMapManager.pane(), wayPointsManager.pane(), routeManager.pane());
-        stackPane.setId("map.css");
+        stackPane = new StackPane(baseMapManager.pane(), wayPointsManager.pane(), routeManager.pane());
+        stackPane.getStylesheets().add("map.css");
+
+
+
+
 
         mousePositionOnRouteProperty = new SimpleDoubleProperty();
 
 
-        mapViewParametersP.addListener(e -> recalculateMousePositionOnRouteProperty());
-        routeBean.getRouteProperty().addListener(e -> recalculateMousePositionOnRouteProperty());
-        currentMousePosition.addListener(e -> recalculateMousePositionOnRouteProperty());
+        mapViewParametersP.addListener(e -> {
+            if (!(routeBean.getRouteProperty().get() == null))
+                recalculateMousePositionOnRouteProperty();
+        });
+        routeBean.getRouteProperty().addListener(e -> {
+            if (!(routeBean.getRouteProperty().get() == null))
+                recalculateMousePositionOnRouteProperty();
+        });
+        currentMousePosition.addListener(e -> {
+            if (!(routeBean.getRouteProperty().get() == null))
+                recalculateMousePositionOnRouteProperty();
+        });
+
         stackPane.setOnMouseMoved(e -> currentMousePosition.setValue(new Point2D(e.getX(), e.getY())));
-        stackPane.setOnMouseExited(e -> mousePositionOnRouteProperty.setValue(NaN));
+        stackPane.setOnMouseExited(e -> {
+            currentMousePosition.setValue(Point2D.ZERO);
+            mousePositionOnRouteProperty.setValue(NaN);
+        });
 
-
-
-
+     //   routeBean.getHighlightedPositionP().bind(mousePositionOnRouteProperty());
     }
 
     public Pane pane(){
@@ -69,6 +84,7 @@ public final class AnnotatedMapManager {
     }
 
     private void recalculateMousePositionOnRouteProperty(){
+
         PointWebMercator pointUnderMouse = mapViewParametersP.get().pointAt(currentMousePosition.get().getX(),
                 currentMousePosition.get().getY());
 

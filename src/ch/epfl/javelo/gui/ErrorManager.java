@@ -15,7 +15,7 @@ public final class ErrorManager {
     public ErrorManager(){
         vBox = new VBox();
         vBox.setMouseTransparent(true);
-        vBox.setId("error.css");
+        vBox.getStylesheets().add("error.css");
         sequentialTransition = new SequentialTransition();
     }
 
@@ -32,13 +32,13 @@ public final class ErrorManager {
         vBox.getChildren().add(t);
 
 
-        FadeTransition f1 = new FadeTransition(Duration.valueOf("200"));
+        FadeTransition f1 = new FadeTransition(Duration.valueOf("200ms"));
         f1.setFromValue(0);
         f1.setToValue(0.8);
 
-        PauseTransition pauseTransition = new PauseTransition(Duration.valueOf("2000"));
+        PauseTransition pauseTransition = new PauseTransition(Duration.valueOf("2000ms"));
 
-        FadeTransition f2 = new FadeTransition(Duration.valueOf("500"));
+        FadeTransition f2 = new FadeTransition(Duration.valueOf("500ms"));
         f2.setFromValue(0.8);
         f2.setToValue(0);
 

@@ -64,7 +64,6 @@ public final class RouteBean {
                 route.setValue(new MultiRoute(singleRoutes));
                 elevationProfile.setValue(ElevationProfileComputer.elevationProfile(route.get(), 5));
             } else {
-                System.out.println("No route found");
                 route.setValue(null);
                 elevationProfile.setValue(null);
             }
@@ -90,6 +89,10 @@ public final class RouteBean {
 
     public double highlightedPosition(){
         return highlightedPosition.get();
+    }
+
+    public DoubleProperty getHighlightedPositionP(){
+        return highlightedPosition;
     }
 
     public void setHighlightedPositionProperty(double value){
