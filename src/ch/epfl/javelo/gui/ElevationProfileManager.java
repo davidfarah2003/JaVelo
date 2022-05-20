@@ -52,7 +52,7 @@ public final class ElevationProfileManager{
         this.rectangle = new SimpleObjectProperty<>();
         this.screenToWorldP = new SimpleObjectProperty<>();
         this.worldToScreenP = new SimpleObjectProperty<>();
-        this.mousePositionOnProfileProperty = new SimpleDoubleProperty();
+        this.mousePositionOnProfileProperty = new SimpleDoubleProperty(Double.NaN);
 
         this.borderPane = createGui();
         addBindings();
@@ -87,7 +87,7 @@ public final class ElevationProfileManager{
             }
         });
 
-        pane.setOnMouseExited(e -> mousePositionOnProfileProperty.setValue(NaN));
+       // pane.setOnMouseExited(e -> mousePositionOnProfileProperty.setValue(NaN));
 
         rectangle.addListener(e -> {
             try {
