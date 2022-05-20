@@ -12,6 +12,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -28,11 +29,14 @@ public final class JaVelo extends Application {
     private SplitPane splitPane;
     private ElevationProfileManager elevationProfileManager;
     private AnnotatedMapManager annotatedMapManager;
+    private BorderPane borderPane;
 
 
     public static void main(String[] args) { launch(args); }
     @Override
     public void start(Stage primaryStage) throws Exception {
+        borderPane = new BorderPane();
+
 
         splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
@@ -91,12 +95,14 @@ public final class JaVelo extends Application {
         splitPane.getItems().add(annotatedMapManager.pane());
 
         StackPane stackPane = new StackPane();
-        stackPane.getChildren().addAll(splitPane, errorManager.pane(), menuBar);
+        stackPane.getChildren().addAll(splitPane, errorManager.pane());
 
+        borderPane.setTop(menuBar);
+        borderPane.setCenter(stackPane);
 
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-        primaryStage.setScene(new Scene(stackPane));
+        primaryStage.setScene(new Scene(borderPane));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
     }

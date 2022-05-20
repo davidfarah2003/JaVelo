@@ -44,12 +44,7 @@ public final class AnnotatedMapManager {
         stackPane = new StackPane(baseMapManager.pane(), wayPointsManager.pane(), routeManager.pane());
         stackPane.getStylesheets().add("map.css");
 
-
-
-
-
         mousePositionOnRouteProperty = new SimpleDoubleProperty(Double.NaN);
-
         routeBean.getHighlightedPositionP().bind(mousePositionOnRouteProperty);
 
 
