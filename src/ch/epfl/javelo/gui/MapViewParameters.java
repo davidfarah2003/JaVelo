@@ -52,8 +52,7 @@ public record MapViewParameters(int zoomLevel, double xUpperLeftMapView, double 
      *         displayed on the screen
      */
     public double viewX(PointWebMercator point){
-        double value = point.xAtZoomLevel(zoomLevel);
-        return value - xUpperLeftMapView;
+        return point.xAtZoomLevel(zoomLevel) - xUpperLeftMapView;
     }
 
     /**
@@ -62,7 +61,6 @@ public record MapViewParameters(int zoomLevel, double xUpperLeftMapView, double 
      *         displayed on the screen
      */
     public double viewY(PointWebMercator point){
-        double value = point.yAtZoomLevel(zoomLevel);
-        return value - yUpperLeftMapView;
+        return point.yAtZoomLevel(zoomLevel) - yUpperLeftMapView;
     }
 }

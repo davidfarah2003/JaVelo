@@ -12,7 +12,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -23,14 +22,19 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public final class JaVelo extends Application {
+
     private final ErrorManager errorManager = new ErrorManager();
+    private RouteBean rb;
+    private SplitPane splitPane;
+    private ElevationProfileManager elevationProfileManager;
+    private AnnotatedMapManager annotatedMapManager;
+
+
     public static void main(String[] args) { launch(args); }
-
-
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        SplitPane splitPane = new SplitPane();
+        splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
 
         Graph graph = Graph.loadFrom(Path.of("ch_west"));
@@ -39,39 +43,27 @@ public final class JaVelo extends Application {
 
 
         RouteComputer rc = new RouteComputer(graph, cityBikeCF);
-        RouteBean rb = new RouteBean(rc);
+        rb = new RouteBean(rc);
         Consumer<String> errorConsumer = new ErrorConsumer();
-        AnnotatedMapManager annotatedMapManager = new AnnotatedMapManager(graph, tileManager, rb, errorConsumer);
-
-        rb.setHighlightedPositionProperty(1000);
+        annotatedMapManager = new AnnotatedMapManager(graph, tileManager, rb, errorConsumer);
 
         ReadOnlyObjectProperty<ElevationProfile> elevationProfileP = rb.getElevationProfileProperty();
 
-        ElevationProfileManager elevationProfileManager = new ElevationProfileManager(elevationProfileP,
+        elevationProfileManager = new ElevationProfileManager(rb.getElevationProfileProperty(),
                rb.getHighlightedPositionP());
-
-
-        rb.getWaypoints().addListener((InvalidationListener) e -> {
-            if (rb.getWaypoints().size() >= 2 && rb.getRouteProperty().get() == null){
-                errorManager.displayError("Aucune route à proximité");
-            }
-        });
 
         elevationProfileP.addListener((p, oldV, newV) -> {
             if (oldV == null && newV != null) {
                 Pane borderPane = elevationProfileManager.pane();
+                rb.getHighlightedPositionP().bind(Bindings.when(annotatedMapManager.mousePositionOnRouteProperty().greaterThanOrEqualTo(0)).then(
+                        annotatedMapManager.mousePositionOnRouteProperty()).otherwise(elevationProfileManager.mousePositionOnProfileProperty()));
                 SplitPane.setResizableWithParent(borderPane, false);
                 splitPane.getItems().add(elevationProfileManager.pane());
-            } else if (oldV != null && newV == null) {
+            }
+            else if (oldV != null && newV == null) {
                 splitPane.getItems().remove(splitPane.getItems().size() - 1);
-                if (rb.getWaypoints().size() != 1)
-                    errorManager.displayError("Aucune route à proximité");
             }
         });
-
-        rb.getHighlightedPositionP().bind(Bindings.when(annotatedMapManager.mousePositionOnRouteProperty().greaterThanOrEqualTo(0)).then(
-                annotatedMapManager.mousePositionOnRouteProperty()).otherwise(elevationProfileManager.mousePositionOnProfileProperty()));
-
 
 
         MenuItem menuItem = new MenuItem("Exporter GPX");
@@ -106,9 +98,6 @@ public final class JaVelo extends Application {
         primaryStage.setScene(new Scene(stackPane));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
-
-
-
     }
 
         private final class ErrorConsumer

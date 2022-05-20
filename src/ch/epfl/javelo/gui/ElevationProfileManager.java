@@ -78,9 +78,9 @@ public final class ElevationProfileManager{
      */
     private void addListeners(){
         pane.setOnMouseMoved(e -> {
-            double value = screenToWorldP.get().transform(e.getX(),0).getX();
-            if ((value >= 0 && value <= elevationProfile.get().length())){
-                mousePositionOnProfileProperty.setValue(value);
+            System.out.println(mousePositionOnProfileProperty.get());
+            if (rectangle.get().contains(e.getX(), e.getY())){
+                mousePositionOnProfileProperty.setValue(screenToWorldP.get().transform(e.getX(),0).getX());
             }
             else{
                 mousePositionOnProfileProperty.setValue(NaN);

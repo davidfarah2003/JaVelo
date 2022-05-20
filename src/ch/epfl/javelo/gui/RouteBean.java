@@ -13,7 +13,7 @@ public final class RouteBean {
     private final RouteComputer routeComputer;
     public static ObservableList<Waypoint> waypoints;
     private final ObjectProperty<Route> route;
-    private final DoubleProperty highlightedPosition = new SimpleDoubleProperty();
+    private final DoubleProperty highlightedPosition = new SimpleDoubleProperty(Double.NaN);
     private final ObjectProperty<ElevationProfile> elevationProfile;
     private final Map<Integer, Route> hashRouteMap = new LRUCache<>(5, 0.75f);
 
