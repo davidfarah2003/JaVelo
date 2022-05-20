@@ -64,6 +64,8 @@ public final class JaVelo extends Application {
         elevationProfileP.addListener((p, oldV, newV) -> {
             if (oldV == null && newV != null) {
                 Pane borderPane = elevationProfileManager.pane();
+                borderPane.setMinHeight(100);
+
                 SplitPane.setResizableWithParent(borderPane, false);
                 splitPane.getItems().add(elevationProfileManager.pane());
             }
@@ -75,6 +77,11 @@ public final class JaVelo extends Application {
         rb.getHighlightedPositionP().bind(Bindings.when(annotatedMapManager.mousePositionOnRouteProperty().greaterThanOrEqualTo(0)).then(
                 annotatedMapManager.mousePositionOnRouteProperty()).otherwise(elevationProfileManager.mousePositionOnProfileProperty()));
 
+        rb.getWaypoints().addListener((InvalidationListener) e -> {
+            if (rb.getWaypoints().size() >= 2 && rb.getRouteProperty().get() == null){
+                errorManager.displayError("No route found !");
+            }
+        });
 
         MenuItem menuItem = new MenuItem("Exporter GPX");
 

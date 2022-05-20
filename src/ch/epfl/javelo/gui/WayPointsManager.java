@@ -8,7 +8,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 
 import java.util.HashMap;
@@ -16,9 +15,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Manages display and interaction with waypoints
+ * WayPointsManager class
+ * Manages the interaction between the user and the waypoints
  *
- * @author Wesley Nana Davies (344592)
  * @author David Farah (341017)
  */
 public final class WayPointsManager {
@@ -27,7 +26,7 @@ public final class WayPointsManager {
     private final ObjectProperty<MapViewParameters> mapViewParameters;
     private final Consumer<String> signalError;
     private final gui gui;
-    private final double SEARCH_DISTANCE = 1000;
+    private static final double SEARCH_DISTANCE = 1000;
     private final String PROXIMITY_ERROR_MSG = "Aucune route à proximité !";
 
 
@@ -47,36 +46,33 @@ public final class WayPointsManager {
         this.wayPoints = wayPoints;
         this.signalError = signalError;
         this.gui = new gui();
-
     }
 
 
     /**
-     * Add a WayPoint to the Navigation
+     * Add a Waypoint to the Navigation
      *
      * @param x coordinate of a point to add (WebMercator)
      * @param y coordinate of a point to add (WebMercator)
-     * @return true if a WayPoint has been added, false otherwise
-     */
-    public boolean addWaypoint(double x, double y) {
+  */
+    public void addWaypoint(double x, double y) {
         int closestNodeId = getClosestNodeId(x, y);
 
         if (closestNodeId < 0) {
            signalError.accept(PROXIMITY_ERROR_MSG);
-            return false;
+            return;
         }
 
         PointCh pt = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y).toPointCh();
         wayPoints.add(new Waypoint(pt, closestNodeId));
-        return true;
 
     }
 
     /**
      * Replace an already existing waypoint by another one (on the same rank)
      *
-     * @param x coordinate of a point to add (WebMercator)
-     * @param y coordinate of a point to add (WebMercator)
+     * @param x coordinate of a point to add (WebMercator system)
+     * @param y coordinate of a point to add (WebMercator system)
      * @return true if a WayPoint has been replaced, false otherwise
      */
     private boolean replaceWaypoint(double x, double y, Waypoint oldWaypoint) {
@@ -108,8 +104,8 @@ public final class WayPointsManager {
 
 
     /**
-     * Remove a WayPoint from the Navigation
-     * @param waypoint to be removed
+     * Remove a WayPoint from the map
+     * @param waypoint : Waypoint to be removed
      */
     private void removeWaypoint(Waypoint waypoint) {
         wayPoints.remove(waypoint);
@@ -118,21 +114,19 @@ public final class WayPointsManager {
 
     /**
      * Returns the pane displaying the pins
-     * @return the JavaFX pane displaying the pins.
+     * @return the pane
      */
     public Pane pane() {
         return gui.pane;
     }
 
     /**
-     * Nested class that is responsible for the graphical interface of WayPoints
+     * Nested class that is in charge of the graphical interface of WayPoints
      */
     private final class gui {
-        private final String svgOutside = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
-        private final String svgInside = "M0-23A1 1 0 000-29 1 1 0 000-23";
         private final Pane pane;
         private final Map<Group, Waypoint> pinWaypointMap;
-        private final MouseCoordinates coordsBeforeDrag;
+        private final MouseCoordinates coordinatesBeforeDrag;
 
         /**
          * Constructor of the gui nested class, initialises the attributes and sets listeners on
@@ -141,9 +135,8 @@ public final class WayPointsManager {
         public gui() {
             this.pane = new Pane();
             pane.setPickOnBounds(false);
-
             pinWaypointMap = new HashMap<>();
-            coordsBeforeDrag = new MouseCoordinates(0, 0);
+            coordinatesBeforeDrag = new MouseCoordinates(0, 0);
             wayPoints.addListener((InvalidationListener) observable -> redrawWaypoints());
             mapViewParameters.addListener(o -> repositionWayPoints());
             redrawWaypoints();
@@ -185,6 +178,7 @@ public final class WayPointsManager {
                 pane.getChildren().get(0).getStyleClass().clear();
                 pane.getChildren().get(0).getStyleClass().add("pin");
                 pane.getChildren().get(0).getStyleClass().add("first");
+
             }
 
             if (pane.getChildren().size() > 1) {
@@ -198,15 +192,16 @@ public final class WayPointsManager {
 
         /**
          * Create the Group that represents a pin on the map
-         *
          * @return the pin Group created
          */
         private Group createPinGroup() {
             SVGPath outside = new SVGPath();
+            String svgOutside = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
             outside.setContent(svgOutside);
             outside.getStyleClass().add("pin_outside");
 
             SVGPath inside = new SVGPath();
+            String svgInside = "M0-23A1 1 0 000-29 1 1 0 000-23";
             inside.setContent(svgInside);
             inside.getStyleClass().add("pin_inside");
 
@@ -217,25 +212,22 @@ public final class WayPointsManager {
         }
 
         /**
-         * Add Event Listeners to a waypoint pin
-         *
-         * @param pin the waypoint pin Group
+         * This method adds event listeners to a Waypoint
+         * @param pin : Group representing the waypoint
          */
         private void addPinListeners(Group pin) {
             pin.setOnMouseClicked(mouseEvent -> {
                         if (mouseEvent.isStillSincePress()) removeWaypoint(pinWaypointMap.get(pin));
-                    }
-            );
+                    });
 
             pin.setOnMousePressed(mouseEvent -> {
-                        coordsBeforeDrag.setX(mouseEvent.getX());
-                        coordsBeforeDrag.setY(mouseEvent.getY());
-                    }
-            );
+                        coordinatesBeforeDrag.setX(mouseEvent.getX());
+                        coordinatesBeforeDrag.setY(mouseEvent.getY());
+                    });
 
             pin.setOnMouseDragged(mouseEvent -> {
-                pin.setLayoutX(pin.getLayoutX() + (mouseEvent.getX() - coordsBeforeDrag.getX()));
-                pin.setLayoutY(pin.getLayoutY() + (mouseEvent.getY() - coordsBeforeDrag.getY()));
+                pin.setLayoutX(pin.getLayoutX() + (mouseEvent.getX() - coordinatesBeforeDrag.getX()));
+                pin.setLayoutY(pin.getLayoutY() + (mouseEvent.getY() - coordinatesBeforeDrag.getY()));
                 pin.setOnMouseReleased(mouseEvent1 -> {
                             if(!replaceWaypoint(mapViewParameters.get().xUpperLeftMapView() + pin.getLayoutX(),
                                                 mapViewParameters.get().yUpperLeftMapView() + pin.getLayoutY(),

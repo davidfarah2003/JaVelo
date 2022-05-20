@@ -4,10 +4,7 @@ import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointWebMercator;
 import ch.epfl.javelo.routing.RoutePoint;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -18,48 +15,53 @@ import java.util.function.Consumer;
 import static java.lang.Double.NaN;
 
 /**
- * Manages the display of the “annotated” map, i.e. the base map above which the route and waypoints are superimposed.
+ *  Annotated Map Manager class
+ *  Manages the global graphic interface
  *
- * @author Wesley Nana Davies (344592)
- * @author David Farah (341017)
+ *   @author Wesley Nana Davies (344592)
+ *   @author David Farah (341017)
  */
+
 public final class AnnotatedMapManager {
-    private final BaseMapManager baseMapManager;
-    private final WayPointsManager wayPointsManager;
-    private final RouteManager routeManager;
     private final StackPane stackPane;
     private final SimpleDoubleProperty mousePositionOnRouteProperty;
     private final ObjectProperty<Point2D> currentMousePosition;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
     private final RouteBean routeBean;
+    private final static int MAX_NUMBER_OF_PIXELS = 15;
 
 
     /**
      * Constructor
-     * @param graph the road network graph, of type Graph
-     * @param tileManager the OpenStreetMap tile manager, of the type TileManager
-     * @param routeBean the route bean, of type RouteBean
-     * @param consumer an “error consumer” allowing an error to be signaled, of type Consumer<String>
+     * @param graph : Graph used for the entire map (loaded from ch_west or lausanne)
+     * @param tileManager : TileManager which manages
+     *                      the access to the tiles (located in osm-cache or loaded from server)
+     * @param routeBean : RouteBean which contains information about the route
+     *                      (waypoints, highlighted position, elevation profile, etc...)
+     * @param consumer : Consumer need for WayPointsManager to display errors to the screen.
      */
     public AnnotatedMapManager(Graph graph, TileManager tileManager, RouteBean routeBean, Consumer<String> consumer){
 
         this.routeBean = routeBean;
-
+        // initial settings for the map
         mapViewParametersP = new SimpleObjectProperty<>(
                 new MapViewParameters(12, 543_200, 370_650));
 
-        currentMousePosition = new SimpleObjectProperty<>();
 
-        this.routeManager = new RouteManager(routeBean, mapViewParametersP);
-        this.wayPointsManager = new WayPointsManager(graph, mapViewParametersP, routeBean.getWaypoints(), consumer);
-        this.baseMapManager = new BaseMapManager(tileManager, this.wayPointsManager, mapViewParametersP);
-        stackPane = new StackPane(baseMapManager.pane(), wayPointsManager.pane(), routeManager.pane());
+        // instantiating some objects
+        currentMousePosition = new SimpleObjectProperty<>();
+        mousePositionOnRouteProperty = new SimpleDoubleProperty();
+        RouteManager routeManager = new RouteManager(routeBean, mapViewParametersP);
+        WayPointsManager wayPointsManager =
+                new WayPointsManager(graph, mapViewParametersP, routeBean.getWaypoints(), consumer);
+
+        BaseMapManager baseMapManager = new BaseMapManager(tileManager, wayPointsManager, mapViewParametersP);
+
+        // initializing the pane and adding some stylesheets
+        stackPane = new StackPane(baseMapManager.pane(), routeManager.pane(), wayPointsManager.pane());
         stackPane.getStylesheets().add("map.css");
 
-        mousePositionOnRouteProperty = new SimpleDoubleProperty(Double.NaN);
-        routeBean.getHighlightedPositionP().bind(mousePositionOnRouteProperty);
-
-
+        // adding listeners to properties
         mapViewParametersP.addListener(e -> {
             if (!(routeBean.getRouteProperty().get() == null))
                 recalculateMousePositionOnRouteProperty();
@@ -76,38 +78,36 @@ public final class AnnotatedMapManager {
             }
         });
 
-        stackPane.setOnMouseMoved(e -> {
-            currentMousePosition.setValue(new Point2D(e.getX(), e.getY()));
-           // System.out.println(currentMousePosition);
-        });
-       // stackPane.setOnMouseExited(e -> {
-         //   mousePositionOnRouteProperty.setValue(NaN);
-        //});
+        stackPane.setOnMouseMoved(e -> currentMousePosition.setValue(new Point2D(e.getX(), e.getY())));
 
     }
 
     /**
-     * returns the pane containing the annotated map
-     * @return the pane (stackPane)
+     * Returns the pane of the annotated map (stacking baseMap pane, wayPoints pane and routeManager pane)
+     * @return stackPane (Pane)
      */
     public Pane pane(){
         return stackPane;
     }
 
+
     /**
-     *
-     * @return
+     * Getter for the mousePositionOnProfileProperty, containing the position along the route of the mouse
+     * @return mousePositionOnRouteProperty (ReadOnlyDoubleProperty)
      */
-    public DoubleProperty mousePositionOnRouteProperty(){
+    public ReadOnlyDoubleProperty mousePositionOnRouteProperty(){
         return mousePositionOnRouteProperty;
     }
 
     /**
-     *
+     * This method sets a value for the mousePositionOnRouteProperty, called whenever some changes happen to
+     * the routeProperty, the mapViewParameters property or the current mouse position on profile
+     * property.
      */
     private void recalculateMousePositionOnRouteProperty(){
+        MapViewParameters mapViewParameters = mapViewParametersP.get();
 
-        PointWebMercator pointUnderMouse = mapViewParametersP.get().pointAt(currentMousePosition.get().getX(),
+        PointWebMercator pointUnderMouse = mapViewParameters.pointAt(currentMousePosition.get().getX(),
                 currentMousePosition.get().getY());
 
         RoutePoint rp = routeBean.getRouteProperty().get().pointClosestTo
@@ -115,15 +115,10 @@ public final class AnnotatedMapManager {
 
         PointWebMercator projectedPoint = PointWebMercator.ofPointCh(rp.point());
 
+        double norm = Math2.
+                norm(mapViewParameters.viewX(pointUnderMouse) - mapViewParameters.viewX(projectedPoint),
+                        mapViewParameters.viewY(pointUnderMouse) - mapViewParameters.viewY(projectedPoint));
 
-        if (Math2.norm(mapViewParametersP.get().viewX(pointUnderMouse) - mapViewParametersP.get().viewX(projectedPoint),
-                mapViewParametersP.get().viewY(pointUnderMouse) - mapViewParametersP.get().viewY(projectedPoint)) <= 15){
-
-            mousePositionOnRouteProperty.setValue(rp.position());
-        }
-        else{
-            mousePositionOnRouteProperty.setValue(NaN);
-        }
-
+        mousePositionOnRouteProperty.setValue(norm <= MAX_NUMBER_OF_PIXELS ? rp.position() : NaN);
     }
 }

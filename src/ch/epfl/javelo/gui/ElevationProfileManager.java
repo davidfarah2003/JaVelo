@@ -78,7 +78,8 @@ public final class ElevationProfileManager{
      */
     private void addListeners(){
         pane.setOnMouseMoved(e -> {
-            //System.out.println(mousePositionOnProfileProperty.get());
+
+            System.out.println(mousePositionOnProfileProperty.get());
             if (rectangle.get().contains(e.getX(), e.getY())){
                 mousePositionOnProfileProperty.setValue(screenToWorldP.get().transform(e.getX(),0).getX());
             }
@@ -87,7 +88,6 @@ public final class ElevationProfileManager{
             }
         });
 
-       // pane.setOnMouseExited(e -> mousePositionOnProfileProperty.setValue(NaN));
 
         rectangle.addListener(e -> {
             try {
@@ -96,7 +96,7 @@ public final class ElevationProfileManager{
                 drawGridAndLabels();
                 highlightedPositionLine.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                                 worldToScreenP.get().transform(
-                                        this.highlightedPosition.getValue(), 0).getX(),
+                                        this.highlightedPosition.get(), 0).getX(),
                         this.highlightedPosition, worldToScreenP));
                 highlightedPositionLine.startYProperty().bind(Bindings.select(rectangle, "minY"));
                 highlightedPositionLine.endYProperty().bind(Bindings.select(rectangle, "maxY"));
