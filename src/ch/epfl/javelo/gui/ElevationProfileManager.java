@@ -14,14 +14,14 @@ import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.*;
-
 import java.util.Map;
 import java.util.TreeMap;
-
 import static java.lang.Double.NaN;
 
 /**
- * Class that is responsible for drawing elevation profile of the route on GUI
+ * ElevationProfileManager class
+ * This class manages the graphical interface representing the elevation profile of a route
+ * @author Wesley Nana Davies(344592)
  */
 public final class ElevationProfileManager{
     private final ReadOnlyObjectProperty<ElevationProfile> elevationProfile;
@@ -61,7 +61,8 @@ public final class ElevationProfileManager{
 
 
     /**
-     * Add bindings between rectangle and pane
+     * This method binds the rectangle containing the elevation graph to a new rectangle each time
+     * the dimensions of the pane changes.
      */
     private void addBindings(){
         rectangle.bind(Bindings.createObjectBinding( () ->
@@ -74,12 +75,10 @@ public final class ElevationProfileManager{
     }
 
     /**
-     * Add listeners to the pane and rectangle
+     * This method adds listeners to the pane, the rectangle, and the elevation profile.
      */
     private void addListeners(){
         pane.setOnMouseMoved(e -> {
-
-            System.out.println(mousePositionOnProfileProperty.get());
             if (rectangle.get().contains(e.getX(), e.getY())){
                 mousePositionOnProfileProperty.setValue(screenToWorldP.get().transform(e.getX(),0).getX());
             }
@@ -122,7 +121,8 @@ public final class ElevationProfileManager{
     }
 
     /**
-     * returns the pane of the ElevationProfileManager
+     * This method returns the border pane of the elevationProfileManager
+     * @return the border pane
      */
     public Pane pane() {
         return borderPane;
@@ -130,7 +130,8 @@ public final class ElevationProfileManager{
 
     /**
      * Returns a read-only property containing the position of the mouse pointer along the profile
-     * @return the position (in meters, rounded to the nearest integer), or NaN if the mouse pointer is not above the profile
+     * @return the position (in meters, rounded to the nearest integer),
+     * or NaN if the mouse pointer is not above the profile
      */
     public ReadOnlyDoubleProperty mousePositionOnProfileProperty() {
         return mousePositionOnProfileProperty;
@@ -140,8 +141,8 @@ public final class ElevationProfileManager{
 //----------------------------------Section for Creating and Drawing GUI elements----------------------------------
 
     /**
-     * Creates the GUI structure that will display the elevation Profile
-     * @return return the BorderPane that is on the root of the structure
+     * This method creates the GUI structure that will display the elevation profile
+     * @return the BorderPane that is on the root of the structure
      */
     private BorderPane createGui(){
         BorderPane borderPane = new BorderPane();
@@ -154,7 +155,7 @@ public final class ElevationProfileManager{
     }
 
     /**
-     * @return the VBox that contains ElevationProfile information of the route
+     * This method creates the profile data box that will be displayed in the lower part of the graphical interface.
      */
     private void createProfileDataBox(){
 
@@ -173,32 +174,18 @@ public final class ElevationProfileManager{
     }
 
     /**
-     * Initializes the internal Pane of that will contain the grid and graph
-     * @return the pane after initializing
+     * This method initializes the internal pane that will contain the grid and the graph
+     * @return the pane
      */
     private Pane initializeInternalPane(){
         grid.setId("grid");
         profileGraph.setId("profile");
-        initializeGridLabelsGroup();
-        pane.getChildren().addAll(grid, profileGraph, initializeGridLabelsGroup(), highlightedPositionLine);
+        pane.getChildren().addAll(grid, profileGraph, gridLabels, highlightedPositionLine);
         return pane;
     }
 
     /**
-     * Initializes the Grid Labels Group
-     * @return the gridLabels Group after initializing
-     */
-    private Group initializeGridLabelsGroup(){
-        Text horizontalText = new Text();
-        horizontalText.getStyleClass().addAll("grid_label", "horizontal");
-        Text verticalText = new Text();
-        verticalText.getStyleClass().addAll("grid_label", "vertical");
-        gridLabels.getChildren().addAll(horizontalText, verticalText);
-        return gridLabels;
-    }
-
-    /**
-     * Redraw the Profile Graph
+     * This method redraws the profile (polygon)
      */
     private void redrawProfile() {
         profileGraph.getPoints().clear();
@@ -219,7 +206,7 @@ public final class ElevationProfileManager{
     }
 
     /**
-     * Draws Grid and it's labels
+     * This method draws the grid and its labels
      */
     private void drawGridAndLabels(){
         int[] ELE_STEPS = { 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
@@ -282,7 +269,8 @@ public final class ElevationProfileManager{
 //---------------------------------------Section for relative position methods---------------------------------------
 
     /**
-     * Generates Affine properties that convert from Screen to World
+     * This method generates affine properties that will be used
+     * convert screen coordinates to world coordinates and inversely
      * @throws NonInvertibleTransformException when the transformation is not invertible (it is in our case)
      */
     private void generateNewAffineFunctions() throws NonInvertibleTransformException {
@@ -294,7 +282,7 @@ public final class ElevationProfileManager{
             Affine screenToWorld = new Affine();
             screenToWorld.prependTranslation(-insets.getLeft(), -insets.getTop());
             screenToWorld.prependScale(elevationProfile.get().length() / rectangle.get().getWidth(),
-                    -(elevationProfile.get().maxElevation() - elevationProfile.get().minElevation())
+                    (elevationProfile.get().minElevation() - elevationProfile.get().maxElevation())
                             / rectangle.get().getHeight()
             );
             screenToWorld.prependTranslation(0, elevationProfile.get().maxElevation());
@@ -304,10 +292,11 @@ public final class ElevationProfileManager{
     }
 
     /**
+     * Returns the correcting spacing between lines depending on the number of pixels per meter
      * @param pixelsPerMeter number of pixels per meter in the direction
      * @param steps Different spacing possible for this direction
      * @param minimalDistance Minimal distance between 2 values
-     * @return the spacing between 2 positions
+     * @return the spacing between 2 lines (vertical or horizontal)
      */
     private int chooseSpaceBetweenLines(double pixelsPerMeter, int[] steps, int minimalDistance){
         int space = steps[steps.length - 1];

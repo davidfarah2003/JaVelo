@@ -9,7 +9,8 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 /**
- * Handles Errors signaled from the gui
+ * Error Manager class
+ * This class handles errors signaled from the gui
  * @author Wesley Nana Davies (344592)
  * @author David Farah (341017)
  */
@@ -18,7 +19,7 @@ public final class ErrorManager {
     private SequentialTransition sequentialTransition;
 
     /**
-     * Constructor
+     * Constructor which takes no parameters
      */
     public ErrorManager(){
         vBox = new VBox();
@@ -28,16 +29,16 @@ public final class ErrorManager {
     }
 
     /**
-     * returns the pane of error
-     * @return the pane (vBox)
+     * Returns the pane displaying errors
+     * @return vBox
      */
     public Pane pane(){
         return vBox;
     }
 
     /**
-     * Display an error on the screen
-     * @param s the error to display
+     * This method display an error on the screen
+     * @param s : String which should be displayed
      */
     public void displayError(String s){
         sequentialTransition.stop();
@@ -46,7 +47,6 @@ public final class ErrorManager {
         Text t = new Text();
         t.setText(s);
         vBox.getChildren().add(t);
-
 
         FadeTransition f1 = new FadeTransition(Duration.valueOf("200ms"));
         f1.setFromValue(0);

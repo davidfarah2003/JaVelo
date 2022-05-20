@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 /**
- * Main Class of Javelo, starts the program and gui
+ * Main Class of JaVelo project, starts the whole program.
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
  */
@@ -33,15 +33,13 @@ public final class JaVelo extends Application {
     private RouteBean rb;
     private SplitPane splitPane;
     private ElevationProfileManager elevationProfileManager;
-    private AnnotatedMapManager annotatedMapManager;
-    private BorderPane borderPane;
 
 
     public static void main(String[] args) { launch(args); }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        borderPane = new BorderPane();
+        BorderPane borderPane1 = new BorderPane();
 
         splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
@@ -54,7 +52,7 @@ public final class JaVelo extends Application {
         RouteComputer rc = new RouteComputer(graph, cityBikeCF);
         rb = new RouteBean(rc);
         Consumer<String> errorConsumer = new ErrorConsumer();
-        annotatedMapManager = new AnnotatedMapManager(graph, tileManager, rb, errorConsumer);
+        AnnotatedMapManager annotatedMapManager = new AnnotatedMapManager(graph, tileManager, rb, errorConsumer);
 
         ReadOnlyObjectProperty<ElevationProfile> elevationProfileP = rb.getElevationProfileProperty();
 
@@ -74,8 +72,10 @@ public final class JaVelo extends Application {
             }
         });
 
-        rb.getHighlightedPositionP().bind(Bindings.when(annotatedMapManager.mousePositionOnRouteProperty().greaterThanOrEqualTo(0)).then(
-                annotatedMapManager.mousePositionOnRouteProperty()).otherwise(elevationProfileManager.mousePositionOnProfileProperty()));
+        rb.getHighlightedPositionP().bind(Bindings.
+                when(annotatedMapManager.mousePositionOnRouteProperty().greaterThanOrEqualTo(0)).
+                then(annotatedMapManager.mousePositionOnRouteProperty()).
+                otherwise(elevationProfileManager.mousePositionOnProfileProperty()));
 
         rb.getWaypoints().addListener((InvalidationListener) e -> {
             if (rb.getWaypoints().size() >= 2 && rb.getRouteProperty().get() == null){
@@ -109,12 +109,12 @@ public final class JaVelo extends Application {
         StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(splitPane, errorManager.pane());
 
-        borderPane.setTop(menuBar);
-        borderPane.setCenter(stackPane);
+        borderPane1.setTop(menuBar);
+        borderPane1.setCenter(stackPane);
 
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-        primaryStage.setScene(new Scene(borderPane));
+        primaryStage.setScene(new Scene(borderPane1));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
     }

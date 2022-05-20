@@ -1,5 +1,4 @@
 package ch.epfl.javelo.gui;
-
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
@@ -9,7 +8,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -50,7 +48,7 @@ public final class WayPointsManager {
 
 
     /**
-     * Add a Waypoint to the Navigation
+     * This method adds a waypoint to the map
      *
      * @param x coordinate of a point to add (WebMercator)
      * @param y coordinate of a point to add (WebMercator)
@@ -69,7 +67,7 @@ public final class WayPointsManager {
     }
 
     /**
-     * Replace an already existing waypoint by another one (on the same rank)
+     * This method replacesReplace an already existing waypoint by another one (on the same rank)
      *
      * @param x coordinate of a point to add (WebMercator system)
      * @param y coordinate of a point to add (WebMercator system)
@@ -91,7 +89,7 @@ public final class WayPointsManager {
     }
 
     /**
-     * Obtain the id of the closest Node at a given position withing the Search Distance
+     * This method obtain the ID of the closest Node at a given position withing the Search Distance
      *
      * @param x coordinate of a point to add (WebMercator)
      * @param y coordinate of a point to add (WebMercator)
@@ -104,8 +102,8 @@ public final class WayPointsManager {
 
 
     /**
-     * Remove a WayPoint from the map
-     * @param waypoint : Waypoint to be removed
+     * This method removes a Waypoint from the map
+     * @param waypoint : waypoint to be removed
      */
     private void removeWaypoint(Waypoint waypoint) {
         wayPoints.remove(waypoint);
@@ -121,7 +119,7 @@ public final class WayPointsManager {
     }
 
     /**
-     * Nested class that is in charge of the graphical interface of WayPoints
+     * Nested class that is in charge of the graphical interface for Waypoints
      */
     private final class gui {
         private final Pane pane;
@@ -144,7 +142,7 @@ public final class WayPointsManager {
 
 
         /**
-         * Repositions waypoints pins to the correct point on the map
+         * This method repositions waypoints to right place on the map
          */
         private void repositionWayPoints() {
             pinWaypointMap.forEach(
@@ -158,7 +156,7 @@ public final class WayPointsManager {
 
 
         /**
-         * Method that redraws WayPoints from the wayPoints List (adds the pin Groups to the pane)
+         * This method redraws Waypoints from the list (adds the Pin Groups to the pane)
          */
         public void redrawWaypoints() {
             pane.getChildren().clear();
@@ -213,7 +211,7 @@ public final class WayPointsManager {
 
         /**
          * This method adds event listeners to a Waypoint
-         * @param pin : Group representing the waypoint
+         * @param pin : Group representing the Waypoint
          */
         private void addPinListeners(Group pin) {
             pin.setOnMouseClicked(mouseEvent -> {

@@ -16,13 +16,15 @@ import java.io.IOException;
 
 /**
  * BaseMapManager class
+ * This class manages the graphical interface for the map
+ *
  * @author Wesley Nana Davies(344592)
  */
 public final class BaseMapManager {
     private final WayPointsManager wayPointsManager;
     private final TileManager tileManager;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
-    private final ObjectProperty<Point2D> coordinatesMouse;
+    private final ObjectProperty<Point2D> coordinatesMouseWhenPressed;
     private final Canvas canvas;
     private final Pane pane;
     private boolean redrawNeeded;
@@ -43,7 +45,7 @@ public final class BaseMapManager {
         this.tileManager = tileManager;
         this.wayPointsManager = wayPointsManager;
         this.mapViewParametersP = mapViewParametersP;
-        this.coordinatesMouse = new SimpleObjectProperty<>();
+        this.coordinatesMouseWhenPressed = new SimpleObjectProperty<>();
         this.canvas = new Canvas();
         this.pane = new Pane(canvas);
 
@@ -59,10 +61,13 @@ public final class BaseMapManager {
      * Adds listeners to the pane
      */
     private void addPaneListeners(){
+
         // stores the coordinates of the mouse when pressed
-        pane.setOnMousePressed(e -> coordinatesMouse.setValue(new Point2D(e.getX(), e.getY())));
+        pane.setOnMousePressed(e -> coordinatesMouseWhenPressed.setValue(new Point2D(e.getX(), e.getY())));
+
 
         pane.setOnMouseClicked(event -> {
+            // when the user clicks on the pane and the mouse is still
             if (event.isStillSincePress()) {
                 this.wayPointsManager.addWaypoint(
                         mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
@@ -78,9 +83,10 @@ public final class BaseMapManager {
     }
 
     /**
-     * Adds properties to the canvas
+     * This method adds the properties to the canvas
      */
     private void addCanvasProperties(){
+
         // bind canvas dimensions to pane dimensions
         canvas.widthProperty().bind(pane.widthProperty());
         canvas.heightProperty().bind(pane.heightProperty());
@@ -96,11 +102,12 @@ public final class BaseMapManager {
 
 
     /**
-     * Adds a scroll listener to the map to manage the zoom level
+     * This method adds a scroll listener to the map to manage the zoom level
      */
     private void addScrollListener() {
         SimpleLongProperty minScrollTime = new SimpleLongProperty();
         pane.setOnScroll(e -> {
+
             // minimizing the frequency which enables zoom level changes (4 zoomLevel max per second)
             if (e.getDeltaY() == 0d) return;
             long currentTime = System.currentTimeMillis();
@@ -109,12 +116,13 @@ public final class BaseMapManager {
             int zoomDelta = (int) Math.signum(e.getDeltaY());
 
             int currentZoomLevel = mapViewParametersP.get().zoomLevel();
-            int newZoomLevel = Math2.clamp(ZOOM_LEVEL_MIN, currentZoomLevel + (int) zoomDelta, ZOOM_LEVEL_MAX);
+            int newZoomLevel = Math2.clamp(ZOOM_LEVEL_MIN, currentZoomLevel + zoomDelta, ZOOM_LEVEL_MAX);
             int difference = newZoomLevel - currentZoomLevel;
 
             Point2D topLeftPoint = mapViewParametersP.get().topLeft();
 
             topLeftPoint = topLeftPoint.add(e.getX(), e.getY());
+            // multiplying the coordinates of the top left by 2^(difference in zoom level)
             topLeftPoint = topLeftPoint.multiply(Math.scalb(1, difference));
             topLeftPoint = topLeftPoint.subtract(e.getX(), e.getY());
 
@@ -126,21 +134,21 @@ public final class BaseMapManager {
 
 
     /**
-     * Adds a drag listener to the map to manage the displacement of the map
+     * This method adds a drag listener to the map to manage its displacement
      */
     private void addDragListener(){
         pane.setOnMouseDragged(event -> {
                 Point2D point = mapViewParametersP.get().topLeft();
-                point = point.add(coordinatesMouse.get()).subtract(event.getX(), event.getY());
+                point = point.add(coordinatesMouseWhenPressed.get()).subtract(event.getX(), event.getY());
                 mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
-                coordinatesMouse.setValue(new Point2D(event.getX(), event.getY()));
+                coordinatesMouseWhenPressed.setValue(new Point2D(event.getX(), event.getY()));
         });
     }
 
 
 
     /**
-     * Redraws the map if and only if redrawNeeded is true
+     * This method redraws the map if and only if redrawNeeded is true
      */
     private void redrawIfNeeded() {
         if (redrawNeeded) {
@@ -164,7 +172,7 @@ public final class BaseMapManager {
                                 (i + tileX) * SIZE_TILE - mapViewParametersP.get().xUpperLeftMapView(),
                                 (j + tileY) * SIZE_TILE - mapViewParametersP.get().yUpperLeftMapView());
                     } catch (IOException e) {
-                        //System.out.println(e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
 
@@ -174,7 +182,7 @@ public final class BaseMapManager {
 
 
     /**
-     * Redraws the map at the next beat by setting redrawNeeded to true if called
+     * This method forces a redrawing of the map by requesting a pulse.
      */
     private void redrawOnNextPulse() {
         redrawNeeded = true;
@@ -182,6 +190,7 @@ public final class BaseMapManager {
     }
 
     /**
+     * This method simply returns the pane of BaseMap
      * @return the JavaFX panel displaying the basemap.
      */
     public Pane pane() {

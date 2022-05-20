@@ -1,19 +1,21 @@
 package ch.epfl.javelo.gui;
 
-import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
 
-import javax.script.Bindings;
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ *  RouteManager class
+ *  This class manages the display of the route and of its highlighted position
+ *  (polyline and circle) about a route (
+ *
+ *  @author Wesley Nana Davies (344592)
+ *  @author David Farah (341017)
+ */
 public final class RouteManager {
     private final RouteBean routeBean;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
@@ -22,16 +24,19 @@ public final class RouteManager {
     private final Polyline polyline;
     private final Circle circle;
 
+    /**
+     * Constructor
+     * @param routeBean : routeBean which contains information about the route
+     * @param mapViewParametersP : a mapViewParameters property
+     */
     public RouteManager(RouteBean routeBean, ObjectProperty<MapViewParameters> mapViewParametersP) {
         this.routeBean = routeBean;
         this.mapViewParametersP = mapViewParametersP;
 
         polyline = new Polyline();
         polyline.setId("route");
-
         circle = new Circle(5);
         circle.setId("highlight");
-        circle.setVisible(false);
 
         pane = new Pane();
         pane.setPickOnBounds(false);
@@ -40,6 +45,9 @@ public final class RouteManager {
         addListeners();
     }
 
+    /**
+     * This method adds listener to different properties
+     */
     private void addListeners() {
         routeBean.getWaypoints().addListener((InvalidationListener) e -> reconstructPolyline());
 
@@ -67,12 +75,8 @@ public final class RouteManager {
                                         w);
         });
 
-
-
         routeBean.getHighlightedPositionP().addListener(e -> {
-
             if (routeBean.getRouteProperty().get() != null && !Double.isNaN(routeBean.highlightedPosition())){
-                //System.out.println("entered");
                 circle.setVisible(true);
                 PointWebMercator highlightedPoint = PointWebMercator.
                         ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
@@ -110,7 +114,6 @@ public final class RouteManager {
             polyline.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
 
             if (!Double.isNaN(routeBean.highlightedPosition())) {
-                //System.out.println(routeBean.highlightedPosition());
                 PointWebMercator highlightedPoint = PointWebMercator.
                         ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
                 circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
@@ -130,6 +133,9 @@ public final class RouteManager {
     }
 
 
+    /**
+     * This method repositions nodes each time the mapViewParameters change
+     */
     private void repositionNodes() {
         if (routeBean.getRouteProperty().get() != null) {
             polyline.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
@@ -139,6 +145,10 @@ public final class RouteManager {
         }
     }
 
+    /**
+     * This method returns the pane of the route manager
+     * @return a Pane
+     */
     public Pane pane() {
         return pane;
     }
