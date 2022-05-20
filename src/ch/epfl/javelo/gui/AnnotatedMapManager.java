@@ -17,6 +17,12 @@ import java.util.function.Consumer;
 
 import static java.lang.Double.NaN;
 
+/**
+ * Manages the display of the “annotated” map, i.e. the base map above which the route and waypoints are superimposed.
+ *
+ * @author Wesley Nana Davies (344592)
+ * @author David Farah (341017)
+ */
 public final class AnnotatedMapManager {
     private final BaseMapManager baseMapManager;
     private final WayPointsManager wayPointsManager;
@@ -28,7 +34,13 @@ public final class AnnotatedMapManager {
     private final RouteBean routeBean;
 
 
-
+    /**
+     * Constructor
+     * @param graph the road network graph, of type Graph
+     * @param tileManager the OpenStreetMap tile manager, of the type TileManager
+     * @param routeBean the route bean, of type RouteBean
+     * @param consumer an “error consumer” allowing an error to be signaled, of type Consumer<String>
+     */
     public AnnotatedMapManager(Graph graph, TileManager tileManager, RouteBean routeBean, Consumer<String> consumer){
 
         this.routeBean = routeBean;
@@ -72,17 +84,27 @@ public final class AnnotatedMapManager {
          //   mousePositionOnRouteProperty.setValue(NaN);
         //});
 
-
     }
 
+    /**
+     * returns the pane containing the annotated map
+     * @return the pane (stackPane)
+     */
     public Pane pane(){
         return stackPane;
     }
 
+    /**
+     *
+     * @return
+     */
     public DoubleProperty mousePositionOnRouteProperty(){
         return mousePositionOnRouteProperty;
     }
 
+    /**
+     *
+     */
     private void recalculateMousePositionOnRouteProperty(){
 
         PointWebMercator pointUnderMouse = mapViewParametersP.get().pointAt(currentMousePosition.get().getX(),

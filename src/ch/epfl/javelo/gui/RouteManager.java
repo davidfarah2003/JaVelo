@@ -72,7 +72,7 @@ public final class RouteManager {
         routeBean.getHighlightedPositionP().addListener(e -> {
 
             if (routeBean.getRouteProperty().get() != null && !Double.isNaN(routeBean.highlightedPosition())){
-                System.out.println("entered");
+                //System.out.println("entered");
                 circle.setVisible(true);
                 PointWebMercator highlightedPoint = PointWebMercator.
                         ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
@@ -110,7 +110,7 @@ public final class RouteManager {
             polyline.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
 
             if (!Double.isNaN(routeBean.highlightedPosition())) {
-                System.out.println(routeBean.highlightedPosition());
+                //System.out.println(routeBean.highlightedPosition());
                 PointWebMercator highlightedPoint = PointWebMercator.
                         ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
                 circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));

@@ -8,10 +8,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+/**
+ * Handles Errors signaled from the gui
+ * @author Wesley Nana Davies (344592)
+ * @author David Farah (341017)
+ */
 public final class ErrorManager {
     private final VBox vBox;
     private SequentialTransition sequentialTransition;
 
+    /**
+     * Constructor
+     */
     public ErrorManager(){
         vBox = new VBox();
         vBox.setMouseTransparent(true);
@@ -19,10 +27,18 @@ public final class ErrorManager {
         sequentialTransition = new SequentialTransition();
     }
 
+    /**
+     * returns the pane of error
+     * @return the pane (vBox)
+     */
     public Pane pane(){
         return vBox;
     }
 
+    /**
+     * Display an error on the screen
+     * @param s the error to display
+     */
     public void displayError(String s){
         sequentialTransition.stop();
         vBox.getChildren().clear();

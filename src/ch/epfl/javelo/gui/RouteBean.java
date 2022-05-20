@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 
 import java.util.*;
 
+
 public final class RouteBean {
     private final RouteComputer routeComputer;
     public static ObservableList<Waypoint> waypoints;

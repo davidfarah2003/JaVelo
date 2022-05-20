@@ -12,7 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 
-
+/**
+ *
+ */
 public final class TileManager {
 
     private final Path cachePath;

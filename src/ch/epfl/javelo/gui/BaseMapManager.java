@@ -164,7 +164,7 @@ public final class BaseMapManager {
                                 (i + tileX) * SIZE_TILE - mapViewParametersP.get().xUpperLeftMapView(),
                                 (j + tileY) * SIZE_TILE - mapViewParametersP.get().yUpperLeftMapView());
                     } catch (IOException e) {
-                        System.out.println(e.getMessage());
+                        //System.out.println(e.getMessage());
                     }
                 }
 

@@ -22,6 +22,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
+/**
+ * Main Class of Javelo, starts the program and gui
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (341017)
+ */
 public final class JaVelo extends Application {
 
     private final ErrorManager errorManager = new ErrorManager();
@@ -33,6 +38,7 @@ public final class JaVelo extends Application {
 
 
     public static void main(String[] args) { launch(args); }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         borderPane = new BorderPane();

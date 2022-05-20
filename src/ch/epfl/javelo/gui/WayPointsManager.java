@@ -48,14 +48,6 @@ public final class WayPointsManager {
         this.signalError = signalError;
         this.gui = new gui();
 
-
-
-
-
-
-
-
-
     }
 
 
@@ -73,7 +65,6 @@ public final class WayPointsManager {
            signalError.accept(PROXIMITY_ERROR_MSG);
             return false;
         }
-
 
         PointCh pt = PointWebMercator.of(mapViewParameters.get().zoomLevel(), x, y).toPointCh();
         wayPoints.add(new Waypoint(pt, closestNodeId));
@@ -118,7 +109,6 @@ public final class WayPointsManager {
 
     /**
      * Remove a WayPoint from the Navigation
-     *
      * @param waypoint to be removed
      */
     private void removeWaypoint(Waypoint waypoint) {
@@ -128,7 +118,6 @@ public final class WayPointsManager {
 
     /**
      * Returns the pane displaying the pins
-     *
      * @return the JavaFX pane displaying the pins.
      */
     public Pane pane() {
@@ -196,7 +185,6 @@ public final class WayPointsManager {
                 pane.getChildren().get(0).getStyleClass().clear();
                 pane.getChildren().get(0).getStyleClass().add("pin");
                 pane.getChildren().get(0).getStyleClass().add("first");
-
             }
 
             if (pane.getChildren().size() > 1) {
