@@ -37,7 +37,6 @@ public final class JaVelo extends Application {
     public void start(Stage primaryStage) throws Exception {
         borderPane = new BorderPane();
 
-
         splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
 
