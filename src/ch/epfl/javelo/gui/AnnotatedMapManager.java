@@ -49,8 +49,8 @@ public final class AnnotatedMapManager {
 
 
         // instantiating some objects
-        currentMousePosition = new SimpleObjectProperty<>();
-        mousePositionOnRouteProperty = new SimpleDoubleProperty();
+        currentMousePosition = new SimpleObjectProperty<>(Point2D.ZERO);
+        mousePositionOnRouteProperty = new SimpleDoubleProperty(NaN);
         RouteManager routeManager = new RouteManager(routeBean, mapViewParametersP);
         WayPointsManager wayPointsManager =
                 new WayPointsManager(graph, mapViewParametersP, routeBean.getWaypoints(), consumer);
@@ -79,6 +79,9 @@ public final class AnnotatedMapManager {
         });
 
         stackPane.setOnMouseMoved(e -> currentMousePosition.setValue(new Point2D(e.getX(), e.getY())));
+        stackPane.setOnMouseExited(e -> {
+            mousePositionOnRouteProperty.setValue(NaN);
+        });
 
     }
 

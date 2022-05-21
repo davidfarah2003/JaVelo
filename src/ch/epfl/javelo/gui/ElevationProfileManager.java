@@ -4,6 +4,7 @@ import ch.epfl.javelo.routing.ElevationProfile;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
@@ -26,7 +27,6 @@ import static java.lang.Double.NaN;
 public final class ElevationProfileManager{
     private final ReadOnlyObjectProperty<ElevationProfile> elevationProfile;
     private final DoubleProperty highlightedPosition;
-
     private final ObjectProperty<Rectangle2D> rectangle;
     private final ObjectProperty<Transform> screenToWorldP;
     private final ObjectProperty<Transform> worldToScreenP;
@@ -78,15 +78,15 @@ public final class ElevationProfileManager{
      * This method adds listeners to the pane, the rectangle, and the elevation profile.
      */
     private void addListeners(){
+
         pane.setOnMouseMoved(e -> {
-            if (rectangle.get().contains(e.getX(), e.getY())){
-                mousePositionOnProfileProperty.setValue(screenToWorldP.get().transform(e.getX(),0).getX());
-            }
-            else{
-                mousePositionOnProfileProperty.setValue(NaN);
-            }
+                if (rectangle.get().contains(e.getX(), e.getY()))
+                    mousePositionOnProfileProperty.setValue(screenToWorldP.get().transform(e.getX(),0).getX());
+                else
+                    mousePositionOnProfileProperty.set(NaN);
         });
 
+        pane.setOnMouseExited(e -> mousePositionOnProfileProperty.setValue(NaN));
 
         rectangle.addListener(e -> {
             try {
@@ -94,9 +94,8 @@ public final class ElevationProfileManager{
                 redrawProfile();
                 drawGridAndLabels();
                 highlightedPositionLine.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
-                                worldToScreenP.get().transform(
-                                        this.highlightedPosition.get(), 0).getX(),
-                        this.highlightedPosition, worldToScreenP));
+                                worldToScreenP.get().transform(this.highlightedPosition.get(), 0).getX(),
+                                                                this.highlightedPosition, worldToScreenP));
                 highlightedPositionLine.startYProperty().bind(Bindings.select(rectangle, "minY"));
                 highlightedPositionLine.endYProperty().bind(Bindings.select(rectangle, "maxY"));
                 highlightedPositionLine.visibleProperty().bind(highlightedPosition.greaterThanOrEqualTo(0));
@@ -166,7 +165,6 @@ public final class ElevationProfileManager{
                     "     Descente : %.0f m".formatted(elevationProfile.get().totalDescent()) +
                     "     Altitude : de %.0f m à %.0f m".formatted(elevationProfile.get().minElevation(),
                             elevationProfile.get().maxElevation());
-
             text.setText(s);
             vBox.getChildren().add(text);
 

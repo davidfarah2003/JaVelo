@@ -62,8 +62,8 @@ public final class JaVelo extends Application {
         elevationProfileP.addListener((p, oldV, newV) -> {
             if (oldV == null && newV != null) {
                 Pane borderPane = elevationProfileManager.pane();
-                borderPane.setMinHeight(100);
-
+                borderPane.setMinHeight(splitPane.getHeight()/6);
+                borderPane.setMaxHeight(splitPane.getHeight()/2);
                 SplitPane.setResizableWithParent(borderPane, false);
                 splitPane.getItems().add(elevationProfileManager.pane());
             }
