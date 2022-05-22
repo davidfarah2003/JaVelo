@@ -3,6 +3,7 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointWebMercator;
+import ch.epfl.javelo.projection.SwissBounds;
 import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.*;
 import javafx.geometry.Point2D;
@@ -79,9 +80,8 @@ public final class AnnotatedMapManager {
         });
 
         stackPane.setOnMouseMoved(e -> currentMousePosition.setValue(new Point2D(e.getX(), e.getY())));
-        stackPane.setOnMouseExited(e -> {
-            mousePositionOnRouteProperty.setValue(NaN);
-        });
+        stackPane.setOnMouseExited(e -> mousePositionOnRouteProperty.setValue(NaN));
+
 
     }
 
@@ -107,21 +107,22 @@ public final class AnnotatedMapManager {
      * the routeProperty, the mapViewParameters property or the current mouse position on profile
      * property.
      */
-    private void recalculateMousePositionOnRouteProperty(){
+    private void recalculateMousePositionOnRouteProperty() {
         MapViewParameters mapViewParameters = mapViewParametersP.get();
-
         PointWebMercator pointUnderMouse = mapViewParameters.pointAt(currentMousePosition.get().getX(),
                 currentMousePosition.get().getY());
 
-        RoutePoint rp = routeBean.getRouteProperty().get().pointClosestTo
-                        (pointUnderMouse.toPointCh());
+        if (pointUnderMouse.toPointCh() != null) {
+            RoutePoint rp = routeBean.getRouteProperty().get().pointClosestTo
+                    (pointUnderMouse.toPointCh());
 
-        PointWebMercator projectedPoint = PointWebMercator.ofPointCh(rp.point());
+            PointWebMercator projectedPoint = PointWebMercator.ofPointCh(rp.point());
 
-        double norm = Math2.
-                norm(mapViewParameters.viewX(pointUnderMouse) - mapViewParameters.viewX(projectedPoint),
-                        mapViewParameters.viewY(pointUnderMouse) - mapViewParameters.viewY(projectedPoint));
+            double norm = Math2.
+                    norm(mapViewParameters.viewX(pointUnderMouse) - mapViewParameters.viewX(projectedPoint),
+                            mapViewParameters.viewY(pointUnderMouse) - mapViewParameters.viewY(projectedPoint));
 
-        mousePositionOnRouteProperty.setValue(norm <= MAX_NUMBER_OF_PIXELS ? rp.position() : NaN);
+            mousePositionOnRouteProperty.setValue(norm <= MAX_NUMBER_OF_PIXELS ? rp.position() : NaN);
+        }
     }
 }

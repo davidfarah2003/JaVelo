@@ -3,7 +3,6 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.routing.*;
 import javafx.application.Application;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.geometry.Orientation;
@@ -23,7 +22,9 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 /**
- * Main Class of JaVelo project, starts the whole program.
+ * JaVelo class
+ *
+ * Main Class of the project, starts the whole program.
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
  */
@@ -39,7 +40,7 @@ public final class JaVelo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        BorderPane borderPane1 = new BorderPane();
+        BorderPane mainBorderPane = new BorderPane();
 
         splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
@@ -77,11 +78,14 @@ public final class JaVelo extends Application {
                 then(annotatedMapManager.mousePositionOnRouteProperty()).
                 otherwise(elevationProfileManager.mousePositionOnProfileProperty()));
 
+        /*
         rb.getWaypoints().addListener((InvalidationListener) e -> {
             if (rb.getWaypoints().size() >= 2 && rb.getRouteProperty().get() == null){
                 errorManager.displayError("No route found !");
             }
         });
+
+         */
 
         MenuItem menuItem = new MenuItem("Exporter GPX");
 
@@ -97,7 +101,6 @@ public final class JaVelo extends Application {
             }
         });
 
-
         MenuBar menuBar = new MenuBar();
         menuBar.setUseSystemMenuBar(true);
         Menu menu = new Menu("Fichier", new Pane(), menuItem);
@@ -109,12 +112,12 @@ public final class JaVelo extends Application {
         StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(splitPane, errorManager.pane());
 
-        borderPane1.setTop(menuBar);
-        borderPane1.setCenter(stackPane);
+        mainBorderPane.setTop(menuBar);
+        mainBorderPane.setCenter(stackPane);
 
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-        primaryStage.setScene(new Scene(borderPane1));
+        primaryStage.setScene(new Scene(mainBorderPane));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
     }

@@ -231,7 +231,7 @@ public final class ElevationProfileManager{
 
                 Text text = new Text();
                 text.setTextOrigin(VPos.CENTER);
-                text.setX(insets.getLeft()/2);
+                text.setX(insets.getLeft()/3);
                 text.setY(y_pixels);
                 text.setText(Integer.toString(firstHeight));
                 text.setFont(Font.font("Avenir", 10));
