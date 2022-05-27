@@ -30,6 +30,10 @@ public final class AnnotatedMapManager {
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
     private final RouteBean routeBean;
     private final static int MAX_NUMBER_OF_PIXELS = 15;
+    private final static int INITIAL_ZOOM_LEVEL = 12;
+    private final static double INITIAL_X_UPPER_LEFT = 543_200;
+    private final static double INITIAL_Y_UPPER_LEFT = 370_650;
+    
 
 
     /**
@@ -44,9 +48,10 @@ public final class AnnotatedMapManager {
     public AnnotatedMapManager(Graph graph, TileManager tileManager, RouteBean routeBean, Consumer<String> consumer){
 
         this.routeBean = routeBean;
+        
         // initial settings for the map
         mapViewParametersP = new SimpleObjectProperty<>(
-                new MapViewParameters(12, 543_200, 370_650));
+                new MapViewParameters(INITIAL_ZOOM_LEVEL, INITIAL_X_UPPER_LEFT, INITIAL_Y_UPPER_LEFT));
 
 
         // instantiating some objects
@@ -113,8 +118,8 @@ public final class AnnotatedMapManager {
                 currentMousePosition.get().getY());
 
         if (pointUnderMouse.toPointCh() != null) {
-            RoutePoint rp = routeBean.getRouteProperty().get().pointClosestTo
-                    (pointUnderMouse.toPointCh());
+            RoutePoint rp = routeBean.getRouteProperty().get()
+                    .pointClosestTo(pointUnderMouse.toPointCh());
 
             PointWebMercator projectedPoint = PointWebMercator.ofPointCh(rp.point());
 
@@ -122,7 +127,7 @@ public final class AnnotatedMapManager {
                     norm(mapViewParameters.viewX(pointUnderMouse) - mapViewParameters.viewX(projectedPoint),
                             mapViewParameters.viewY(pointUnderMouse) - mapViewParameters.viewY(projectedPoint));
 
-            mousePositionOnRouteProperty.setValue(norm <= MAX_NUMBER_OF_PIXELS ? rp.position() : NaN);
+            mousePositionOnRouteProperty.setValue((norm <= MAX_NUMBER_OF_PIXELS) ? rp.position() : NaN);
         }
     }
 }

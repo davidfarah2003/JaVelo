@@ -44,6 +44,11 @@ public final class ElevationProfileManager{
     private static final int MIN_PIXELS_VERTICAL = 50;
     private static final int[] ELE_STEPS = new int[]{ 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
     private static final int[] POS_STEPS = new int[]{ 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
+    private static final int KM_TO_METERS_FACTOR = 1000;
+    private static final Font FONT = Font.font("Avenir", 10);
+    private static final int SHIFT_LABELS_POSITION = 2;
+    private static final double PREF_WIDTH_RATION = 1/2d;
+
     /**
      * Constructor that initializes the GUI and creates bindings and listeners
      * @param elevationProfileRO Elevation profile of the Route (Read Only Property)
@@ -164,7 +169,7 @@ public final class ElevationProfileManager{
 
             vBox.getChildren().clear();
             Text text = new Text();
-            String s = "Longueur : %.1f km".formatted(elevationProfile.get().length() / 1000) +
+            String s = "Longueur : %.1f km".formatted(elevationProfile.get().length() / KM_TO_METERS_FACTOR) +
                     "     Montée : %.0f m".formatted(elevationProfile.get().totalAscent()) +
                     "     Descente : %.0f m".formatted(elevationProfile.get().totalDescent()) +
                     "     Altitude : de %.0f m à %.0f m".formatted(elevationProfile.get().minElevation(),
@@ -217,9 +222,11 @@ public final class ElevationProfileManager{
 
         double nbPixelsPerMeterY = rectangle.get().getHeight() /
                 (elevationProfile.get().maxElevation() - elevationProfile.get().minElevation());
+
         int spaceBetweenHorizontalLines = chooseSpaceBetweenLines(nbPixelsPerMeterY, ELE_STEPS, MIN_PIXELS_HORIZONTAL);
         double y_meters = 0;
-        int firstHeight = (int) (spaceBetweenHorizontalLines *
+
+        int heightDisplayed = (int) (spaceBetweenHorizontalLines *
                 Math.ceil(elevationProfile.get().minElevation() / spaceBetweenHorizontalLines));
 
         while(y_meters < elevationProfile.get().maxElevation()){
@@ -231,14 +238,14 @@ public final class ElevationProfileManager{
                 PathElement lineExtremity2 = new LineTo(insets.getLeft() + rectangle.get().getWidth(), y_pixels);
                 grid.getElements().addAll(lineExtremity1, lineExtremity2);
 
-                Text text = new Text(Integer.toString(firstHeight));
+                Text text = new Text(Integer.toString(heightDisplayed));
                 text.getStyleClass().addAll("grid_label", "vertical");
                 text.setTextOrigin(VPos.CENTER);
-                text.setFont(Font.font("Avenir", 10));
-                text.setX(insets.getLeft() - (text.prefWidth(0) + 2));
+                text.setFont(FONT);
+                text.setX(insets.getLeft() - (text.prefWidth(0) + SHIFT_LABELS_POSITION));
                 text.setY(y_pixels);
                 gridLabels.getChildren().add(text);
-                firstHeight += spaceBetweenHorizontalLines;
+                heightDisplayed += spaceBetweenHorizontalLines;
             }
         }
 
@@ -254,11 +261,11 @@ public final class ElevationProfileManager{
             grid.getElements().addAll(lineExtremity1, lineExtremity2);
             length += spaceBetweenVerticalLines;
 
-            Text text = new Text(Integer.toString((spaceBetweenVerticalLines/1000)* i));
+            Text text = new Text(Integer.toString((spaceBetweenVerticalLines/KM_TO_METERS_FACTOR)* i));
             text.getStyleClass().addAll("grid_label", "horizontal");
             text.setTextOrigin(VPos.TOP);
-            text.setFont(Font.font("Avenir", 10));
-            text.setX(pixelsX  - 0.5 * text.prefWidth(0));
+            text.setFont(FONT);
+            text.setX(pixelsX  -  text.prefWidth(0) * PREF_WIDTH_RATION);
             text.setY(insets.getTop() + rectangle.get().getHeight());
             gridLabels.getChildren().add(text);
             i++;
@@ -274,6 +281,7 @@ public final class ElevationProfileManager{
      * @throws NonInvertibleTransformException when the transformation is not invertible (it is in our case)
      */
     private void generateNewAffineFunctions() throws NonInvertibleTransformException {
+
         /*  translate the rectangle origin to borderpane origin
             scale rectangle to borderpane
             reposition rectangle to original position  */

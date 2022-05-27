@@ -25,11 +25,13 @@ public final class TileManager {
     private final Path cachePath;
     private final String hostName;
     private final LinkedHashMap<TileId, Image> memoryCache;
+    private static final int CACHE_SIZE = 100;
+    private static final float LOAD_FACTOR = .75f;
 
     public TileManager(Path cachePath, String hostName){
         this.cachePath = cachePath;
         this.hostName = hostName;
-        memoryCache = new LRUCache<>(100, .75f);
+        memoryCache = new LRUCache<>(CACHE_SIZE, LOAD_FACTOR);
     }
 
     public Image getTileImage(TileId tile) throws IOException {
@@ -68,6 +70,8 @@ public final class TileManager {
 
 
     record TileId(int zoomLevel, int xIndex, int yIndex) {
+        private static final int ZOOM_LEVEL_MIN = 0;
+        private static final int ZOOM_LEVEL_MAX = 19;
 
         TileId{
             Preconditions.checkArgument(isValid(zoomLevel, xIndex, yIndex));
@@ -76,7 +80,7 @@ public final class TileManager {
          public static boolean isValid(int zoomLevel, int xIndex, int yIndex) {
 
              int maxIndex = (int) Math.pow(2, zoomLevel) - 1;
-             return (zoomLevel >= 0 && zoomLevel <= 20 &&
+             return (zoomLevel >= ZOOM_LEVEL_MIN && zoomLevel <= ZOOM_LEVEL_MAX &&
                      xIndex >= 0 && xIndex <= maxIndex &&
                      yIndex >= 0 && yIndex <= maxIndex);
          }

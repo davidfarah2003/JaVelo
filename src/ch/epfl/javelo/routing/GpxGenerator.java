@@ -11,26 +11,36 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ListIterator;
+import java.util.Iterator;
+
+
+/**
+ * GpxGenerator class
+ *
+ * This class offers methods which enable to create
+ * a GPX document using an elevation profile and a route.
+ *
+ * @author Wesley Nana Davies(344592)
+ * @author David Farah (341017)
+ */
 
 public class GpxGenerator {
-    private GpxGenerator() {
-    }
+    private GpxGenerator() {}
 
     public static Document createGPX(ElevationProfile profile, Route route) {
-        Document doc = newDocument(); // voir plus bas
+        Document doc = newDocument();
 
         Element root = doc.createElementNS(
                 "http://www.topografix.com/GPX/1/1",
-                "gpx"
-        );
+                "gpx");
+
         doc.appendChild(root);
 
         root.setAttributeNS(
                 "http://www.w3.org/2001/XMLSchema-instance",
                 "xsi:schemaLocation",
-                "http://www.topografix.com/GPX/1/1 " + "http://www.topografix.com/GPX/1/1/gpx.xsd"
-        );
+                "http://www.topografix.com/GPX/1/1 " + "http://www.topografix.com/GPX/1/1/gpx.xsd");
+
         root.setAttribute("version", "1.1");
         root.setAttribute("creator", "JaVelo");
 
@@ -44,35 +54,30 @@ public class GpxGenerator {
         Element rte = doc.createElement("rte");
         root.appendChild(rte);
 
-
-        ListIterator<PointCh> pointIterator = route.points().listIterator();
-        PointCh previousPoint  = pointIterator.next();
-
-        PointCh point;
         double distance = 0;
+        Iterator<Edge> edgesIterator = route.edges().iterator();
 
-        while (pointIterator.hasNext()){
+        for (PointCh currentPoint : route.points()){
             Element rtept = doc.createElement("rtept");
             Element ele = doc.createElement("ele");
 
-            rtept.setAttribute("lat", Double.toString(Math.toDegrees(previousPoint.lat())));
-            rtept.setAttribute("lon", Double.toString(Math.toDegrees(previousPoint.lon())));
+            rtept.setAttribute("lat", Double.toString(Math.toDegrees(currentPoint.lat())));
+            rtept.setAttribute("lon", Double.toString(Math.toDegrees(currentPoint.lon())));
             ele.setTextContent(Double.toString(profile.elevationAt(distance)));
-
-            point  = pointIterator.next();
-            distance += point.distanceTo(previousPoint);
-
-            previousPoint = point;
-
             rte.appendChild(rtept);
             rtept.appendChild(ele);
+
+            if(edgesIterator.hasNext()){
+                distance += edgesIterator.next().length();
+            }
+
         }
         return doc;
     }
 
     private static Document newDocument() {
         try {
-            return   DocumentBuilderFactory
+            return  DocumentBuilderFactory
                     .newDefaultInstance()
                     .newDocumentBuilder()
                     .newDocument();

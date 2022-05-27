@@ -52,8 +52,10 @@ public final class JaVelo extends Application {
 
         RouteComputer rc = new RouteComputer(graph, cityBikeCF);
         rb = new RouteBean(rc);
-        Consumer<String> errorConsumer = new ErrorConsumer();
-        AnnotatedMapManager annotatedMapManager = new AnnotatedMapManager(graph, tileManager, rb, errorConsumer);
+
+
+        AnnotatedMapManager annotatedMapManager =
+                new AnnotatedMapManager(graph, tileManager, rb, errorManager::displayError);
 
         ReadOnlyObjectProperty<ElevationProfile> elevationProfileP = rb.getElevationProfileProperty();
 
@@ -63,8 +65,8 @@ public final class JaVelo extends Application {
         elevationProfileP.addListener((p, oldV, newV) -> {
             if (oldV == null && newV != null) {
                 Pane borderPane = elevationProfileManager.pane();
-                borderPane.setMinHeight(splitPane.getHeight()/6);
-                borderPane.setMaxHeight(splitPane.getHeight()/2);
+               // borderPane.setMinHeight(splitPane.getHeight()/6);
+               // borderPane.setMaxHeight(splitPane.getHeight()/2);
                 SplitPane.setResizableWithParent(borderPane, false);
                 splitPane.getItems().add(elevationProfileManager.pane());
             }
@@ -112,19 +114,4 @@ public final class JaVelo extends Application {
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
     }
-
-
-    /**
-     * Inner class which manages the display of errors on the screen
-     */
-
-    private final class ErrorConsumer
-                implements Consumer<String> {
-
-            @Override
-            public void accept(String s) {
-                errorManager.displayError(s);
-            }
-        }
-
 }
