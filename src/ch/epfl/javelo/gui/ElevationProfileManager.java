@@ -18,10 +18,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import static java.lang.Double.NaN;
 
+
 /**
  * ElevationProfileManager class
  * This class manages the graphical interface representing the elevation profile of a route
+ *
  * @author Wesley Nana Davies(344592)
+ * @author David Farah (341017)
  */
 public final class ElevationProfileManager{
     private final ReadOnlyObjectProperty<ElevationProfile> elevationProfile;

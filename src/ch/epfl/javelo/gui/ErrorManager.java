@@ -11,6 +11,7 @@ import javafx.util.Duration;
 /**
  * Error Manager class
  * This class handles errors signaled from the gui
+ *
  * @author Wesley Nana Davies (344592)
  * @author David Farah (341017)
  */
