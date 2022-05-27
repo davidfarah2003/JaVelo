@@ -17,6 +17,12 @@ import javafx.util.Duration;
 public final class ErrorManager {
     private final VBox vBox;
     private SequentialTransition sequentialTransition;
+    private static final String DURATION_FADE_1 = "200ms";
+    private static final String DURATION_FADE_2 = "500ms";
+    private static final String DURATION_PAUSE = "2000ms";
+    private static final double MIN_OPACITY = 0;
+    private static final double MAX_OPACITY = 0.8;
+
 
     /**
      * Constructor which takes no parameters
@@ -37,8 +43,8 @@ public final class ErrorManager {
     }
 
     /**
-     * This method display an error on the screen
-     * @param s : String which should be displayed
+     * This method displays an error on the screen
+     * @param s : string which should be displayed
      */
     public void displayError(String s){
         sequentialTransition.stop();
@@ -48,20 +54,19 @@ public final class ErrorManager {
         t.setText(s);
         vBox.getChildren().add(t);
 
-        FadeTransition f1 = new FadeTransition(Duration.valueOf("200ms"));
-        f1.setFromValue(0);
-        f1.setToValue(0.8);
+        FadeTransition f1 = new FadeTransition(Duration.valueOf(DURATION_FADE_1));
+        f1.setFromValue(MIN_OPACITY);
+        f1.setToValue(MAX_OPACITY);
 
-        PauseTransition pauseTransition = new PauseTransition(Duration.valueOf("2000ms"));
+        PauseTransition pauseTransition = new PauseTransition(Duration.valueOf(DURATION_PAUSE));
 
-        FadeTransition f2 = new FadeTransition(Duration.valueOf("500ms"));
-        f2.setFromValue(0.8);
-        f2.setToValue(0);
+        FadeTransition f2 = new FadeTransition(Duration.valueOf(DURATION_FADE_2));
+        f2.setFromValue(MAX_OPACITY);
+        f2.setToValue(MIN_OPACITY);
 
-        SequentialTransition st = new SequentialTransition(vBox, f1, pauseTransition,f2);
-        sequentialTransition = st;
-
+        sequentialTransition = new SequentialTransition(vBox, f1, pauseTransition,f2);
         sequentialTransition.play();
+
         java.awt.Toolkit.getDefaultToolkit().beep();
     }
 }

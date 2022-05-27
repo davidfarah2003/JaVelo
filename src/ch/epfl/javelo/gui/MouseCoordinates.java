@@ -1,7 +1,11 @@
 package ch.epfl.javelo.gui;
 
 /**
+ * MouseCoordinates class (used in WayPointsManager)
+ *
  * Class representing x and y coordinates of the mouse
+ *
+ *  @author David Farah (341017)
  */
 public class MouseCoordinates {
     private double x;
@@ -34,6 +38,7 @@ public class MouseCoordinates {
     }
 
     /**
+     * Getter for x
      * @return x
      */
     public double getX() {
@@ -41,6 +46,7 @@ public class MouseCoordinates {
     }
 
     /**
+     * Getter for y
      * @return y
      */
     public double getY() {

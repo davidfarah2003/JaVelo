@@ -48,21 +48,18 @@ public final class Functions {
         @Override
         public double applyAsDouble(double operand) {
 
-            if (operand > xMax) {
+            if (operand >= xMax) {
                 return samples[samples.length - 1];
             } else if (operand < 0) {
                 return samples[0];
             } else {
+
                 // length of an interval
                 double intervalLength = xMax / (samples.length - 1);
 
-                //if operand is on a sample, return the corresponding sample y value
-                if (operand % intervalLength == 0){
-                    return samples[(int)(operand/ intervalLength)];
-                }
+                double operand_index = operand / intervalLength;
 
                 //get the 2 sample indexes that are closest to the operand
-                double operand_index = operand / intervalLength;
                 int lower_index = (int) Math.floor(operand_index);
                 int upper_index = (int) Math.ceil(operand_index);
 

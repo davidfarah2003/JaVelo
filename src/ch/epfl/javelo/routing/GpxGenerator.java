@@ -27,6 +27,13 @@ import java.util.Iterator;
 public class GpxGenerator {
     private GpxGenerator() {}
 
+    /**
+     * This method returns a GPX document of all information about an itinerary (profile, route)
+     * @param profile : ElevationProfile of the itinerary
+     * @param route : Route of the itinerary
+     * @return a GPX document
+     */
+
     public static Document createGPX(ElevationProfile profile, Route route) {
         Document doc = newDocument();
 
@@ -75,6 +82,11 @@ public class GpxGenerator {
         return doc;
     }
 
+
+    /**
+     * This private method simply returns a new document
+     * @return a document
+     */
     private static Document newDocument() {
         try {
             return  DocumentBuilderFactory
@@ -86,23 +98,26 @@ public class GpxGenerator {
         }
     }
 
-    public static void writeGPX(Document doc) throws IOException, TransformerException {
-      try (Writer w = new FileWriter("javelo.gpx")){
-            Transformer transformer = newTransformer();
+    /**
+     * This method writes a GPX file with a given name using an elevation profile and a route.
+     * @param fileName : name of the file
+     * @param route : route of the itinerary
+     * @param elevationProfile : elevation profile of the route.
+     * @throws IOException :  in the event of an input/output error
+     */
+    public static void writeGPX(String fileName, Route route, ElevationProfile elevationProfile) throws IOException {
+        Document document = createGPX(elevationProfile, route);
+        try (Writer w = new FileWriter(fileName)){
+            Transformer transformer =  TransformerFactory
+                                        .newDefaultInstance()
+                                        .newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.transform(new DOMSource(doc), new StreamResult(w));
+            transformer.transform(new DOMSource(document), new StreamResult(w));
         }
-    }
-
-    private static Transformer newTransformer(){
-        try{
-            return  TransformerFactory
-                    .newDefaultInstance()
-                    .newTransformer();
-
-        } catch (TransformerConfigurationException e) {
+        catch (TransformerException e) {
             throw new Error(e);
         }
+
     }
 
 }

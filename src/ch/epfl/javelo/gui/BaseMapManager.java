@@ -31,7 +31,7 @@ public final class BaseMapManager {
     private final static int SIZE_TILE = 256;
     private static final int ZOOM_LEVEL_MIN = 8;
     private static final int ZOOM_LEVEL_MAX = 19;
-
+    private static final int SCROLL_DELAY = 200;
 
     /**
      * Constructor of the class
@@ -112,7 +112,7 @@ public final class BaseMapManager {
             if (e.getDeltaY() == 0d) return;
             long currentTime = System.currentTimeMillis();
             if (currentTime < minScrollTime.get()) return;
-            minScrollTime.set(currentTime + 200);
+            minScrollTime.set(currentTime + SCROLL_DELAY);
             int zoomDelta = (int) Math.signum(e.getDeltaY());
 
             int currentZoomLevel = mapViewParametersP.get().zoomLevel();
@@ -122,6 +122,7 @@ public final class BaseMapManager {
             Point2D topLeftPoint = mapViewParametersP.get().topLeft();
 
             topLeftPoint = topLeftPoint.add(e.getX(), e.getY());
+
             // multiplying the coordinates of the top left by 2^(difference in zoom level)
             topLeftPoint = topLeftPoint.multiply(Math.scalb(1, difference));
             topLeftPoint = topLeftPoint.subtract(e.getX(), e.getY());

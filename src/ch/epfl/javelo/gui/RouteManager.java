@@ -19,7 +19,6 @@ import javafx.scene.shape.Polyline;
 public final class RouteManager {
     private final RouteBean routeBean;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
-
     private final Pane pane;
     private final Polyline polyline;
     private final Circle circle;
@@ -94,15 +93,12 @@ public final class RouteManager {
         
     }
 
-
-
-
     private void reconstructPolyline() {
         polyline.getPoints().clear();
 
         if (routeBean.getRouteProperty().get() != null) {
             polyline.setVisible(true);
-            circle.setVisible(!Double.isNaN(routeBean.highlightedPosition()));
+         //   circle.setVisible(!Double.isNaN(routeBean.highlightedPosition()));
 
             for (PointCh routePoint : routeBean.getRouteProperty().get().points()) {
                 PointWebMercator routePointMercator = PointWebMercator.ofPointCh(routePoint);
@@ -113,6 +109,7 @@ public final class RouteManager {
             polyline.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
             polyline.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
 
+            /*
             if (!Double.isNaN(routeBean.highlightedPosition())) {
                 PointWebMercator highlightedPoint = PointWebMercator.
                         ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
@@ -121,6 +118,8 @@ public final class RouteManager {
                 circle.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
                 circle.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
             }
+
+             */
         }
 
         else{

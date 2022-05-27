@@ -20,10 +20,11 @@ public final class RouteBean {
     private final RouteComputer routeComputer;
     public static ObservableList<Waypoint> waypoints;
     private final ObjectProperty<Route> route;
-    private final DoubleProperty highlightedPosition = new SimpleDoubleProperty(Double.NaN);
+    private final DoubleProperty highlightedPosition;
     private final ObjectProperty<ElevationProfile> elevationProfile;
-    private final Map<Integer, Route> hashRouteMap = new LRUCache<>(5, 0.75f);
-    private final static int RECOMMENDED_STEP_LENGTH = 5;
+    private final Map<Integer, Route> hashRouteMap;
+    private final static int RECOMMENDED_STEP_LENGTH = 5, CACHE_CAPACITY = 5;
+    private final static float LOAD_FACTOR = 0.75f;
 
     /**
      * Constructor
@@ -34,6 +35,8 @@ public final class RouteBean {
         waypoints = FXCollections.observableArrayList();
         route = new SimpleObjectProperty<>();
         elevationProfile = new SimpleObjectProperty<>();
+        highlightedPosition = new SimpleDoubleProperty(Double.NaN);
+        hashRouteMap = new LRUCache<>(CACHE_CAPACITY, LOAD_FACTOR);
 
         // this listener calls recalculates route and profile
         // each time a change is made in the waypoints list
@@ -48,6 +51,7 @@ public final class RouteBean {
      * This method recalculates the route and the profile
      */
     private void recalculateRouteAndProfile(){
+
         // if there is only one waypoint, setting properties to null and doing no calculations
         if (waypoints.size() == 1){
             route.setValue(null);
@@ -56,7 +60,7 @@ public final class RouteBean {
         }
 
         List<Route> singleRoutes = new ArrayList<>();
-        Iterator<Waypoint> it = waypoints.listIterator();
+        Iterator<Waypoint> it = waypoints.iterator();
         Waypoint oldWaypoint = it.next();
         Waypoint currentWaypoint;
 
@@ -83,7 +87,7 @@ public final class RouteBean {
             oldWaypoint = currentWaypoint;
         }
 
-            // il all routes exist, we can store a new route, or we store null otherwise.
+            // if all routes exist, we can store a new route, or we store null otherwise.
             if (!singleRoutes.contains(null)) {
                 route.setValue(new MultiRoute(singleRoutes));
                 elevationProfile.setValue(ElevationProfileComputer.elevationProfile(route.get(),
@@ -122,7 +126,7 @@ public final class RouteBean {
 
     /**
      * Returns the DoubleProperty containing the highlighted position along the route
-     * @return a Double Property
+     * @return a DoubleProperty
      */
     public DoubleProperty getHighlightedPositionP(){
         return highlightedPosition;
@@ -138,8 +142,8 @@ public final class RouteBean {
     }
 
     /**
-     * This method is a getter which enables other classes to have access to the list of waypoints
-     * which constitute the route
+     * This method is a getter which enables other classes
+     * to have access to the list of waypoints which constitute the route
      * @return an ObservableList of waypoints
      */
     public ObservableList<Waypoint> getWaypoints(){
