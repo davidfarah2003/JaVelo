@@ -78,15 +78,6 @@ public final class JaVelo extends Application {
                 then(annotatedMapManager.mousePositionOnRouteProperty()).
                 otherwise(elevationProfileManager.mousePositionOnProfileProperty()));
 
-        /*
-        rb.getWaypoints().addListener((InvalidationListener) e -> {
-            if (rb.getWaypoints().size() >= 2 && rb.getRouteProperty().get() == null){
-                errorManager.displayError("No route found !");
-            }
-        });
-
-         */
-
         MenuItem menuItem = new MenuItem("Exporter GPX");
 
         menuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> rb.getRouteProperty().get()  == null,
@@ -122,8 +113,14 @@ public final class JaVelo extends Application {
         primaryStage.show();
     }
 
-        private final class ErrorConsumer
+
+    /**
+     * Inner class which manages the display of errors on the screen
+     */
+
+    private final class ErrorConsumer
                 implements Consumer<String> {
+
             @Override
             public void accept(String s) {
                 errorManager.displayError(s);

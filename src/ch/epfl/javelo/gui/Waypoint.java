@@ -25,17 +25,17 @@ public record Waypoint(PointCh point, int nodeID) {
      */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Waypoint){
+        if (o instanceof Waypoint) {
             return o.hashCode() == this.hashCode();
         }
         return false;
     }
 
     /*
-    This overridden method computes the hashcode using the node
+    This overridden method computes the hashcode using the nodeID
      */
     @Override
     public int hashCode() {
-        return Objects.hash(nodeID);
+        return nodeID;
     }
 }

@@ -4,7 +4,6 @@ import ch.epfl.javelo.routing.ElevationProfile;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
@@ -40,6 +39,11 @@ public final class ElevationProfileManager{
     private final Group gridLabels = new Group();
     private static final Insets insets = new Insets(10, 10, 20, 40);
     private VBox vBox;
+
+    private static final int MIN_PIXELS_HORIZONTAL = 25;
+    private static final int MIN_PIXELS_VERTICAL = 50;
+    private static final int[] ELE_STEPS = new int[]{ 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
+    private static final int[] POS_STEPS = new int[]{ 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
     /**
      * Constructor that initializes the GUI and creates bindings and listeners
      * @param elevationProfileRO Elevation profile of the Route (Read Only Property)
@@ -189,7 +193,7 @@ public final class ElevationProfileManager{
         profileGraph.getPoints().clear();
         Map<Double, Double> map = new TreeMap<>();
 
-            for (double x = insets.getLeft(); x < insets.getLeft() + rectangle.get().getWidth(); x++) {
+            for (double x = insets.getLeft(); x <= insets.getLeft() + rectangle.get().getWidth(); x++) {
                 double xValue = screenToWorldP.get().transform(x, 0).getX();
                 double elevation = elevationProfile.get().elevationAt(xValue);
                 double yValue = worldToScreenP.get().transform(0, elevation).getY();
@@ -207,15 +211,13 @@ public final class ElevationProfileManager{
      * This method draws the grid and its labels
      */
     private void drawGridAndLabels(){
-        int[] ELE_STEPS = { 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
-        int[] POS_STEPS = { 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
 
         grid.getElements().clear();
         gridLabels.getChildren().clear();
 
         double nbPixelsPerMeterY = rectangle.get().getHeight() /
                 (elevationProfile.get().maxElevation() - elevationProfile.get().minElevation());
-        int spaceBetweenHorizontalLines = chooseSpaceBetweenLines(nbPixelsPerMeterY, ELE_STEPS, 25);
+        int spaceBetweenHorizontalLines = chooseSpaceBetweenLines(nbPixelsPerMeterY, ELE_STEPS, MIN_PIXELS_HORIZONTAL);
         double y_meters = 0;
         int firstHeight = (int) (spaceBetweenHorizontalLines *
                 Math.ceil(elevationProfile.get().minElevation() / spaceBetweenHorizontalLines));
@@ -229,19 +231,19 @@ public final class ElevationProfileManager{
                 PathElement lineExtremity2 = new LineTo(insets.getLeft() + rectangle.get().getWidth(), y_pixels);
                 grid.getElements().addAll(lineExtremity1, lineExtremity2);
 
-                Text text = new Text();
+                Text text = new Text(Integer.toString(firstHeight));
+                text.getStyleClass().addAll("grid_label", "vertical");
                 text.setTextOrigin(VPos.CENTER);
-                text.setX(insets.getLeft()/3);
-                text.setY(y_pixels);
-                text.setText(Integer.toString(firstHeight));
                 text.setFont(Font.font("Avenir", 10));
+                text.setX(insets.getLeft() - (text.prefWidth(0) + 2));
+                text.setY(y_pixels);
                 gridLabels.getChildren().add(text);
                 firstHeight += spaceBetweenHorizontalLines;
             }
         }
 
         double nbPixelsPerMeterX = rectangle.get().getWidth() / elevationProfile.get().length();
-        int spaceBetweenVerticalLines = chooseSpaceBetweenLines(nbPixelsPerMeterX, POS_STEPS, 50);
+        int spaceBetweenVerticalLines = chooseSpaceBetweenLines(nbPixelsPerMeterX, POS_STEPS, MIN_PIXELS_VERTICAL);
 
         int length = 0;
         int i = 0;
@@ -252,12 +254,12 @@ public final class ElevationProfileManager{
             grid.getElements().addAll(lineExtremity1, lineExtremity2);
             length += spaceBetweenVerticalLines;
 
-            Text text = new Text();
+            Text text = new Text(Integer.toString((spaceBetweenVerticalLines/1000)* i));
+            text.getStyleClass().addAll("grid_label", "horizontal");
             text.setTextOrigin(VPos.TOP);
-            text.setX(pixelsX - 2);
-            text.setY(insets.getTop() + rectangle.get().getHeight());
-            text.setText(Integer.toString((spaceBetweenVerticalLines/1000)* i));
             text.setFont(Font.font("Avenir", 10));
+            text.setX(pixelsX  - 0.5 * text.prefWidth(0));
+            text.setY(insets.getTop() + rectangle.get().getHeight());
             gridLabels.getChildren().add(text);
             i++;
         }
@@ -281,8 +283,7 @@ public final class ElevationProfileManager{
             screenToWorld.prependTranslation(-insets.getLeft(), -insets.getTop());
             screenToWorld.prependScale(elevationProfile.get().length() / rectangle.get().getWidth(),
                     (elevationProfile.get().minElevation() - elevationProfile.get().maxElevation())
-                            / rectangle.get().getHeight()
-            );
+                            / rectangle.get().getHeight());
             screenToWorld.prependTranslation(0, elevationProfile.get().maxElevation());
             screenToWorldP.setValue(screenToWorld);
             worldToScreenP.setValue(screenToWorld.createInverse());

@@ -48,11 +48,20 @@ public final class RouteComputer {
     public Route bestRouteBetween(int startNodeId, int endNodeId) {
         Preconditions.checkArgument(startNodeId != endNodeId);
 
+        boolean value = true;
+        for (int i = 0; i < graph.nodeOutDegree(endNodeId); i++){
+            if(costFunction.costFactor(endNodeId, graph.nodeOutEdgeId(endNodeId, i)) != Double.POSITIVE_INFINITY) {
+                value = false;
+            }
+        }
+        if (value) return null;
+
         Arrays.fill(nodesDistanceToOrigin, Float.POSITIVE_INFINITY);
         nodesDistanceToOrigin[startNodeId] = 0;
 
         nodesToExplore.add(new WeightedNode(startNodeId, nodesDistanceToOrigin[startNodeId],
                 (float) graph.nodePoint(startNodeId).distanceTo(graph.nodePoint(endNodeId))));
+
 
         while (!nodesToExplore.isEmpty()) {
             nodeChosenId = chooseNode().nodeId;

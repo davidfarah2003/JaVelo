@@ -21,7 +21,13 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
             this.MAX_ENTRIES = maxCapacity;
         }
 
-        @Override
+    /**
+     * This method determines whether an element should be removed
+     * @param eldest : Entry of the map
+     * @return true iff the size has exceeded the capacity
+     */
+
+    @Override
         protected boolean removeEldestEntry(Map.Entry eldest) {
             return size() > MAX_ENTRIES;
         }
