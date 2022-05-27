@@ -52,7 +52,7 @@ public final class WayPointsManager {
      *
      * @param x coordinate of a point to add (WebMercator)
      * @param y coordinate of a point to add (WebMercator)
-  */
+    */
     public void addWaypoint(double x, double y) {
         int closestNodeId = getClosestNodeId(x, y);
 
