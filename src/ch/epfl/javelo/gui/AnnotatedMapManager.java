@@ -3,16 +3,12 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointWebMercator;
-import ch.epfl.javelo.projection.SwissBounds;
 import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.*;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-
-
 import java.util.function.Consumer;
-
 import static java.lang.Double.NaN;
 
 /**
@@ -113,9 +109,10 @@ public final class AnnotatedMapManager {
      * property.
      */
     private void recalculateMousePositionOnRouteProperty() {
+
         MapViewParameters mapViewParameters = mapViewParametersP.get();
         PointWebMercator pointUnderMouse = mapViewParameters.pointAt(currentMousePosition.get().getX(),
-                currentMousePosition.get().getY());
+                                                                     currentMousePosition.get().getY());
 
         if (pointUnderMouse.toPointCh() != null) {
             RoutePoint rp = routeBean.getRouteProperty().get()
@@ -128,6 +125,7 @@ public final class AnnotatedMapManager {
                             mapViewParameters.viewY(pointUnderMouse) - mapViewParameters.viewY(projectedPoint));
 
             mousePositionOnRouteProperty.setValue((norm <= MAX_NUMBER_OF_PIXELS) ? rp.position() : NaN);
+
         }
     }
 }

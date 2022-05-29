@@ -229,7 +229,8 @@ public final class WayPointsManager {
                 pin.setOnMouseReleased(mouseEvent1 -> {
                             if(!replaceWaypoint(mapViewParameters.get().xUpperLeftMapView() + pin.getLayoutX(),
                                                 mapViewParameters.get().yUpperLeftMapView() + pin.getLayoutY(),
-                                                   pinWaypointMap.get(pin))) {redrawWaypoints();}
+                                                   pinWaypointMap.get(pin))) {redrawWaypoints();
+                            }
                 });
             });
         }

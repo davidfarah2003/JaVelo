@@ -122,7 +122,6 @@ public final class BaseMapManager {
             Point2D topLeftPoint = mapViewParametersP.get().topLeft();
 
             topLeftPoint = topLeftPoint.add(e.getX(), e.getY());
-
             // multiplying the coordinates of the top left by 2^(difference in zoom level)
             topLeftPoint = topLeftPoint.multiply(Math.scalb(1, difference));
             topLeftPoint = topLeftPoint.subtract(e.getX(), e.getY());
@@ -156,8 +155,10 @@ public final class BaseMapManager {
             redrawNeeded = false;
 
             GraphicsContext gc = canvas.getGraphicsContext2D();
-            int tileX = (int) Math.floor(mapViewParametersP.get().xUpperLeftMapView() / SIZE_TILE);
-            int tileY = (int) Math.floor(mapViewParametersP.get().yUpperLeftMapView() / SIZE_TILE);
+            MapViewParameters mapViewParameters = mapViewParametersP.get();
+
+            int tileX = (int) Math.floor(mapViewParameters.xUpperLeftMapView() / SIZE_TILE);
+            int tileY = (int) Math.floor(mapViewParameters.yUpperLeftMapView() / SIZE_TILE);
             int xMax = (int) Math.ceil(canvas.getWidth() / SIZE_TILE);
             int yMax = (int) Math.ceil(canvas.getHeight() / SIZE_TILE);
 
@@ -166,12 +167,11 @@ public final class BaseMapManager {
             for (int i = 0; i <= xMax; i++) {
                 for (int j = 0; j <= yMax; j++) {
                     try {
-                        gc.drawImage(tileManager
-                                        .getTileImage(new TileManager.TileId(mapViewParametersP.get().zoomLevel(),
+                        gc.drawImage(tileManager.getTileImage(new TileManager.TileId(mapViewParameters.zoomLevel(),
                                                 i + tileX,
                                                 j + tileY)),
-                                (i + tileX) * SIZE_TILE - mapViewParametersP.get().xUpperLeftMapView(),
-                                (j + tileY) * SIZE_TILE - mapViewParametersP.get().yUpperLeftMapView());
+                                (i + tileX) * SIZE_TILE - mapViewParameters.xUpperLeftMapView(),
+                                (j + tileY) * SIZE_TILE - mapViewParameters.yUpperLeftMapView());
                     } catch (IOException e) {
                         System.out.println(e.getMessage());
                     }

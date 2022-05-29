@@ -58,7 +58,7 @@ public final class JaVelo extends Application {
                 then(annotatedMapManager.mousePositionOnRouteProperty()).
                 otherwise(elevationProfileManager.mousePositionOnProfileProperty()));
 
-        SplitPane splitPane = new SplitPane();
+        SplitPane splitPane = new SplitPane(annotatedMapManager.pane());
         splitPane.setOrientation(Orientation.VERTICAL);
 
         elevationProfileP.addListener((p, oldV, newV) -> {
@@ -72,8 +72,9 @@ public final class JaVelo extends Application {
             }
         });
 
-        MenuItem menuItem = new MenuItem("Exporter GPX");
+        StackPane stackPane = new StackPane(splitPane, errorManager.pane());
 
+        MenuItem menuItem = new MenuItem("Exporter GPX");
         menuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> rb.getRouteProperty().get()  == null,
                 rb.getRouteProperty()));
 
@@ -85,14 +86,10 @@ public final class JaVelo extends Application {
             }
         });
 
-        BorderPane mainBorderPane = new BorderPane();
-
-        MenuBar menuBar = new MenuBar();
+        MenuBar menuBar = new MenuBar(new Menu("Fichier", new Pane(), menuItem));
         menuBar.setUseSystemMenuBar(true);
-        menuBar.getMenus().add(new Menu("Fichier", new Pane(), menuItem));
 
-        splitPane.getItems().add(annotatedMapManager.pane());
-        StackPane stackPane = new StackPane(splitPane, errorManager.pane());
+        BorderPane mainBorderPane = new BorderPane();
         mainBorderPane.setTop(menuBar);
         mainBorderPane.setCenter(stackPane);
 

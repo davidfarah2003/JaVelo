@@ -20,7 +20,7 @@ public final class ErrorManager {
     private SequentialTransition sequentialTransition;
     private static final String DURATION_FADE_1 = "200ms";
     private static final String DURATION_FADE_2 = "500ms";
-    private static final String DURATION_PAUSE = "2000ms";
+    private static final String DURATION_STILL = "2000ms";
     private static final double MIN_OPACITY = 0;
     private static final double MAX_OPACITY = 0.8;
 
@@ -48,6 +48,8 @@ public final class ErrorManager {
      * @param s : string which should be displayed
      */
     public void displayError(String s){
+
+        // stops the current animation if one is taking place
         sequentialTransition.stop();
         vBox.getChildren().clear();
 
@@ -59,7 +61,7 @@ public final class ErrorManager {
         f1.setFromValue(MIN_OPACITY);
         f1.setToValue(MAX_OPACITY);
 
-        PauseTransition pauseTransition = new PauseTransition(Duration.valueOf(DURATION_PAUSE));
+        PauseTransition pauseTransition = new PauseTransition(Duration.valueOf(DURATION_STILL));
 
         FadeTransition f2 = new FadeTransition(Duration.valueOf(DURATION_FADE_2));
         f2.setFromValue(MAX_OPACITY);
@@ -67,7 +69,6 @@ public final class ErrorManager {
 
         sequentialTransition = new SequentialTransition(vBox, f1, pauseTransition,f2);
         sequentialTransition.play();
-
         java.awt.Toolkit.getDefaultToolkit().beep();
     }
 }

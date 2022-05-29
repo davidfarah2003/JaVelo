@@ -11,7 +11,7 @@ import javafx.scene.shape.Polyline;
 /**
  *  RouteManager class
  *  This class manages the display of the route and of its highlighted position
- *  (polyline and circle) about a route (
+ *  (polyline and circle) about a route
  *
  *  @author Wesley Nana Davies (344592)
  *  @author David Farah (341017)
@@ -109,7 +109,7 @@ public final class RouteManager {
             polyline.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
             polyline.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
 
-            /*
+
             if (!Double.isNaN(routeBean.highlightedPosition())) {
                 PointWebMercator highlightedPoint = PointWebMercator.
                         ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
@@ -119,7 +119,7 @@ public final class RouteManager {
                 circle.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
             }
 
-             */
+
         }
 
         else{

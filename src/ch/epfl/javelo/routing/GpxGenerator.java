@@ -68,9 +68,9 @@ public class GpxGenerator {
             Element rtept = doc.createElement("rtept");
             Element ele = doc.createElement("ele");
 
-            rtept.setAttribute("lat", Double.toString(Math.toDegrees(currentPoint.lat())));
-            rtept.setAttribute("lon", Double.toString(Math.toDegrees(currentPoint.lon())));
-            ele.setTextContent(Double.toString(profile.elevationAt(distance)));
+            rtept.setAttribute("lat", String.format("%.5f", (Math.toDegrees(currentPoint.lat()))));
+            rtept.setAttribute("lon", String.format("%.5f", (Math.toDegrees(currentPoint.lon()))));
+            ele.setTextContent(String.format("%.2f", profile.elevationAt(distance)));
             rte.appendChild(rtept);
             rtept.appendChild(ele);
 

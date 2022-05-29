@@ -15,8 +15,8 @@ public record Waypoint(PointCh point, int nodeID) {
 
     /**
      * Compare two waypoints by their corresponding node id
-     * @param o other Waypoint object to compare to
-     * @return true iff the 2 waypoints are linked to the same node
+     * @param o : other Waypoint to be compared with <code>this</code>
+     * @return true iff the 2 waypoints have the same node ID
      */
     @Override
     public boolean equals(Object o) {
@@ -27,7 +27,8 @@ public record Waypoint(PointCh point, int nodeID) {
     }
 
     /**
-     * @return set the Node ID as the hashcode of a Waypoint
+     * This method makes the hash code of a waypoint its node id
+     * @return Node ID of the WayPoint
      */
     @Override
     public int hashCode() {
