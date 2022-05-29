@@ -79,6 +79,7 @@ public class GpxGenerator {
             }
 
         }
+
         return doc;
     }
 

@@ -49,15 +49,9 @@ class GpxGeneratorTest {
 
         ElevationProfile profile = ElevationProfileComputer.elevationProfile(r, 5);
 
+        GpxGenerator.writeGPX("rendu.gpx", r, profile);
 
-        Document doc = GpxGenerator.createGPX(profile, r);
-        Writer w = new FileWriter("rendu.gpx");
 
-        Transformer transformer = TransformerFactory
-                .newDefaultInstance()
-                .newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.transform(new DOMSource(doc),
-                new StreamResult(w));
+
     }
 }

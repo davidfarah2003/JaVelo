@@ -72,15 +72,15 @@ public final class RouteBean {
             if(!currentWaypoint.equals(oldWaypoint)){
 
                 // using the hash method from Objects to identify effectively retrieve routes in the hashRouteMap.
-                int hash = Objects.hash(oldWaypoint.nodeID(), currentWaypoint.nodeID());
+                int hashCode = Objects.hash(oldWaypoint.nodeID(), currentWaypoint.nodeID());
 
-                if (hashRouteMap.containsKey(hash)){
-                    singleRoutes.add(hashRouteMap.get(hash));
+                if (hashRouteMap.containsKey(hashCode)){
+                    singleRoutes.add(hashRouteMap.get(hashCode));
                 }
                 else{
                     Route singleRoute = routeComputer.bestRouteBetween(oldWaypoint.nodeID(), currentWaypoint.nodeID());
                     singleRoutes.add(singleRoute);
-                    hashRouteMap.put(hash, singleRoute);
+                    hashRouteMap.put(hashCode, singleRoute);
                 }
             }
 

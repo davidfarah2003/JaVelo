@@ -48,19 +48,20 @@ public final class RouteManager {
      * This method adds listener to different properties
      */
     private void addListeners() {
+
         routeBean.getWaypoints().addListener((InvalidationListener) e -> reconstructPolyline());
 
         this.mapViewParametersP.addListener(
                 (p, oldParams, newParams) -> {
-                    if (oldParams.zoomLevel() == newParams.zoomLevel()) {
+                    if ((oldParams.zoomLevel() == newParams.zoomLevel())) {
                         repositionNodes();
                     } else {
                         reconstructPolyline();
                     }
                 });
 
-
         circle.setOnMouseClicked(e -> {
+
             PointWebMercator pointRelatedToPane = mapViewParametersP.get().pointAt(
                     circle.localToParent(e.getX(), e.getY()).getX(),
                     circle.localToParent(e.getX(), e.getY()).getY());
@@ -69,20 +70,14 @@ public final class RouteManager {
 
             int id = routeBean.getRouteProperty().get().nodeClosestTo(routeBean.highlightedPosition());
             Waypoint w = new Waypoint(pointRelatedToPaneCh, id);
-
             routeBean.getWaypoints().add(routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1,
                                         w);
         });
 
         routeBean.getHighlightedPositionP().addListener(e -> {
-            if (routeBean.getRouteProperty().get() != null && !Double.isNaN(routeBean.highlightedPosition())){
+            if (!Double.isNaN(routeBean.highlightedPosition())){
                 circle.setVisible(true);
-                PointWebMercator highlightedPoint = PointWebMercator.
-                        ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
-                circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
-                circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
-                circle.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
-                circle.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
+                repositionCircle();
             }
             else{
                 circle.setVisible(false);
@@ -98,7 +93,6 @@ public final class RouteManager {
 
         if (routeBean.getRouteProperty().get() != null) {
             polyline.setVisible(true);
-         //   circle.setVisible(!Double.isNaN(routeBean.highlightedPosition()));
 
             for (PointCh routePoint : routeBean.getRouteProperty().get().points()) {
                 PointWebMercator routePointMercator = PointWebMercator.ofPointCh(routePoint);
@@ -111,15 +105,8 @@ public final class RouteManager {
 
 
             if (!Double.isNaN(routeBean.highlightedPosition())) {
-                PointWebMercator highlightedPoint = PointWebMercator.
-                        ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
-                circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
-                circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
-                circle.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
-                circle.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
+                repositionCircle();
             }
-
-
         }
 
         else{
@@ -129,6 +116,15 @@ public final class RouteManager {
 
 
 
+    }
+
+    private void repositionCircle(){
+        PointWebMercator highlightedPoint = PointWebMercator.
+                ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
+        circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+        circle.setCenterY(highlightedPoint.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+        circle.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
+        circle.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
     }
 
 
