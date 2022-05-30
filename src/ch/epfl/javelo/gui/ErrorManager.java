@@ -16,19 +16,19 @@ import javafx.util.Duration;
  * @author David Farah (341017)
  */
 public final class ErrorManager {
-    private final VBox vBox;
-    private SequentialTransition sequentialTransition;
     private static final String DURATION_FADE_1 = "200ms";
     private static final String DURATION_FADE_2 = "500ms";
     private static final String DURATION_STILL = "2000ms";
     private static final double MIN_OPACITY = 0;
     private static final double MAX_OPACITY = 0.8;
+    private final VBox vBox;
+    private SequentialTransition sequentialTransition;
 
 
     /**
      * Constructor which takes no parameters
      */
-    public ErrorManager(){
+    public ErrorManager() {
         vBox = new VBox();
         vBox.setMouseTransparent(true);
         vBox.getStylesheets().add("error.css");
@@ -37,17 +37,19 @@ public final class ErrorManager {
 
     /**
      * Returns the pane displaying errors
+     *
      * @return vBox
      */
-    public Pane pane(){
+    public Pane pane() {
         return vBox;
     }
 
     /**
      * This method displays an error on the screen
+     *
      * @param s : string which should be displayed
      */
-    public void displayError(String s){
+    public void displayError(String s) {
 
         // stops the current animation if one is currently taking place
         sequentialTransition.stop();
@@ -67,7 +69,7 @@ public final class ErrorManager {
         f2.setFromValue(MAX_OPACITY);
         f2.setToValue(MIN_OPACITY);
 
-        sequentialTransition = new SequentialTransition(vBox, f1, pauseTransition,f2);
+        sequentialTransition = new SequentialTransition(vBox, f1, pauseTransition, f2);
         sequentialTransition.play();
         java.awt.Toolkit.getDefaultToolkit().beep();
     }

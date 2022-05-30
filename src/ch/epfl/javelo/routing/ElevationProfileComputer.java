@@ -16,14 +16,16 @@ public final class ElevationProfileComputer {
     private static float[] profile;
     private static double intervalLength;
 
-    private ElevationProfileComputer() {}
+    private ElevationProfileComputer() {
+    }
 
     /**
      * Computes an elevationProfile for a route with maxStepLength
-     * @param route : a route (implementing the interface) representing the itinerary
+     *
+     * @param route         : a route (implementing the interface) representing the itinerary
      * @param maxStepLength : maximal distance between two samples from the profile
-     * @throws IllegalArgumentException if maxStepLength <= 0
      * @return a new Elevation Profile
+     * @throws IllegalArgumentException if maxStepLength <= 0
      */
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) {
         Preconditions.checkArgument(maxStepLength > 0);
@@ -34,10 +36,9 @@ public final class ElevationProfileComputer {
         fillInitialArray(route);
         int indexFirstNumber = firstNumberIndex();
 
-        if(indexFirstNumber == profile.length) {
+        if (indexFirstNumber == profile.length) {
             Arrays.fill(profile, 0);
-        }
-        else {
+        } else {
             Arrays.fill(profile, 0, indexFirstNumber, profile[indexFirstNumber]);
             int indexFirstNumberEnd = fillNanEnd();
             fillIntermediateNanValues(indexFirstNumber, indexFirstNumberEnd);
@@ -48,6 +49,7 @@ public final class ElevationProfileComputer {
 
     /**
      * Fill the array with the initial values from the route
+     *
      * @param route : route of interest
      */
     private static void fillInitialArray(Route route) {
@@ -59,9 +61,10 @@ public final class ElevationProfileComputer {
 
     /**
      * returns the index of the first real number
+     *
      * @return the index
      */
-    private static int firstNumberIndex(){
+    private static int firstNumberIndex() {
         int indexFirstNumber = 0;
         while ((indexFirstNumber < profile.length && Float.isNaN(profile[indexFirstNumber]))) {
             indexFirstNumber++;
@@ -72,9 +75,10 @@ public final class ElevationProfileComputer {
 
     /**
      * Returns the index of the first real number starting from the end of the array
+     *
      * @return the index
      */
-    private static int fillNanEnd(){
+    private static int fillNanEnd() {
         int indexFirstNumberEnd = profile.length - 1;
         while (Float.isNaN(profile[indexFirstNumberEnd])) {
             indexFirstNumberEnd--;
@@ -86,10 +90,11 @@ public final class ElevationProfileComputer {
 
     /**
      * Fill the remaining NaN values in the array
-     * @param indexFirstNumber : index where we start on the array
+     *
+     * @param indexFirstNumber    : index where we start on the array
      * @param indexFirstNumberEnd : index where we stop on the array
      */
-    private static void fillIntermediateNanValues(int indexFirstNumber, int indexFirstNumberEnd){
+    private static void fillIntermediateNanValues(int indexFirstNumber, int indexFirstNumberEnd) {
         int firstNanIndex = indexFirstNumber;
         int realNumberAfterIndex;
         int realNumberBeforeIndex;
@@ -111,11 +116,11 @@ public final class ElevationProfileComputer {
             }
 
             // doing the interpolation for all NaN samples using the valid samples at the extremities of the hole
-            for(int NanIndex = firstNanIndex; NanIndex < realNumberAfterIndex; NanIndex++) {
+            for (int NanIndex = firstNanIndex; NanIndex < realNumberAfterIndex; NanIndex++) {
                 profile[NanIndex] = (float) Math2.interpolate(
                         profile[realNumberBeforeIndex],
                         profile[realNumberAfterIndex],
-                        (double)(NanIndex - realNumberBeforeIndex) /
+                        (double) (NanIndex - realNumberBeforeIndex) /
                                 (realNumberAfterIndex - realNumberBeforeIndex)
                 );
             }

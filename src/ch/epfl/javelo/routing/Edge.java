@@ -11,27 +11,27 @@ import java.util.function.DoubleUnaryOperator;
  * EdgeRecord
  *
  * @param fromNodeId : ID of the starting node
- * @param toNodeId : ID of the ending node
- * @param fromPoint :  point (PointCh) form which the edge starts
- * @param toPoint:  point (PointCh) to which the edge goes
- * @param length : length of an edge
- * @param profile : elevation profile of the edge
- *
+ * @param toNodeId   : ID of the ending node
+ * @param fromPoint  :  point (PointCh) form which the edge starts
+ * @param toPoint:   point (PointCh) to which the edge goes
+ * @param length     : length of an edge
+ * @param profile    : elevation profile of the edge
  * @author David Farah (341017)
  * @author Wesley Nana Davies(344592)
  */
 public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPoint,
-                   double length, DoubleUnaryOperator profile){
+                   double length, DoubleUnaryOperator profile) {
 
     /**
      * Another constructor for Edge
-     * @param graph :  graph which models nodes and edges.
-     * @param edgeId: ID of the Edge
+     *
+     * @param graph      :  graph which models nodes and edges.
+     * @param edgeId:    ID of the Edge
      * @param fromNodeId : ID of the starting node
-     * @param toNodeId : ID of the ending node
+     * @param toNodeId   : ID of the ending node
      * @return a new Edge
      */
-    public static Edge of(Graph graph, int edgeId, int fromNodeId, int toNodeId){
+    public static Edge of(Graph graph, int edgeId, int fromNodeId, int toNodeId) {
         return new Edge(fromNodeId, toNodeId, graph.nodePoint(fromNodeId),
                 graph.nodePoint(toNodeId), graph.edgeLength(edgeId), graph.edgeProfile(edgeId));
     }
@@ -39,19 +39,21 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
     /**
      * Returns the position along the edge, in meters,
      * that is closest to the given point (could be outside the edge)
+     *
      * @param point : point of interest (PointCh)
      * @return the position
      */
-    public double positionClosestTo(PointCh point){
+    public double positionClosestTo(PointCh point) {
         return Math2.projectionLength(fromPoint.e(), fromPoint.n(), toPoint.e(), toPoint.n(), point.e(), point.n());
     }
 
     /**
      * Returns the point at the given position on the edge, expressed in meters.
+     *
      * @param position : position along the edge
      * @return the position
      */
-    public PointCh pointAt(double position){
+    public PointCh pointAt(double position) {
         double proportion = position / length;
         double east = Math2.interpolate(fromPoint.e(), toPoint.e(), proportion);
         double north = Math2.interpolate(fromPoint.n(), toPoint.n(), proportion);
@@ -60,10 +62,11 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
 
     /**
      * Returns the altitude, in meters, at the given position on the edge.
+     *
      * @param position : position along the edge
      * @return elevation at <code>position</code>
      */
-    public double elevationAt(double position){
+    public double elevationAt(double position) {
         return profile.applyAsDouble(position);
     }
 }

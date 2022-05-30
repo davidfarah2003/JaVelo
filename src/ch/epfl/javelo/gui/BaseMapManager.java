@@ -1,8 +1,6 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.Math2;
-
-
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -22,6 +20,10 @@ import java.io.IOException;
  * @author Wesley Nana Davies(344592)
  */
 public final class BaseMapManager {
+    private final static int SIZE_TILE = 256;
+    private static final int ZOOM_LEVEL_MIN = 8;
+    private static final int ZOOM_LEVEL_MAX = 19;
+    private static final int SCROLL_DELAY = 200;
     private final WayPointsManager wayPointsManager;
     private final TileManager tileManager;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
@@ -29,10 +31,6 @@ public final class BaseMapManager {
     private final Canvas canvas;
     private final Pane pane;
     private boolean redrawNeeded;
-    private final static int SIZE_TILE = 256;
-    private static final int ZOOM_LEVEL_MIN = 8;
-    private static final int ZOOM_LEVEL_MAX = 19;
-    private static final int SCROLL_DELAY = 200;
 
     /**
      * Constructor of the class

@@ -24,7 +24,7 @@ public final class SingleRoute implements Route {
 
     /**
      * @param edges :  given edges that form the route
-     * constructs the simple route composed of the given edges,
+     *              constructs the simple route composed of the given edges,
      * @throws IllegalArgumentException if the list of edges is empty
      */
     public SingleRoute(List<Edge> edges) {
@@ -129,7 +129,7 @@ public final class SingleRoute implements Route {
         if (result >= 0) {
             return points.get(result);
         } else {
-            int edgeIndex = -result -2;
+            int edgeIndex = -result - 2;
             double x = position - edgesLength[edgeIndex];
             return edges.get(edgeIndex).pointAt(x);
         }
@@ -149,10 +149,10 @@ public final class SingleRoute implements Route {
         if (result >= 0) {
             return result == 0 ?
                     edges.get(0).elevationAt(0)
-                  : edges.get(result - 1).elevationAt(edges.get(result - 1).length());
+                    : edges.get(result - 1).elevationAt(edges.get(result - 1).length());
 
         } else {
-            int edgeIndex = -result -2;
+            int edgeIndex = -result - 2;
             double x = position - edgesLength[edgeIndex];
             return edges.get(edgeIndex).elevationAt(x);
         }
@@ -170,15 +170,15 @@ public final class SingleRoute implements Route {
 
         if (result == edges.size()) {
             return edges.get(result - 1).toNodeId();
-        } else if (result >= 0){
+        } else if (result >= 0) {
             return edges.get(result).fromNodeId();
         } else {
-            int edgeIndex = -result -2;
+            int edgeIndex = -result - 2;
             double distStartOfEdge = position - edgesLength[edgeIndex];
             double distEndOfEdge = edgesLength[edgeIndex + 1] - position;
 
-            return (distStartOfEdge <= distEndOfEdge)? edges.get(edgeIndex).fromNodeId()
-                                                    : edges.get(edgeIndex).toNodeId();
+            return (distStartOfEdge <= distEndOfEdge) ? edges.get(edgeIndex).fromNodeId()
+                    : edges.get(edgeIndex).toNodeId();
         }
     }
 

@@ -22,8 +22,9 @@ import java.nio.file.Path;
 
 /**
  * JaVelo class
- *
+ * <p>
  * Main Class of the project, starts the whole program.
+ *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
  */
@@ -32,7 +33,9 @@ public final class JaVelo extends Application {
     private static final int MIN_WIDTH = 800;
     private static final int MIN_HEIGHT = 600;
 
-    public static void main(String[] args) { launch(args); }
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -67,8 +70,7 @@ public final class JaVelo extends Application {
                 Pane borderPane = elevationProfileManager.pane();
                 SplitPane.setResizableWithParent(borderPane, false);
                 splitPane.getItems().add(elevationProfileManager.pane());
-            }
-            else if (oldV != null && newV == null) {
+            } else if (oldV != null && newV == null) {
                 splitPane.getItems().remove(splitPane.getItems().size() - 1);
             }
         });
@@ -76,10 +78,10 @@ public final class JaVelo extends Application {
         StackPane stackPane = new StackPane(splitPane, errorManager.pane());
 
         MenuItem menuItem = new MenuItem("Exporter GPX");
-        menuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> rb.getRouteProperty().get()  == null,
+        menuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> rb.getRouteProperty().get() == null,
                 rb.getRouteProperty()));
 
-        menuItem.setOnAction(e ->{
+        menuItem.setOnAction(e -> {
             try {
                 GpxGenerator.writeGPX("javelo.gpx", rb.getRouteProperty().get(), elevationProfileP.get());
             } catch (IOException ex) {

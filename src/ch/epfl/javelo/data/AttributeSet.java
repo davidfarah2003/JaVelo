@@ -13,10 +13,9 @@ import java.util.StringJoiner;
 public record AttributeSet(long bits) {
 
     /**
-     * @throws IllegalArgumentException
-                if the AttributeSet is invalid (some bits should not be equal to 1)
+     * @throws IllegalArgumentException if the AttributeSet is invalid (some bits should not be equal to 1)
      */
-    public AttributeSet{
+    public AttributeSet {
         //check if any bit with index larger than the number of attributes is 1
         Preconditions.checkArgument(((Long.MAX_VALUE << Attribute.COUNT) & bits) == 0);
     }
@@ -24,13 +23,14 @@ public record AttributeSet(long bits) {
 
     /**
      * Another constructor of the class which creates an AttributeSet
-       with the collection of attributes given as parameters.
+     * with the collection of attributes given as parameters.
+     *
      * @param attributes : collection of attributes to be added to the attributeSet
      * @return an AttributeSet
      */
-    public static AttributeSet of(Attribute... attributes){
+    public static AttributeSet of(Attribute... attributes) {
         long bits = 0;
-        for (Attribute attribute : attributes){
+        for (Attribute attribute : attributes) {
             Preconditions.checkArgument(attribute.ordinal() < 64);
             bits |= (1L << attribute.ordinal());
         }
@@ -40,34 +40,37 @@ public record AttributeSet(long bits) {
 
     /**
      * Returns true if the AttributeSet contains the attribute given as a parameter.
+     *
      * @param attribute : attribute of interest
      * @return a boolean value <code>true</code> if the Attribute set contains a specific attribute or
      * <code>false</code> if not
      */
-    public boolean contains(Attribute attribute){
+    public boolean contains(Attribute attribute) {
         return (bits & (1L << attribute.ordinal())) != 0;
     }
 
 
     /**
      * Returns true if the two AttributeSets intersect or false otherwise.
+     *
      * @param that : another AttributeSet to be compared with <code>this</code>
      * @return <code>true</code> if the two Attribute sets have common elements and <code>false</code> otherwise
      */
-    public boolean intersects(AttributeSet that){
+    public boolean intersects(AttributeSet that) {
         return (this.bits & that.bits) != 0;
     }
 
 
     /**
      * Returns a String which is a textual representation of an AttributeSet.
+     *
      * @return a String.
      */
     @Override
-    public String toString(){
+    public String toString() {
         StringJoiner j = new StringJoiner(",", "{", "}");
-        for (Attribute attribute : Attribute.ALL){
-            if (contains(attribute)){
+        for (Attribute attribute : Attribute.ALL) {
+            if (contains(attribute)) {
                 j.add(attribute.toString());
             }
         }

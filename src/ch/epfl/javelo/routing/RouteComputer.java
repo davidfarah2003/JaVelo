@@ -26,7 +26,8 @@ public final class RouteComputer {
 
     /**
      * Constructor of the class which creates a RouteComputer with the given graph and cost function.
-     * @param graph : graph used for the route
+     *
+     * @param graph        : graph used for the route
      * @param costFunction : cost function of the route
      */
     public RouteComputer(Graph graph, CostFunction costFunction) {
@@ -42,15 +43,15 @@ public final class RouteComputer {
      * This method computes the shortest route between the nodes given as parameters
      *
      * @param startNodeId : ID of the initial node
-     * @param endNodeId : ID of the final node
+     * @param endNodeId   : ID of the final node
      * @return a route
      */
     public Route bestRouteBetween(int startNodeId, int endNodeId) {
         Preconditions.checkArgument(startNodeId != endNodeId);
 
         boolean value = true;
-        for (int i = 0; i < graph.nodeOutDegree(endNodeId); i++){
-            if(costFunction.costFactor(endNodeId, graph.nodeOutEdgeId(endNodeId, i)) != Double.POSITIVE_INFINITY) {
+        for (int i = 0; i < graph.nodeOutDegree(endNodeId); i++) {
+            if (costFunction.costFactor(endNodeId, graph.nodeOutEdgeId(endNodeId, i)) != Double.POSITIVE_INFINITY) {
                 value = false;
             }
         }
@@ -81,10 +82,11 @@ public final class RouteComputer {
 
     /**
      * Adds weighted nodes to the nodesToExplore list which are connected to the nodeChosen
-     *  (if the distance computed is smaller than the one stored in the array).
+     * (if the distance computed is smaller than the one stored in the array).
+     *
      * @param endNodeId : ID of the node at the end of the route
      */
-    private void addNodesToExplore(int endNodeId){
+    private void addNodesToExplore(int endNodeId) {
         int currentEdgeId;
         int edgeEndNodeId;
         float nodeDistanceToOrigin;
@@ -120,9 +122,10 @@ public final class RouteComputer {
     /**
      * Returns the weighted node which distance from the start node and end node is smallest
      * (ignores weighted nodes already explored)
+     *
      * @return the weighted node
      */
-    private WeightedNode chooseNode(){
+    private WeightedNode chooseNode() {
         WeightedNode nodeChosen;
         do {
             nodeChosen = nodesToExplore.remove();
@@ -134,17 +137,18 @@ public final class RouteComputer {
 
     /**
      * Returns the list of edges which compose the path/itinerary.
+     *
      * @param startNodeId : ID of the node at the start of the route
-     * @param endNodeId : ID of the node at the end of the route
+     * @param endNodeId   : ID of the node at the end of the route
      * @return a list
      */
-    private List<Edge> reconstructRoute(int startNodeId, int endNodeId){
+    private List<Edge> reconstructRoute(int startNodeId, int endNodeId) {
         LinkedList<Edge> edges = new LinkedList<>();
         int start;
         int end = endNodeId;
         int edgeId;
 
-        while((end != startNodeId)){
+        while ((end != startNodeId)) {
             start = predecessors[end];
 
             //iterate over edges going out of the node to find the corresponding edge
@@ -172,7 +176,7 @@ public final class RouteComputer {
         @Override
         public int compareTo(WeightedNode that) {
             return Float.compare(this.distance + this.distanceStraightLine,
-                                 that.distance + that.distanceStraightLine);
+                    that.distance + that.distanceStraightLine);
         }
     }
 }

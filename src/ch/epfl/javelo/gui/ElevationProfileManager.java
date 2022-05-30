@@ -14,7 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.transform.*;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
+import javafx.scene.transform.Transform;
 
 import static java.lang.Double.NaN;
 
@@ -26,22 +28,7 @@ import static java.lang.Double.NaN;
  * @author David Farah (341017)
  */
 public final class ElevationProfileManager {
-    private final ReadOnlyObjectProperty<ElevationProfile> elevationProfile;
-    private final DoubleProperty highlightedPosition;
-    private final ObjectProperty<Rectangle2D> rectangle;
-    private final ObjectProperty<Transform> screenToWorldP;
-    private final ObjectProperty<Transform> worldToScreenP;
-    private final DoubleProperty mousePositionOnProfileProperty;
-
-    private final BorderPane borderPane;
-    private final Pane centralPane = new Pane();
-    private final Polygon profileGraph = new Polygon();
-    private final Line highlightedPositionLine = new Line();
-    private final Path grid = new Path();
-    private final Group gridLabels = new Group();
     private static final Insets insets = new Insets(10, 10, 20, 40);
-    private VBox vBox;
-
     private static final int MIN_PIXELS_HORIZONTAL = 25;
     private static final int MIN_PIXELS_VERTICAL = 50;
     private static final int[] ELE_STEPS = new int[]{5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000};
@@ -50,6 +37,19 @@ public final class ElevationProfileManager {
     private static final Font FONT = Font.font("Avenir", 10);
     private static final int SHIFT_LABELS_POSITION = 2;
     private static final double PREF_WIDTH_RATIO = 1 / 2d;
+    private final ReadOnlyObjectProperty<ElevationProfile> elevationProfile;
+    private final DoubleProperty highlightedPosition;
+    private final ObjectProperty<Rectangle2D> rectangle;
+    private final ObjectProperty<Transform> screenToWorldP;
+    private final ObjectProperty<Transform> worldToScreenP;
+    private final DoubleProperty mousePositionOnProfileProperty;
+    private final BorderPane borderPane;
+    private final Pane centralPane = new Pane();
+    private final Polygon profileGraph = new Polygon();
+    private final Line highlightedPositionLine = new Line();
+    private final Path grid = new Path();
+    private final Group gridLabels = new Group();
+    private VBox vBox;
 
     /**
      * Constructor that initializes the GUI and creates bindings and listeners

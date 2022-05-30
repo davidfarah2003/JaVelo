@@ -3,9 +3,13 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.projection.PointCh;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.FileWriter;
@@ -16,7 +20,7 @@ import java.util.Iterator;
 
 /**
  * GpxGenerator class
- *
+ * <p>
  * This class offers methods which enable to create
  * a GPX document using an elevation profile and a route.
  *
@@ -25,12 +29,14 @@ import java.util.Iterator;
  */
 
 public class GpxGenerator {
-    private GpxGenerator() {}
+    private GpxGenerator() {
+    }
 
     /**
      * This method returns a GPX document of all information about an itinerary (profile, route)
+     *
      * @param profile : ElevationProfile of the itinerary
-     * @param route : Route of the itinerary
+     * @param route   : Route of the itinerary
      * @return a GPX document
      */
 
@@ -64,7 +70,7 @@ public class GpxGenerator {
         double distance = 0;
         Iterator<Edge> edgesIterator = route.edges().iterator();
 
-        for (PointCh currentPoint : route.points()){
+        for (PointCh currentPoint : route.points()) {
             Element rtept = doc.createElement("rtept");
             Element ele = doc.createElement("ele");
 
@@ -74,7 +80,7 @@ public class GpxGenerator {
             rte.appendChild(rtept);
             rtept.appendChild(ele);
 
-            if(edgesIterator.hasNext()){
+            if (edgesIterator.hasNext()) {
                 distance += edgesIterator.next().length();
             }
 
@@ -86,11 +92,12 @@ public class GpxGenerator {
 
     /**
      * This private method simply returns a new document
+     *
      * @return a document
      */
     private static Document newDocument() {
         try {
-            return  DocumentBuilderFactory
+            return DocumentBuilderFactory
                     .newDefaultInstance()
                     .newDocumentBuilder()
                     .newDocument();
@@ -101,21 +108,21 @@ public class GpxGenerator {
 
     /**
      * This method writes a GPX file with a given name using an elevation profile and a route.
-     * @param fileName : name of the file
-     * @param route : route of the itinerary
+     *
+     * @param fileName         : name of the file
+     * @param route            : route of the itinerary
      * @param elevationProfile : elevation profile of the route.
      * @throws IOException :  in the event of an input/output error
      */
     public static void writeGPX(String fileName, Route route, ElevationProfile elevationProfile) throws IOException {
         Document document = createGPX(elevationProfile, route);
-        try (Writer w = new FileWriter(fileName)){
-            Transformer transformer =  TransformerFactory
-                                        .newDefaultInstance()
-                                        .newTransformer();
+        try (Writer w = new FileWriter(fileName)) {
+            Transformer transformer = TransformerFactory
+                    .newDefaultInstance()
+                    .newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(new DOMSource(document), new StreamResult(w));
-        }
-        catch (TransformerException e) {
+        } catch (TransformerException e) {
             throw new Error(e);
         }
 

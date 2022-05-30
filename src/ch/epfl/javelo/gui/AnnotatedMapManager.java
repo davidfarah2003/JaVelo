@@ -17,38 +17,38 @@ import java.util.function.Consumer;
 import static java.lang.Double.NaN;
 
 /**
- *  Annotated Map Manager class
- *  Manages the global graphic interface
+ * Annotated Map Manager class
+ * Manages the global graphic interface
  *
- *  @author Wesley Nana Davies (344592)
- *  @author David Farah (341017)
+ * @author Wesley Nana Davies (344592)
+ * @author David Farah (341017)
  */
 public final class AnnotatedMapManager {
+    private final static int MAX_NUMBER_OF_PIXELS = 15;
+    private final static int INITIAL_ZOOM_LEVEL = 12;
+    private final static double INITIAL_X_UPPER_LEFT = 543_200;
+    private final static double INITIAL_Y_UPPER_LEFT = 370_650;
     private final StackPane stackPane;
     private final SimpleDoubleProperty mousePositionOnRouteProperty;
     private final ObjectProperty<Point2D> currentMousePosition;
     private final ObjectProperty<MapViewParameters> mapViewParametersP;
     private final RouteBean routeBean;
-    private final static int MAX_NUMBER_OF_PIXELS = 15;
-    private final static int INITIAL_ZOOM_LEVEL = 12;
-    private final static double INITIAL_X_UPPER_LEFT = 543_200;
-    private final static double INITIAL_Y_UPPER_LEFT = 370_650;
-    
 
 
     /**
      * Constructor
-     * @param graph : Graph used for the entire map (loaded from ch_west or lausanne)
+     *
+     * @param graph       : Graph used for the entire map (loaded from ch_west or lausanne)
      * @param tileManager : TileManager which manages
-     *                      the access to the tiles (located in osm-cache or loaded from server)
-     * @param routeBean : RouteBean which contains information about the route
-     *                      (waypoints, highlighted position, elevation profile, etc...)
-     * @param consumer : Consumer need for WayPointsManager to display errors to the screen.
+     *                    the access to the tiles (located in osm-cache or loaded from server)
+     * @param routeBean   : RouteBean which contains information about the route
+     *                    (waypoints, highlighted position, elevation profile, etc...)
+     * @param consumer    : Consumer need for WayPointsManager to display errors to the screen.
      */
-    public AnnotatedMapManager(Graph graph, TileManager tileManager, RouteBean routeBean, Consumer<String> consumer){
+    public AnnotatedMapManager(Graph graph, TileManager tileManager, RouteBean routeBean, Consumer<String> consumer) {
 
         this.routeBean = routeBean;
-        
+
         // initial settings for the map
         mapViewParametersP = new SimpleObjectProperty<>(
                 new MapViewParameters(INITIAL_ZOOM_LEVEL, INITIAL_X_UPPER_LEFT, INITIAL_Y_UPPER_LEFT));
@@ -92,18 +92,20 @@ public final class AnnotatedMapManager {
 
     /**
      * Returns the pane of the annotated map (stacking baseMap pane, wayPoints pane and routeManager pane)
+     *
      * @return stackPane (Pane)
      */
-    public Pane pane(){
+    public Pane pane() {
         return stackPane;
     }
 
 
     /**
      * Getter for the mousePositionOnProfileProperty, containing the position along the route of the mouse
+     *
      * @return mousePositionOnRouteProperty (ReadOnlyDoubleProperty)
      */
-    public ReadOnlyDoubleProperty mousePositionOnRouteProperty(){
+    public ReadOnlyDoubleProperty mousePositionOnRouteProperty() {
         return mousePositionOnRouteProperty;
     }
 
@@ -116,7 +118,7 @@ public final class AnnotatedMapManager {
 
         MapViewParameters mapViewParameters = mapViewParametersP.get();
         PointWebMercator pointUnderMouse = mapViewParameters.pointAt(currentMousePosition.get().getX(),
-                                                                     currentMousePosition.get().getY());
+                currentMousePosition.get().getY());
 
         if (pointUnderMouse.toPointCh() != null) {
             RoutePoint rp = routeBean.getRouteProperty().get()

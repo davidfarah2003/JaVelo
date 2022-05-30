@@ -1,4 +1,5 @@
 package ch.epfl.javelo.gui;
+
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
@@ -8,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -19,12 +21,12 @@ import java.util.function.Consumer;
  * @author David Farah (341017)
  */
 public final class WayPointsManager {
+    private static final double SEARCH_DISTANCE = 1000;
     private final Graph graph;
     private final ObservableList<Waypoint> wayPoints;
     private final ObjectProperty<MapViewParameters> mapViewParameters;
     private final Consumer<String> signalError;
     private final gui gui;
-    private static final double SEARCH_DISTANCE = 1000;
     private final String PROXIMITY_ERROR_MSG = "Aucune route à proximité !";
 
 
@@ -51,12 +53,12 @@ public final class WayPointsManager {
      *
      * @param x coordinate of a point to add (WebMercator)
      * @param y coordinate of a point to add (WebMercator)
-    */
+     */
     public void addWaypoint(double x, double y) {
         int closestNodeId = getClosestNodeId(x, y);
 
         if (closestNodeId < 0) {
-           signalError.accept(PROXIMITY_ERROR_MSG);
+            signalError.accept(PROXIMITY_ERROR_MSG);
             return;
         }
 
@@ -102,6 +104,7 @@ public final class WayPointsManager {
 
     /**
      * This method removes a Waypoint from the map
+     *
      * @param waypoint : waypoint to be removed
      */
     private void removeWaypoint(Waypoint waypoint) {
@@ -111,6 +114,7 @@ public final class WayPointsManager {
 
     /**
      * Returns the pane displaying the pins
+     *
      * @return the pane
      */
     public Pane pane() {
@@ -189,6 +193,7 @@ public final class WayPointsManager {
 
         /**
          * Create the Group that represents a pin on the map
+         *
          * @return the pin Group created
          */
         private Group createPinGroup() {
@@ -210,27 +215,28 @@ public final class WayPointsManager {
 
         /**
          * This method adds event listeners to a Waypoint
+         *
          * @param pin : Group representing the Waypoint
          */
         private void addPinListeners(Group pin) {
             pin.setOnMouseClicked(mouseEvent -> {
-                        if (mouseEvent.isStillSincePress()) removeWaypoint(pinWaypointMap.get(pin));
-                    });
+                if (mouseEvent.isStillSincePress()) removeWaypoint(pinWaypointMap.get(pin));
+            });
 
             pin.setOnMousePressed(mouseEvent -> {
-                        coordinatesBeforeDrag.setX(mouseEvent.getX());
-                        coordinatesBeforeDrag.setY(mouseEvent.getY());
-                    });
+                coordinatesBeforeDrag.setX(mouseEvent.getX());
+                coordinatesBeforeDrag.setY(mouseEvent.getY());
+            });
 
             pin.setOnMouseDragged(mouseEvent -> {
                 pin.setLayoutX(pin.getLayoutX() + (mouseEvent.getX() - coordinatesBeforeDrag.getX()));
                 pin.setLayoutY(pin.getLayoutY() + (mouseEvent.getY() - coordinatesBeforeDrag.getY()));
                 pin.setOnMouseReleased(mouseEvent1 -> {
-                            if(!replaceWaypoint(mapViewParameters.get().xUpperLeftMapView() + pin.getLayoutX(),
-                                                mapViewParameters.get().yUpperLeftMapView() + pin.getLayoutY(),
-                                                   pinWaypointMap.get(pin))) {
-                                redrawWaypoints();
-                            }
+                    if (!replaceWaypoint(mapViewParameters.get().xUpperLeftMapView() + pin.getLayoutX(),
+                            mapViewParameters.get().yUpperLeftMapView() + pin.getLayoutY(),
+                            pinWaypointMap.get(pin))) {
+                        redrawWaypoints();
+                    }
                 });
             });
         }

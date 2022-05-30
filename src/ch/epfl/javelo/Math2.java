@@ -3,12 +3,11 @@ package ch.epfl.javelo;
 
 /**
  * Math2
- *   This class offers mathematical tools
- *   which are used in different classes
+ * This class offers mathematical tools
+ * which are used in different classes
  *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
-
  */
 
 public final class Math2 {
@@ -19,8 +18,8 @@ public final class Math2 {
     /**
      * @param x : integer to be divided
      * @param y : integer to be divided by
-     * @throws IllegalArgumentException
      * @return the integer part by excess of the division of x by y
+     * @throws IllegalArgumentException if x < 0 or y <= 0
      */
     public static int ceilDiv(int x, int y) {
         Preconditions.checkArgument(x >= 0 && y > 0);
@@ -31,7 +30,6 @@ public final class Math2 {
      * @param y0 : y-coordinate of the first point belonging to the line
      * @param y1 : y-coordinate of the second point belonging to the line
      * @param x  : x-coordinate of the point of interest
-     * @throws IllegalArgumentException
      * @return the y-coordinate of the point of interest that belongs to the line
      * passing through the points (0,y0) and (1,y1)
      */
@@ -45,8 +43,8 @@ public final class Math2 {
      * @param min : lower bound
      * @param v   : value of interest
      * @param max : upper bound
-     * @throws IllegalArgumentException
      * @return the value of v restricted to the interval [min, max]
+     * @throws IllegalArgumentException if min > max
      */
     public static int clamp(int min, int v, int max) {
         Preconditions.checkArgument(min <= max);
@@ -59,8 +57,8 @@ public final class Math2 {
      * @param min : lower bound
      * @param v   : value of interest
      * @param max : upper bound
-     * @throws IllegalArgumentException
      * @return the value of v restricted to the interval [min, max]
+     * @throws IllegalArgumentException if min > max
      */
     public static double clamp(double min, double v, double max) {
         Preconditions.checkArgument(min <= max);

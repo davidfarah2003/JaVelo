@@ -9,12 +9,12 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
 
 /**
- *  RouteManager class
- *  This class manages the display of the route and of its highlighted position
- *  (polyline and circle) about a route
+ * RouteManager class
+ * This class manages the display of the route and of its highlighted position
+ * (polyline and circle) about a route
  *
- *  @author Wesley Nana Davies (344592)
- *  @author David Farah (341017)
+ * @author Wesley Nana Davies (344592)
+ * @author David Farah (341017)
  */
 public final class RouteManager {
     private final RouteBean routeBean;
@@ -25,7 +25,8 @@ public final class RouteManager {
 
     /**
      * Constructor
-     * @param routeBean : routeBean which contains information about the route
+     *
+     * @param routeBean          : routeBean which contains information about the route
      * @param mapViewParametersP : a mapViewParameters property
      */
     public RouteManager(RouteBean routeBean, ObjectProperty<MapViewParameters> mapViewParametersP) {
@@ -71,21 +72,20 @@ public final class RouteManager {
             int id = routeBean.getRouteProperty().get().nodeClosestTo(routeBean.highlightedPosition());
             Waypoint w = new Waypoint(pointRelatedToPaneCh, id);
             routeBean.getWaypoints().add(routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1,
-                                        w);
+                    w);
         });
 
         routeBean.getHighlightedPositionP().addListener(e -> {
-            if (!Double.isNaN(routeBean.highlightedPosition())){
+            if (!Double.isNaN(routeBean.highlightedPosition())) {
                 circle.setVisible(true);
                 repositionCircle();
-            }
-            else{
+            } else {
                 circle.setVisible(false);
             }
 
         });
 
-        
+
     }
 
     private void reconstructPolyline() {
@@ -107,18 +107,15 @@ public final class RouteManager {
             if (!Double.isNaN(routeBean.highlightedPosition())) {
                 repositionCircle();
             }
-        }
-
-        else{
+        } else {
             circle.setVisible(false);
             polyline.setVisible(false);
         }
 
 
-
     }
 
-    private void repositionCircle(){
+    private void repositionCircle() {
         PointWebMercator highlightedPoint = PointWebMercator.
                 ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
         circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
@@ -142,6 +139,7 @@ public final class RouteManager {
 
     /**
      * This method returns the pane of the route manager
+     *
      * @return a Pane
      */
     public Pane pane() {

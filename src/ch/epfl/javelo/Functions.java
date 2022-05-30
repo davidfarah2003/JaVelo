@@ -10,10 +10,12 @@ import java.util.function.DoubleUnaryOperator;
  * @author Wesley Nana Davies(344592)
  */
 public final class Functions {
-    private Functions() {}
+    private Functions() {
+    }
 
     /**
      * Returns a constant function
+     *
      * @param y : constant which is the output of the function to be returned
      * @return a constant function
      */
@@ -25,22 +27,23 @@ public final class Functions {
     /**
      * Returns a function obtained by linear interpolation between samples,
      * regularly spaced and covering the range from 0 to xMax
+     *
      * @param samples : array of samples to make the function out of it
-     * @param xMax : end of the range
-     * @throws IllegalArgumentException if the size of the samples array is not
-     * greater or equal to 2 or if xMax is negative
+     * @param xMax    : end of the range
      * @return the function
+     * @throws IllegalArgumentException if the size of the samples array is not
+     *                                  greater or equal to 2 or if xMax is negative
      */
-    public static DoubleUnaryOperator sampled(float[] samples, double xMax){
+    public static DoubleUnaryOperator sampled(float[] samples, double xMax) {
         Preconditions.checkArgument(samples.length >= 2 && xMax > 0);
         return new Sampled(samples, xMax);
     }
 
-    private static final class Sampled implements DoubleUnaryOperator{
+    private static final class Sampled implements DoubleUnaryOperator {
         private final float[] samples;
         private final double xMax;
 
-        public Sampled(float[] samples, double xMax){
+        public Sampled(float[] samples, double xMax) {
             this.samples = samples;
             this.xMax = xMax;
         }

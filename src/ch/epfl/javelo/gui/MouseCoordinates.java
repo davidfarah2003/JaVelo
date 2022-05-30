@@ -12,6 +12,7 @@ public class MouseCoordinates {
 
     /**
      * Constructor
+     *
      * @param x current x coordinate
      * @param y current y coordinate
      */
@@ -21,23 +22,8 @@ public class MouseCoordinates {
     }
 
     /**
-     * Set the value of x
-     * @param x current x coordinate
-     */
-    public void setX(double x){
-        this.x = x;
-    }
-
-    /**
-     * Set the value of y
-     * @param y current y coordinate
-     */
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    /**
      * Getter for x
+     *
      * @return x
      */
     public double getX() {
@@ -45,10 +31,29 @@ public class MouseCoordinates {
     }
 
     /**
+     * Set the value of x
+     *
+     * @param x current x coordinate
+     */
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    /**
      * Getter for y
+     *
      * @return y
      */
     public double getY() {
         return y;
+    }
+
+    /**
+     * Set the value of y
+     *
+     * @param y current y coordinate
+     */
+    public void setY(double y) {
+        this.y = y;
     }
 }
