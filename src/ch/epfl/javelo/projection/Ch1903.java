@@ -54,7 +54,6 @@ public final class Ch1903 {
                 + 76.63 * pow(phi1, 2)
                 - 194.56 * pow(lambda1, 2) * phi1
                 + 119.79 * pow(phi1, 3);
-
     }
 
     /**
