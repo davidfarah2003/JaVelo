@@ -8,13 +8,13 @@ import ch.epfl.javelo.projection.PointCh;
  * @author Wesley Nana Davies (344592)
  * @author David Farah (341017)
  *
- * @param point : PointCh which represents a waypoint
+ * @param point : PointCh which represents a Waypoint
  * @param nodeID : nodeID associated to a specific Waypoint
  */
 public record Waypoint(PointCh point, int nodeID) {
 
     /**
-     * Compare two waypoints by their corresponding node id
+     * Compare two Waypoints by their corresponding node id
      * @param o : other Waypoint to be compared with <code>this</code>
      * @return true iff the 2 waypoints have the same node ID
      */
@@ -27,8 +27,8 @@ public record Waypoint(PointCh point, int nodeID) {
     }
 
     /**
-     * This method makes the hash code of a waypoint its node id
-     * @return Node ID of the WayPoint
+     * This method makes the hash code of a Waypoint its node id
+     * @return Node ID of the Waypoint
      */
     @Override
     public int hashCode() {

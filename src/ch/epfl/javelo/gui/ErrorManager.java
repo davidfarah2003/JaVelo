@@ -49,7 +49,7 @@ public final class ErrorManager {
      */
     public void displayError(String s){
 
-        // stops the current animation if one is taking place
+        // stops the current animation if one is currently taking place
         sequentialTransition.stop();
         vBox.getChildren().clear();
 
