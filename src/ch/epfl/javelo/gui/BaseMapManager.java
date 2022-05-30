@@ -67,6 +67,7 @@ public final class BaseMapManager {
 
         pane.setOnMouseClicked(event -> {
             if (event.isStillSincePress()) {
+
                 this.wayPointsManager.addWaypoint(
                         mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
                         mapViewParametersP.get().yUpperLeftMapView() + event.getY()

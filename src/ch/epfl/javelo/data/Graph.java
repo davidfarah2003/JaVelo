@@ -138,7 +138,13 @@ public final class Graph {
      * @param searchDistance : distance (radius) of the search
      * @return the identity of the node closest to the given point
      */
+
     public int nodeClosestTo(PointCh point, double searchDistance) {
+
+        if (point == null){
+            return -1;
+        }
+
         double closestDistance = Math.pow(searchDistance, 2);
         int closestNodeIdentity = -1;
         double distanceToSquared;
