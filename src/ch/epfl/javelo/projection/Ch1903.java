@@ -10,6 +10,7 @@ import static java.lang.Math.*;
  * @author David Farah (341017)
  */
 public final class Ch1903 {
+
     private Ch1903() {
     }
 

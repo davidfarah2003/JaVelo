@@ -62,20 +62,16 @@ public final class BaseMapManager {
      * Adds listeners to the pane
      */
     private void addPaneListeners() {
-
         // stores the coordinates of the mouse when pressed
         pane.setOnMousePressed(e -> coordinatesMouseWhenPressed.setValue(new Point2D(e.getX(), e.getY())));
 
-
         pane.setOnMouseClicked(event -> {
-            // when the user clicks on the pane and the mouse is still
             if (event.isStillSincePress()) {
                 this.wayPointsManager.addWaypoint(
                         mapViewParametersP.get().xUpperLeftMapView() + event.getX(),
                         mapViewParametersP.get().yUpperLeftMapView() + event.getY()
                 );
             }
-
         });
 
         // redraw the canvas when the dimensions of the pane have changed
@@ -97,8 +93,6 @@ public final class BaseMapManager {
             assert oldS == null;
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
-
-
     }
 
 

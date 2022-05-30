@@ -17,7 +17,6 @@ public record PointWebMercator(double x, double y) {
     /**
      * @throws IllegalArgumentException if the point coordinates are not contained in [0,1]
      */
-
     public PointWebMercator {
         Preconditions.checkArgument(x >= 0 && x <= 1 && y >= 0 && y <= 1);
     }
