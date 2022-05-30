@@ -88,8 +88,9 @@ public final class JaVelo extends Application {
                 ex.printStackTrace();
             }
         });
+
         MenuBar menuBar = new MenuBar(new Menu("Fichier", new Pane(), menuItem));
-        menuBar.setUseSystemMenuBar(true);
+
 
         //------Global Pane (root)--------
         BorderPane mainBorderPane = new BorderPane();
