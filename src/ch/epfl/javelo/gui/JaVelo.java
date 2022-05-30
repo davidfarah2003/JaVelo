@@ -22,7 +22,6 @@ import java.nio.file.Path;
 
 /**
  * JaVelo class
- * <p>
  * Main Class of the project, starts the whole program.
  *
  * @author Wesley Nana Davies(344592)
