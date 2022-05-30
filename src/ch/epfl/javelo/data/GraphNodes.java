@@ -9,7 +9,8 @@ import java.nio.IntBuffer;
 /**
  * GraphNodes record
  * @param buffer : containing all the information about the nodes
- * (coordinates, number of edges going out, ID of a certain edge)
+ *               (coordinates, number of edges going out, ID of a certain edge)
+ *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
  */

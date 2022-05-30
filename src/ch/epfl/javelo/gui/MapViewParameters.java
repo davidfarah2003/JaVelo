@@ -3,21 +3,16 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.geometry.Point2D;
 
-/**
- * MapViewParameters class
- * This class manages the settings of the basemap in the GUI
- *
- * @author Wesley Nana Davies (344592)
- * @author David Farah (341017)
- */
 
 /**
- * MapViewParameters record
+ * MapViewParameters record that manages the settings of the basemap in the GUI
  *
  * @param zoomLevel of the map
  * @param xUpperLeftMapView X coordinate of the top-left corner of the map portion displayed on the screen
  * @param yUpperLeftMapView Y coordinate of the top-left corner of the map portion displayed on the screen
  *
+ * @author Wesley Nana Davies (344592)
+ * @author David Farah (341017)
  */
 public record MapViewParameters(int zoomLevel, double xUpperLeftMapView, double yUpperLeftMapView) {
 

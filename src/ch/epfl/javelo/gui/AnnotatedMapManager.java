@@ -4,21 +4,25 @@ import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointWebMercator;
 import ch.epfl.javelo.routing.RoutePoint;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+
 import java.util.function.Consumer;
+
 import static java.lang.Double.NaN;
 
 /**
  *  Annotated Map Manager class
  *  Manages the global graphic interface
  *
- *   @author Wesley Nana Davies (344592)
- *   @author David Farah (341017)
+ *  @author Wesley Nana Davies (344592)
+ *  @author David Farah (341017)
  */
-
 public final class AnnotatedMapManager {
     private final StackPane stackPane;
     private final SimpleDoubleProperty mousePositionOnRouteProperty;

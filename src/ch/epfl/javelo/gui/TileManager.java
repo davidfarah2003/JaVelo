@@ -143,5 +143,4 @@ public final class TileManager {
              return new URL("https", hostName, getFileNameURL());
          }
     }
-
 }

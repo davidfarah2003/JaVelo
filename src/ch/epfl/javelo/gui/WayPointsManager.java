@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 /**
  * WayPointsManager class
- * Manages the interaction between the user and the waypoints
+ * Manages the interactions with the waypoints
  *
  * @author David Farah (341017)
  */
@@ -26,7 +26,6 @@ public final class WayPointsManager {
     private final gui gui;
     private static final double SEARCH_DISTANCE = 1000;
     private final String PROXIMITY_ERROR_MSG = "Aucune route à proximité !";
-
 
 
     /**

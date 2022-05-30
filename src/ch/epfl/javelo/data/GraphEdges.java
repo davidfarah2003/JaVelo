@@ -13,17 +13,17 @@ import java.util.List;
 
 
 /**
- *  GraphEdges record
+ * GraphEdges record
  * @param edgesBuffer : ByteBuffer containing information about all edges
  *                      (direction, identity of the destination node, length, elevation, attributes)
  * @param profileIds : IntBuffer which contains for each edge,
  *                     the type of the profile and the index of the first sample
  * @param elevations : ShortBuffer containing all the samples of the profiles,
  *                     compressed or not.
- *   @author Wesley Nana Davies (344592)
- *   @author David Farah (341017)
+ *
+ * @author Wesley Nana Davies (344592)
+ * @author David Farah (341017)
  */
-
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
     private static final int OFFSET_EDGE_DIRECTION_AND_ID = 0;
     private static final int OFFSET_LENGTH = OFFSET_EDGE_DIRECTION_AND_ID + 4;
@@ -50,8 +50,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         int edgeIndex = NUMBER_OF_INTS_PER_EDGE * edgeId + OFFSET_EDGE_DIRECTION_AND_ID;
         int edgeInt = edgesBuffer.getInt(edgeIndex);
         return (edgeInt >= 0) ? edgeInt: ~edgeInt ;
-
-
     }
 
     /**

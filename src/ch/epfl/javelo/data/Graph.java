@@ -16,7 +16,7 @@ import java.util.function.DoubleUnaryOperator;
 
 
 /**
- * A Graph
+ * The Graph of a route containing the nodes, edges, profile and attributes
  *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)

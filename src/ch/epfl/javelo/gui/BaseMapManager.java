@@ -1,4 +1,5 @@
 package ch.epfl.javelo.gui;
+
 import ch.epfl.javelo.Math2;
 
 
@@ -10,8 +11,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
-import java.io.IOException;
 
+import java.io.IOException;
 
 
 /**
@@ -35,8 +36,9 @@ public final class BaseMapManager {
 
     /**
      * Constructor of the class
-     * @param tileManager : a tileManager
-     * @param wayPointsManager : a wayPointsManager
+     *
+     * @param tileManager        : a tileManager
+     * @param wayPointsManager   : a wayPointsManager
      * @param mapViewParametersP : a MapViewParameters property
      */
     public BaseMapManager(TileManager tileManager, WayPointsManager wayPointsManager,
@@ -57,10 +59,11 @@ public final class BaseMapManager {
         redrawOnNextPulse();
     }
 
+
     /**
      * Adds listeners to the pane
      */
-    private void addPaneListeners(){
+    private void addPaneListeners() {
 
         // stores the coordinates of the mouse when pressed
         pane.setOnMousePressed(e -> coordinatesMouseWhenPressed.setValue(new Point2D(e.getX(), e.getY())));
@@ -85,7 +88,7 @@ public final class BaseMapManager {
     /**
      * This method adds the properties to the canvas
      */
-    private void addCanvasProperties(){
+    private void addCanvasProperties() {
 
         // bind canvas dimensions to pane dimensions
         canvas.widthProperty().bind(pane.widthProperty());
@@ -136,15 +139,14 @@ public final class BaseMapManager {
     /**
      * This method adds a drag listener to the map to manage its displacement
      */
-    private void addDragListener(){
+    private void addDragListener() {
         pane.setOnMouseDragged(event -> {
-                Point2D point = mapViewParametersP.get().topLeft();
-                point = point.add(coordinatesMouseWhenPressed.get()).subtract(event.getX(), event.getY());
-                mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
-                coordinatesMouseWhenPressed.setValue(new Point2D(event.getX(), event.getY()));
+            Point2D point = mapViewParametersP.get().topLeft();
+            point = point.add(coordinatesMouseWhenPressed.get()).subtract(event.getX(), event.getY());
+            mapViewParametersP.setValue(mapViewParametersP.get().withMinXY(point.getX(), point.getY()));
+            coordinatesMouseWhenPressed.setValue(new Point2D(event.getX(), event.getY()));
         });
     }
-
 
 
     /**
@@ -168,8 +170,8 @@ public final class BaseMapManager {
                 for (int j = 0; j <= yMax; j++) {
                     try {
                         gc.drawImage(tileManager.getTileImage(new TileManager.TileId(mapViewParameters.zoomLevel(),
-                                                i + tileX,
-                                                j + tileY)),
+                                        i + tileX,
+                                        j + tileY)),
                                 (i + tileX) * SIZE_TILE - mapViewParameters.xUpperLeftMapView(),
                                 (j + tileY) * SIZE_TILE - mapViewParameters.yUpperLeftMapView());
                     } catch (IOException e) {
@@ -192,6 +194,7 @@ public final class BaseMapManager {
 
     /**
      * This method simply returns the pane of BaseMap
+     *
      * @return the JavaFX panel displaying the basemap.
      */
     public Pane pane() {

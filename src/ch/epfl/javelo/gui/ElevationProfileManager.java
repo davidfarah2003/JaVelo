@@ -1,7 +1,6 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.routing.ElevationProfile;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
@@ -17,12 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import static java.lang.Double.NaN;
-
 
 /**
  * ElevationProfileManager class
@@ -31,7 +25,7 @@ import static java.lang.Double.NaN;
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
  */
-public final class ElevationProfileManager{
+public final class ElevationProfileManager {
     private final ReadOnlyObjectProperty<ElevationProfile> elevationProfile;
     private final DoubleProperty highlightedPosition;
     private final ObjectProperty<Rectangle2D> rectangle;
@@ -50,22 +44,21 @@ public final class ElevationProfileManager{
 
     private static final int MIN_PIXELS_HORIZONTAL = 25;
     private static final int MIN_PIXELS_VERTICAL = 50;
-    private static final int[] ELE_STEPS = new int[]{ 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
-    private static final int[] POS_STEPS = new int[]{ 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
+    private static final int[] ELE_STEPS = new int[]{5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000};
+    private static final int[] POS_STEPS = new int[]{1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000};
     private static final int KM_TO_METERS_FACTOR = 1000;
     private static final Font FONT = Font.font("Avenir", 10);
     private static final int SHIFT_LABELS_POSITION = 2;
-    private static final double PREF_WIDTH_RATIO = 1/2d;
+    private static final double PREF_WIDTH_RATIO = 1 / 2d;
 
     /**
      * Constructor that initializes the GUI and creates bindings and listeners
-     * @param elevationProfileRO Elevation profile of the Route (Read Only Property)
+     *
+     * @param elevationProfileRO  Elevation profile of the Route (Read Only Property)
      * @param highlightedPosition Currently highlighted position
      */
     public ElevationProfileManager(ReadOnlyObjectProperty<ElevationProfile> elevationProfileRO,
-                                   ReadOnlyDoubleProperty highlightedPosition){
-
-
+                                   ReadOnlyDoubleProperty highlightedPosition) {
         this.elevationProfile = elevationProfileRO;
         this.highlightedPosition = (DoubleProperty) highlightedPosition;
         this.rectangle = new SimpleObjectProperty<>();
@@ -83,24 +76,23 @@ public final class ElevationProfileManager{
      * This method binds the rectangle containing the elevation graph to a new rectangle each time
      * the dimensions of the pane change.
      */
-    private void addBindings(){
-        rectangle.bind(Bindings.createObjectBinding( () -> {
-                        double xValue = Math.max(0, centralPane.getWidth() - (insets.getLeft() + insets.getRight()));
-                            double yValue = Math.max(0, centralPane.getHeight() - (insets.getTop() + insets.getBottom()));
-                            return new Rectangle2D(insets.getLeft(), insets.getTop(), xValue, yValue);
-                            }, centralPane.widthProperty(), centralPane.heightProperty()));
+    private void addBindings() {
+        rectangle.bind(Bindings.createObjectBinding(() -> {
+            double xValue = Math.max(0, centralPane.getWidth() - (insets.getLeft() + insets.getRight()));
+            double yValue = Math.max(0, centralPane.getHeight() - (insets.getTop() + insets.getBottom()));
+            return new Rectangle2D(insets.getLeft(), insets.getTop(), xValue, yValue);
+        }, centralPane.widthProperty(), centralPane.heightProperty()));
     }
 
     /**
      * This method adds listeners to the pane, the rectangle, and the elevation profile.
      */
-    private void addListeners(){
-
+    private void addListeners() {
         centralPane.setOnMouseMoved(e -> {
-                if (rectangle.get().contains(e.getX(), e.getY()))
-                    mousePositionOnProfileProperty.setValue(screenToWorldP.get().transform(e.getX(),0).getX());
-                else
-                    mousePositionOnProfileProperty.set(NaN);
+            if (rectangle.get().contains(e.getX(), e.getY()))
+                mousePositionOnProfileProperty.setValue(screenToWorldP.get().transform(e.getX(), 0).getX());
+            else
+                mousePositionOnProfileProperty.set(NaN);
         });
 
         centralPane.setOnMouseExited(e -> mousePositionOnProfileProperty.setValue(NaN));
@@ -112,7 +104,7 @@ public final class ElevationProfileManager{
                 drawGridAndLabels();
                 highlightedPositionLine.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                                 worldToScreenP.get().transform(this.highlightedPosition.get(), 0).getX(),
-                                                                this.highlightedPosition, worldToScreenP));
+                        this.highlightedPosition, worldToScreenP));
                 highlightedPositionLine.startYProperty().bind(Bindings.select(rectangle, "minY"));
                 highlightedPositionLine.endYProperty().bind(Bindings.select(rectangle, "maxY"));
                 highlightedPositionLine.visibleProperty().bind(highlightedPosition.greaterThanOrEqualTo(0));
@@ -121,7 +113,7 @@ public final class ElevationProfileManager{
             }
         });
 
-        elevationProfile.addListener(e ->{
+        elevationProfile.addListener(e -> {
             if (elevationProfile.get() != null) {
                 try {
                     generateNewAffineFunctions();
@@ -138,6 +130,7 @@ public final class ElevationProfileManager{
 
     /**
      * This method returns the border pane of the elevationProfileManager
+     *
      * @return the border pane
      */
     public Pane pane() {
@@ -146,6 +139,7 @@ public final class ElevationProfileManager{
 
     /**
      * Returns a read-only property containing the position of the mouse pointer along the profile
+     *
      * @return the position (in meters, rounded to the nearest integer),
      * or NaN if the mouse pointer is not above the profile
      */
@@ -158,12 +152,13 @@ public final class ElevationProfileManager{
 
     /**
      * This method creates the GUI structure that will display the elevation profile
+     *
      * @return the BorderPane that is on the root of the structure
      */
-    private BorderPane createGui(){
+    private BorderPane createGui() {
         BorderPane borderPane = new BorderPane();
         borderPane.getStylesheets().add("elevation_profile.css");
-        vBox =  new VBox();
+        vBox = new VBox();
         vBox.setId("profile_data");
         borderPane.setCenter(initializeInternalPane());
         borderPane.setBottom(vBox);
@@ -173,26 +168,25 @@ public final class ElevationProfileManager{
     /**
      * This method creates the profile data box that will be displayed in the lower part of the graphical interface.
      */
-    private void createProfileDataBox(){
+    private void createProfileDataBox() {
 
-            vBox.getChildren().clear();
-            Text text = new Text();
-            String s = "Longueur : %.1f km".formatted(elevationProfile.get().length() / KM_TO_METERS_FACTOR) +
-                    "     Montée : %.0f m".formatted(elevationProfile.get().totalAscent()) +
-                    "     Descente : %.0f m".formatted(elevationProfile.get().totalDescent()) +
-                    "     Altitude : de %.0f m à %.0f m".formatted(elevationProfile.get().minElevation(),
-                            elevationProfile.get().maxElevation());
-            text.setText(s);
-            vBox.getChildren().add(text);
-
-
+        vBox.getChildren().clear();
+        Text text = new Text();
+        String s = "Longueur : %.1f km".formatted(elevationProfile.get().length() / KM_TO_METERS_FACTOR) +
+                "     Montée : %.0f m".formatted(elevationProfile.get().totalAscent()) +
+                "     Descente : %.0f m".formatted(elevationProfile.get().totalDescent()) +
+                "     Altitude : de %.0f m à %.0f m".formatted(elevationProfile.get().minElevation(),
+                        elevationProfile.get().maxElevation());
+        text.setText(s);
+        vBox.getChildren().add(text);
     }
 
     /**
      * This method initializes the internal pane that will contain the grid and the graph
+     *
      * @return the pane
      */
-    private Pane initializeInternalPane(){
+    private Pane initializeInternalPane() {
         grid.setId("grid");
         profileGraph.setId("profile");
         centralPane.getChildren().addAll(grid, profileGraph, gridLabels, highlightedPositionLine);
@@ -203,32 +197,27 @@ public final class ElevationProfileManager{
      * This method redraws the profile (polygon)
      */
     private void redrawProfile() {
-
         profileGraph.getPoints().clear();
-
         ObservableList<Double> profileGraphPoints = profileGraph.getPoints();
-
         profileGraphPoints.addAll(insets.getLeft(), insets.getTop() + rectangle.get().getHeight());
-
         Transform screenToWorld = screenToWorldP.get();
         Transform worldToScreen = worldToScreenP.get();
 
-            for (double x = insets.getLeft(); x <= insets.getLeft() + rectangle.get().getWidth(); x++) {
-                double xValue = screenToWorld.transform(x, 0).getX();
-                double elevation = elevationProfile.get().elevationAt(xValue);
-                double yValue = worldToScreen.transform(0, elevation).getY();
-                profileGraphPoints.addAll(x, yValue);
-            }
+        for (double x = insets.getLeft(); x <= insets.getLeft() + rectangle.get().getWidth(); x++) {
+            double xValue = screenToWorld.transform(x, 0).getX();
+            double elevation = elevationProfile.get().elevationAt(xValue);
+            double yValue = worldToScreen.transform(0, elevation).getY();
+            profileGraphPoints.addAll(x, yValue);
+        }
 
-            profileGraphPoints.addAll(insets.getLeft() + rectangle.get().getWidth(),
-                                                insets.getTop() + rectangle.get().getHeight());
+        profileGraphPoints.addAll(insets.getLeft() + rectangle.get().getWidth(),
+                insets.getTop() + rectangle.get().getHeight());
     }
 
     /**
      * This method draws the grid and its labels
      */
-    private void drawGridAndLabels(){
-
+    private void drawGridAndLabels() {
         grid.getElements().clear();
         gridLabels.getChildren().clear();
 
@@ -240,7 +229,7 @@ public final class ElevationProfileManager{
         int heightDisplayed = (int) (spaceBetweenHorizontalLines *
                 Math.ceil(elevationProfile.get().minElevation() / spaceBetweenHorizontalLines));
 
-        while (heightDisplayed <= elevationProfile.get().maxElevation()){
+        while (heightDisplayed <= elevationProfile.get().maxElevation()) {
             double y_pixels = worldToScreenP.get().transform(0, heightDisplayed).getY();
             PathElement lineExtremity1 = new MoveTo(insets.getLeft(), y_pixels);
             PathElement lineExtremity2 = new LineTo(insets.getLeft() + rectangle.get().getWidth(), y_pixels);
@@ -260,7 +249,7 @@ public final class ElevationProfileManager{
         int spaceBetweenVerticalLines = chooseSpaceBetweenLines(nbPixelsPerMeterX, POS_STEPS, MIN_PIXELS_VERTICAL);
 
         int lengthDisplayed = 0;
-        while(lengthDisplayed * KM_TO_METERS_FACTOR <= elevationProfile.get().length()){
+        while (lengthDisplayed * KM_TO_METERS_FACTOR <= elevationProfile.get().length()) {
             double pixelsX = worldToScreenP.get().transform(lengthDisplayed * KM_TO_METERS_FACTOR, 0).getX();
             PathElement lineExtremity1 = new MoveTo(pixelsX, insets.getTop() + rectangle.get().getHeight());
             PathElement lineExtremity2 = new LineTo(pixelsX, insets.getTop());
@@ -270,10 +259,10 @@ public final class ElevationProfileManager{
             text.getStyleClass().addAll("grid_label", "horizontal");
             text.setTextOrigin(VPos.TOP);
             text.setFont(FONT);
-            text.setX(pixelsX  -  text.prefWidth(0) * PREF_WIDTH_RATIO);
+            text.setX(pixelsX - text.prefWidth(0) * PREF_WIDTH_RATIO);
             text.setY(insets.getTop() + rectangle.get().getHeight());
             gridLabels.getChildren().add(text);
-            lengthDisplayed += spaceBetweenVerticalLines/KM_TO_METERS_FACTOR;
+            lengthDisplayed += spaceBetweenVerticalLines / KM_TO_METERS_FACTOR;
         }
     }
 
@@ -283,6 +272,7 @@ public final class ElevationProfileManager{
     /**
      * This method generates affine properties that will be used
      * convert screen coordinates to world coordinates and inversely
+     *
      * @throws NonInvertibleTransformException when the transformation is not invertible (it is in our case)
      */
     private void generateNewAffineFunctions() throws NonInvertibleTransformException {
@@ -305,16 +295,17 @@ public final class ElevationProfileManager{
 
     /**
      * Returns the correcting spacing between lines depending on the number of pixels per meter
-     * @param pixelsPerMeter number of pixels per meter in the direction
-     * @param steps Different spacing possible for this direction
+     *
+     * @param pixelsPerMeter  number of pixels per meter in the direction
+     * @param steps           Different spacing possible for this direction
      * @param minimalDistance Minimal distance between 2 values
      * @return the spacing between 2 lines (vertical or horizontal)
      */
-    private int chooseSpaceBetweenLines(double pixelsPerMeter, int[] steps, int minimalDistance){
+    private int chooseSpaceBetweenLines(double pixelsPerMeter, int[] steps, int minimalDistance) {
         int space = steps[steps.length - 1];
-        for (int spacing: steps) {
+        for (int spacing : steps) {
             double value = spacing * pixelsPerMeter;
-            if(value >= minimalDistance){
+            if (value >= minimalDistance) {
                 space = spacing;
                 break;
             }

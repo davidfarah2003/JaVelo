@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * GraphSectors record
  * @param buffer : containing information about all sectors (number of nodes, start node ID)
+ *
  * @author Wesley Nana Davies(344592)
  * @author David Farah (341017)
  */
