@@ -39,8 +39,8 @@ public final class JaVelo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-        Graph graph = Graph.loadFrom(Path.of("ch_west"));
+        //------Create Javelo objects--------
+        Graph graph = Graph.loadFrom(Path.of("javelo-data"));
         TileManager tileManager = new TileManager(Path.of("./osm-cache"), "tile.openstreetmap.org");
         CostFunction cityBikeCF = new CityBikeCF(graph);
 
@@ -62,6 +62,7 @@ public final class JaVelo extends Application {
                 then(annotatedMapManager.mousePositionOnRouteProperty()).
                 otherwise(elevationProfileManager.mousePositionOnProfileProperty()));
 
+        //------Create central Pane--------
         SplitPane splitPane = new SplitPane(annotatedMapManager.pane());
         splitPane.setOrientation(Orientation.VERTICAL);
 
@@ -74,10 +75,10 @@ public final class JaVelo extends Application {
                 splitPane.getItems().remove(splitPane.getItems().size() - 1);
             }
         });
-
         StackPane stackPane = new StackPane(splitPane, errorManager.pane());
 
-        MenuItem menuItem = new MenuItem("Exporter GPX");
+        //------Menu Object--------
+        MenuItem menuItem = new MenuItem("Export GPX");
         menuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> rb.getRouteProperty().get() == null,
                 rb.getRouteProperty()));
 
@@ -88,10 +89,10 @@ public final class JaVelo extends Application {
                 ex.printStackTrace();
             }
         });
-
         MenuBar menuBar = new MenuBar(new Menu("Fichier", new Pane(), menuItem));
         menuBar.setUseSystemMenuBar(true);
 
+        //------Global Pane (root)--------
         BorderPane mainBorderPane = new BorderPane();
         mainBorderPane.setTop(menuBar);
         mainBorderPane.setCenter(stackPane);
