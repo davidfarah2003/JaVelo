@@ -17,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 
 
@@ -86,11 +87,12 @@ public final class JaVelo extends Application {
             try {
                 GpxGenerator.writeGPX("javelo.gpx", rb.getRouteProperty().get(), elevationProfileP.get());
             } catch (IOException ex) {
-                ex.printStackTrace();
+                throw new UncheckedIOException(ex);
             }
         });
 
         MenuBar menuBar = new MenuBar(new Menu("Fichier", new Pane(), menuItem));
+        menuBar.setUseSystemMenuBar(true);
 
 
         //------Global Pane (root)--------
