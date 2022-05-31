@@ -17,7 +17,7 @@ import java.util.*;
  * @author David Farah (341017)
  */
 public final class RouteBean {
-    private final static int RECOMMENDED_STEP_LENGTH = 5, CACHE_CAPACITY = 5;
+    private final static int RECOMMENDED_STEP_LENGTH = 5, CACHE_CAPACITY = 10;
     private final static float LOAD_FACTOR = 0.75f;
     public static ObservableList<Waypoint> waypoints;
     private final RouteComputer routeComputer;
@@ -75,13 +75,12 @@ public final class RouteBean {
                 // using the hash method from Objects to identify effectively retrieve routes in the hashRouteMap.
                 int hashCode = Objects.hash(oldWaypoint.nodeID(), currentWaypoint.nodeID());
 
-                if (hashRouteMap.containsKey(hashCode)) {
-                    singleRoutes.add(hashRouteMap.get(hashCode));
-                } else {
-                    Route singleRoute = routeComputer.bestRouteBetween(oldWaypoint.nodeID(), currentWaypoint.nodeID());
-                    singleRoutes.add(singleRoute);
-                    hashRouteMap.put(hashCode, singleRoute);
-                }
+                Waypoint finalOldWaypoint = oldWaypoint;
+                Waypoint finalCurrentWaypoint = currentWaypoint;
+
+                singleRoutes.add(hashRouteMap.computeIfAbsent(hashCode, hashCodeKey ->
+                        routeComputer.bestRouteBetween(finalOldWaypoint.nodeID(), finalCurrentWaypoint.nodeID())));
+
             }
 
             oldWaypoint = currentWaypoint;
@@ -92,7 +91,8 @@ public final class RouteBean {
             route.setValue(new MultiRoute(singleRoutes));
             elevationProfile.setValue(ElevationProfileComputer.elevationProfile(route.get(),
                     RECOMMENDED_STEP_LENGTH));
-        } else {
+        }
+        else {
             route.setValue(null);
             elevationProfile.setValue(null);
         }

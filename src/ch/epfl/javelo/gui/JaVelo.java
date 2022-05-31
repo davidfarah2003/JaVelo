@@ -38,7 +38,7 @@ public final class JaVelo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //------Create Javelo objects--------
+        //------Create JaVelo objects--------
         Graph graph = Graph.loadFrom(Path.of("javelo-data"));
         TileManager tileManager = new TileManager(Path.of("./osm-cache"), "tile.openstreetmap.org");
         CostFunction cityBikeCF = new CityBikeCF(graph);
@@ -77,7 +77,8 @@ public final class JaVelo extends Application {
         StackPane stackPane = new StackPane(splitPane, errorManager.pane());
 
         //------Menu Object--------
-        MenuItem menuItem = new MenuItem("Export GPX");
+
+        MenuItem menuItem = new MenuItem("Exporter GPX");
         menuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> rb.getRouteProperty().get() == null,
                 rb.getRouteProperty()));
 
@@ -93,6 +94,7 @@ public final class JaVelo extends Application {
 
 
         //------Global Pane (root)--------
+
         BorderPane mainBorderPane = new BorderPane();
         mainBorderPane.setTop(menuBar);
         mainBorderPane.setCenter(stackPane);

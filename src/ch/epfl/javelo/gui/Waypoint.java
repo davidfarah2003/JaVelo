@@ -30,7 +30,7 @@ public record Waypoint(PointCh point, int nodeID) {
     /**
      * This method makes the hash code of a Waypoint its node id
      *
-     * @return Node ID of the Waypoint
+     * @return node ID of the Waypoint
      */
     @Override
     public int hashCode() {

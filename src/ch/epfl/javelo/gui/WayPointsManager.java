@@ -192,7 +192,7 @@ public final class WayPointsManager {
 
 
         /**
-         * Create the Group that represents a pin on the map
+         * This method creates the Group that represents a pin/waypoint on the map
          *
          * @return the pin Group created
          */
@@ -214,9 +214,9 @@ public final class WayPointsManager {
         }
 
         /**
-         * This method adds event listeners to a Waypoint
+         * This method adds event listeners to a waypoint
          *
-         * @param pin : Group representing the Waypoint
+         * @param pin : Group representing the waypoint
          */
         private void addPinListeners(Group pin) {
             pin.setOnMouseClicked(mouseEvent -> {

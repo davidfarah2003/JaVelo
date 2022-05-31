@@ -107,7 +107,8 @@ public final class RouteManager {
             if (!Double.isNaN(routeBean.highlightedPosition())) {
                 repositionCircle();
             }
-        } else {
+        }
+        else {
             circle.setVisible(false);
             polyline.setVisible(false);
         }

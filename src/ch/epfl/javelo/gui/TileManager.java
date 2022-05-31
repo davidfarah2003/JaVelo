@@ -61,6 +61,7 @@ public final class TileManager {
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "JaVelo");
             Files.createDirectories(filePath.getParent());
+
             try (InputStream i = c.getInputStream();
                  FileOutputStream o = new FileOutputStream(filePath.toFile())) {
                 i.transferTo(o);
