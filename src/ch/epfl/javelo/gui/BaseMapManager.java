@@ -117,10 +117,9 @@ public final class BaseMapManager {
 
             Point2D topLeftPoint = mapViewParametersP.get().topLeft();
 
-            topLeftPoint = topLeftPoint.add(e.getX(), e.getY());
-            // multiplying the coordinates of the top left by 2^(difference in zoom level)
-            topLeftPoint = topLeftPoint.multiply(Math.scalb(1, difference));
-            topLeftPoint = topLeftPoint.subtract(e.getX(), e.getY());
+            topLeftPoint = topLeftPoint.add(e.getX(), e.getY()).
+                    multiply(Math.scalb(1, difference)).
+                    subtract(e.getX(), e.getY());
 
             mapViewParametersP.setValue(new MapViewParameters(newZoomLevel, topLeftPoint.getX(), topLeftPoint.getY()));
 
