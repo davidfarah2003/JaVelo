@@ -7,9 +7,9 @@ import javafx.geometry.Point2D;
 /**
  * MapViewParameters record that manages the settings of the basemap in the GUI
  *
- * @param zoomLevel         of the map
- * @param xUpperLeftMapView X coordinate of the top-left corner of the map portion displayed on the screen
- * @param yUpperLeftMapView Y coordinate of the top-left corner of the map portion displayed on the screen
+ * @param zoomLevel         : zoom level of the map
+ * @param xUpperLeftMapView : x-coordinate of the top-left corner of the map portion displayed on the screen
+ * @param yUpperLeftMapView : y-coordinate of the top-left corner of the map portion displayed on the screen
  * @author Wesley Nana Davies (344592)
  * @author David Farah (341017)
  */
@@ -17,7 +17,6 @@ public record MapViewParameters(int zoomLevel, double xUpperLeftMapView, double 
 
     /**
      * Returns the upper-left corner of the map as a Point2D
-     *
      * @return the top-left point
      */
     public Point2D topLeft() {
@@ -25,7 +24,7 @@ public record MapViewParameters(int zoomLevel, double xUpperLeftMapView, double 
     }
 
     /**
-     * Returns a new instance of MapViewParameter almost identical to this,
+     * Returns a new instance of MapViewParameter almost identical to <code>this</code>,
      * except that the coordinates of the top-left corner are
      * those passed as arguments to the method (same zoomLevel)
      *

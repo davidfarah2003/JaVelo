@@ -96,13 +96,12 @@ public final class RouteManager {
 
             for (PointCh routePoint : routeBean.getRouteProperty().get().points()) {
                 PointWebMercator routePointMercator = PointWebMercator.ofPointCh(routePoint);
-                polyline.getPoints().add(routePointMercator.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
-                polyline.getPoints().add(routePointMercator.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
+                polyline.getPoints().addAll(routePointMercator.xAtZoomLevel(mapViewParametersP.get().zoomLevel()),
+                        routePointMercator.yAtZoomLevel(mapViewParametersP.get().zoomLevel()));
             }
 
             polyline.setLayoutX(-mapViewParametersP.get().xUpperLeftMapView());
             polyline.setLayoutY(-mapViewParametersP.get().yUpperLeftMapView());
-
 
             if (!Double.isNaN(routeBean.highlightedPosition())) {
                 repositionCircle();
@@ -116,6 +115,11 @@ public final class RouteManager {
 
     }
 
+
+    /**
+     * This method simply repositions the circle along the route
+     * whenever it is needed (zoomLevel changes, etc)
+     */
     private void repositionCircle() {
         PointWebMercator highlightedPoint = PointWebMercator.
                 ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
@@ -127,7 +131,7 @@ public final class RouteManager {
 
 
     /**
-     * This method repositions nodes each time the mapViewParameters change
+     * This method repositions nodes each time the MapViewParameters change
      */
     private void repositionNodes() {
         if (routeBean.getRouteProperty().get() != null) {
