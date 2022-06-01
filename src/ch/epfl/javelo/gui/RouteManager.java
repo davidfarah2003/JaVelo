@@ -3,10 +3,15 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
+
+import javax.naming.Binding;
+
+import static java.lang.Float.NaN;
 
 /**
  * RouteManager class
@@ -61,6 +66,8 @@ public final class RouteManager {
                     }
                 });
 
+
+
         circle.setOnMouseClicked(e -> {
 
             PointWebMercator pointRelatedToPane = mapViewParametersP.get().pointAt(
@@ -75,14 +82,12 @@ public final class RouteManager {
                     w);
         });
 
-        routeBean.getHighlightedPositionP().addListener(e -> {
-            if (!Double.isNaN(routeBean.highlightedPosition())) {
-                circle.setVisible(true);
-                repositionCircle();
-            } else {
-                circle.setVisible(false);
-            }
 
+        routeBean.getHighlightedPositionP().addListener(e -> {
+            if (!Double.isNaN(routeBean.highlightedPosition()))
+                repositionCircle();
+            else
+                circle.setVisible(false);
         });
 
 
@@ -121,6 +126,7 @@ public final class RouteManager {
      * whenever it is needed (zoomLevel changes, etc)
      */
     private void repositionCircle() {
+        circle.setVisible(true);
         PointWebMercator highlightedPoint = PointWebMercator.
                 ofPointCh(routeBean.getRouteProperty().get().pointAt(routeBean.highlightedPosition()));
         circle.setCenterX(highlightedPoint.xAtZoomLevel(mapViewParametersP.get().zoomLevel()));
